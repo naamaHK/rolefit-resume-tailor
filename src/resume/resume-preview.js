@@ -296,6 +296,19 @@ function getPreviewTargetAnchorCandidates(change) {
   return [change.entryLabel, change.originalText].filter(Boolean);
 }
 
+// Resolve the UI card into one immutable rendering input before any HTML work.
+// Renderers consume this target and never inspect mutable card controls.
+function buildStructuredPreviewTarget(change, editBox) {
+  const placement = getConfirmedPlacement(change);
+  return previewTargetBuilder.build({
+    change,
+    placement,
+    candidates: getPreviewHighlightCandidates(change, editBox),
+    anchors: getPreviewTargetAnchorCandidates(change),
+    rewrite: getPreviewRewritePair(change)
+  });
+}
+
 function addPreviewHighlightClassToBlock(block) {
   return resumePreviewHighlighter.addPreviewHighlightClassToBlock(block);
 }
@@ -304,12 +317,11 @@ function highlightCandidatesInsideBlock(block, candidates) {
   return resumePreviewHighlighter.highlightCandidatesInsideBlock(block, candidates);
 }
 
-function highlightRewriteDiffInHtml(html, change) {
-  const pair = getPreviewRewritePair(change);
+function highlightRewriteDiffInHtml(html, target) {
+  const { change, rewrite: pair, anchors } = target;
   if (!pair.after) return { html, matched: "" };
   const fragments = getChangedAfterFragments(pair.before, pair.after);
   if (!fragments.length) return { html, matched: "" };
-  const anchors = getPreviewTargetAnchorCandidates(change);
   return resumePreviewHighlighter.highlightRewriteDiffInHtml(html, change.section, pair, fragments, anchors);
 }
 
@@ -335,7 +347,18 @@ function highlightExperienceChangeInHtml(html, sectionTitle, entries, targetInde
   );
 }
 
-function highlightChangeInHtml(html, candidates, change) {
+function highlightChangeInHtml(html, target, legacyChange = null) {
+  // Keep the old test-facing adapter while all production calls use a target.
+  if (legacyChange) {
+    target = previewTargetBuilder.build({
+      change: legacyChange,
+      placement: getConfirmedPlacement(legacyChange),
+      candidates: target,
+      anchors: getPreviewTargetAnchorCandidates(legacyChange),
+      rewrite: getPreviewRewritePair(legacyChange)
+    });
+  }
+  const { change, candidates, rewrite } = target;
   if (change.type === "spelling_check") {
     const sectionScoped = highlightFirstWholeWordMatchInSectionHtml(html, candidates, change.section);
     if (sectionScoped.matched) return sectionScoped;
@@ -343,17 +366,16 @@ function highlightChangeInHtml(html, candidates, change) {
   }
 
   if (isRewritePreviewChange(change) || isTargetedPlacementRewrite(change)) {
-    const diffHighlighted = highlightRewriteDiffInHtml(html, change);
+    const diffHighlighted = highlightRewriteDiffInHtml(html, target);
     if (diffHighlighted.matched) return diffHighlighted;
 
     // A punctuation-only or similarly tiny Statement rewrite can have no
     // token-level diff. The text still changed, so show the resulting summary
     // block rather than leaving Preview apparently empty.
     if (isSummaryLikeSection(change.section)) {
-      const pair = getPreviewRewritePair(change);
       return highlightBestBlockInSectionHtml(
         html,
-        [pair.after, pair.before],
+        [rewrite.after, rewrite.before],
         change.section,
         { threshold: 0.2 }
       );
@@ -1150,4 +1172,3 @@ function renderNumberedCommentPreview() {
     });
   });
 }
-

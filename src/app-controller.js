@@ -95,10 +95,10 @@ function previewChangeOnResume(change, editBox, placementToPreview = "") {
     || normalizeFinalResumeText(baseText) !== text;
   const style = exportStyleSelect.value;
   const resumeHtml = style === "designed" ? formatDesignedResumeForPrint(text) : formatResumeForPrint(text);
-  const candidates = getPreviewHighlightCandidates(previewChange, editBox);
+  const previewTarget = buildStructuredPreviewTarget(previewChange, editBox);
   const experiencePlacementHighlight = highlightExperiencePlacementInHtml(
     resumeHtml,
-    previewChange,
+    previewTarget.change,
     baseText,
     text
   );
@@ -111,8 +111,8 @@ function previewChangeOnResume(change, editBox, placementToPreview = "") {
     : shouldHighlightInsertedSection(previewChange, baseText)
     ? highlightSectionInHtml(resumeHtml, previewChange.section)
     : shouldHighlightInsertedCandidateSet(previewChange)
-      ? highlightAllMatchesInSectionHtml(resumeHtml, candidates, previewChange.section)
-      : highlightChangeInHtml(resumeHtml, candidates, previewChange);
+      ? highlightAllMatchesInSectionHtml(resumeHtml, previewTarget.candidates, previewTarget.section)
+      : highlightChangeInHtml(resumeHtml, previewTarget);
   const existingSkillsPlacement = isPlacementConfirmation(previewChange)
     && getConfirmedPlacement(previewChange) === "skills"
     && hasSection(baseText, ["skills", "technical skills"]);

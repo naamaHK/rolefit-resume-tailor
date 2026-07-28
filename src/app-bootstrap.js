@@ -7,6 +7,11 @@ function titleCase(text) {
     .join(" ");
 }
 
+const previewTargetBuilder = window.RoleFitPreviewTarget.create({
+  unique,
+  stripHtmlTags
+});
+
 const roleRequirements = window.RoleFitRoleRequirements.create({
   cleanConfirmedText,
   extractMissingExperienceTopics,

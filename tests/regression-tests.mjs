@@ -92,6 +92,8 @@ async function loadApp() {
   vm.runInContext(missingExperienceSource, context, { filename: "src/resume/missing-experience.js" });
   const placementFlowSource = await readFile(new URL("../src/resume/placement-flow.js", import.meta.url), "utf8");
   vm.runInContext(placementFlowSource, context, { filename: "src/resume/placement-flow.js" });
+  const previewTargetSource = await readFile(new URL("../src/resume/preview-target.js", import.meta.url), "utf8");
+  vm.runInContext(previewTargetSource, context, { filename: "src/resume/preview-target.js" });
   const appSources = [
     "../src/app.js",
     "../src/resume/analysis-heuristics.js",

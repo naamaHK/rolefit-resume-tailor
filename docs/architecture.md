@@ -25,10 +25,11 @@ browser scripts so it can retain the existing public function adapters while
 the application is incrementally modularized.
 
 The feature modules are `analysis-heuristics.js`, `ai-analysis.js`,
-`review-controller.js`, `change-cards.js`, `resume-preview.js`,
-`placement-editor.js`, and `print-renderer.js`. They respectively own local
-analysis, AI analysis, review-pass state, review-card UI, preview highlighting,
-resume editing/placement, and print rendering.
+`review-controller.js`, `change-cards.js`, `preview-target.js`,
+`resume-preview.js`, `placement-editor.js`, and `print-renderer.js`. They
+respectively own local analysis, AI analysis, review-pass state, review-card UI,
+immutable preview targets, preview highlighting, resume editing/placement, and
+print rendering.
 
 `src/resume/experience-parser.js` owns the implementation for recognizing and
 parsing Experience entries. It receives shared text helpers as explicit
@@ -47,8 +48,9 @@ spelling, removal, and placement-specific rules.
 `src/resume/preview-highlighter.js` owns state-free preview diffing and generic
 HTML highlighting: token-level changed fragments, visible-text matching,
 section-scoped matching, fuzzy block scoring, and section highlighting.
-`change-cards.js` and `resume-preview.js` decide which candidates and section
-belong to each change.
+`preview-target.js` receives the resolved section, placement, before/after
+text, and anchors as one immutable rendering input. `resume-preview.js` then
+uses that target to render highlights without reading mutable card controls.
 
 ## Extraction Rules
 
@@ -67,9 +69,10 @@ belong to each change.
 3. Applying accepted changes to the resume document. In progress: the shared
    text editor is extracted; the higher-level dispatcher and placement-specific
    operations are in `placement-editor.js`.
-4. Preview targeting and changed-text highlighting. In progress: the pure diff
-   and HTML highlighter is extracted; placement-specific candidate and fallback
-   decisions live in `resume-preview.js`. Rewrite highlighting now mutates the exact
+4. Preview targeting and changed-text highlighting. Complete: each preview is
+   first converted to an immutable target containing its section, placement,
+   candidates, anchors, and before/after text. The pure diff and HTML
+   highlighter then render that target. Rewrite highlighting mutates the exact
    selected HTML block by index, so identical bullets in different Experience
    entries cannot redirect the preview to the first occurrence.
 5. Missing-experience placement flows.
