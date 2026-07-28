@@ -1,0 +1,28 @@
+JORDAN LEVI
+jordan@example.com | linkedin.com/in/jordan-levi | Tel Aviv
+
+PROFESSIONAL SUMMARY
+Data scientist with experience in machine learning, analytics, and cross-functional product work.
+
+EXPERIENCE
+Senior Data Scientist, ShopStream
+2020 - 2024
+- Worked on recommendation models for e-commerce personalization.
+- Used experiments and data analysis to improve product decisions.
+- Collaborated with product managers and engineers on model deployment.
+- Built dashboards for business stakeholders.
+
+Data Analyst, MarketPulse
+2017 - 2020
+- Analyzed customer behavior and campaign performance.
+- Created reports and presented insights to marketing teams.
+
+EDUCATION
+M.Sc. Computer Science, Example University
+2015 - 2017
+
+B.Sc. Statistics, Example University
+2011 - 2015
+
+SKILLS
+Machine learning, SQL, Python, A/B testing, dashboards, statistical analysis

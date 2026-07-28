@@ -1,0 +1,15 @@
+Applied Machine Learning Engineer
+
+We are looking for an Applied Machine Learning Engineer to build production personalization and ranking systems. The role includes developing recommendation models, evaluating model quality, running experiments, and partnering with product and engineering teams to deploy improvements.
+
+Required qualifications:
+- Experience with machine learning models in production
+- Python and SQL
+- Recommendation, ranking, or personalization systems
+- A/B testing or experimentation
+- Strong communication with product and engineering teams
+
+Preferred qualifications:
+- Experience with LLMs, embeddings, or semantic search
+- Experience designing model evaluation frameworks
+- Ability to translate business goals into measurable ML outcomes

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>RoleFit Resume Tailor</title>
+  <link rel="stylesheet" href="src/styles.css?v=20260727-6">
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Evidence-grounded resume tailoring</p>
+          <h1>RoleFit Resume Tailor</h1>
+        </div>
+        <div class="topbar-actions">
+          <button id="loadSampleBtn" class="secondary-button" type="button">Load Sample</button>
+          <button id="analyzeBtn" class="primary-button" type="button">Check Resume</button>
+          <button id="analyzeAiBtn" class="primary-button" type="button">Get Suggestions with AI</button>
+        </div>
+      </header>
+      <p id="aiStatus" class="ai-status" aria-live="polite"></p>
+
+      <section class="workspace-grid" aria-label="Resume tailoring workspace">
+        <section class="input-panel" aria-labelledby="resumeLabel">
+          <div class="panel-heading">
+            <h2 id="resumeLabel">Resume</h2>
+            <div class="panel-tools">
+              <input id="resumeFileInput" class="file-input" type="file" accept=".pdf,.txt,text/plain,application/pdf">
+              <label class="secondary-button file-button" for="resumeFileInput">Upload PDF/Text</label>
+              <button id="newResumeBtn" class="secondary-button" type="button">New Resume</button>
+              <span id="resumeCount" class="counter">0 words</span>
+            </div>
+          </div>
+          <p id="resumeUploadStatus" class="upload-status" aria-live="polite"></p>
+          <textarea id="resumeInput" spellcheck="true" placeholder="Paste the original resume here."></textarea>
+        </section>
+
+        <section class="input-panel" aria-labelledby="jobLabel">
+          <div class="panel-heading">
+          <h2 id="jobLabel">Target Job Description <span class="optional-label">Optional</span></h2>
+          <div class="panel-tools">
+            <button id="clearJobBtn" class="secondary-button" type="button">Clear Job Role</button>
+            <span id="jobCount" class="counter">0 words</span>
+          </div>
+        </div>
+          <textarea id="jobInput" spellcheck="true" placeholder="Optional: paste a target job description for role-specific tailoring. Leave empty for a general resume review."></textarea>
+        </section>
+      </section>
+
+      <section id="pdfPreviewPanel" class="pdf-preview-panel" aria-labelledby="pdfPreviewLabel" hidden>
+        <div class="panel-heading">
+          <h2 id="pdfPreviewLabel">Resume Preview</h2>
+          <span class="counter">Click a numbered comment to review it</span>
+        </div>
+        <div class="preview-workspace">
+          <div id="pdfPreview" class="pdf-preview"></div>
+          <aside id="missingExperiencePanel" class="missing-experience-side-panel" hidden></aside>
+          <aside id="activeCommentPanel" class="active-comment-panel" hidden></aside>
+        </div>
+      </section>
+
+      <section class="analysis-layout" aria-label="Analysis and suggestions">
+        <aside class="analysis-panel">
+          <div class="panel-heading">
+            <h2>Role Analysis</h2>
+            <span id="matchScore" class="score">--</span>
+          </div>
+          <div id="analysisOutput" class="analysis-output">
+            <p class="empty-state">Paste or upload a resume, then run the analysis. Add a job description only for role-specific tailoring.</p>
+          </div>
+        </aside>
+
+        <section class="changes-panel">
+          <div class="panel-heading">
+            <h2>Suggested Changes</h2>
+            <span id="changeCount" class="counter">0 pending</span>
+          </div>
+          <div class="pass-guide" aria-label="Comment types">
+            <strong>Three review passes:</strong>
+            <span><b>Resume Check</b> catches missing required fields and structure issues.</span>
+            <span><b>Suggestions</b> contains concrete before/after improvements.</span>
+            <span><b>Missing Experience</b> asks about job-required skills or experience not shown in the resume.</span>
+          </div>
+          <div class="pass-tabs" role="tablist" aria-label="Suggestion pass">
+            <button id="cleanupPassBtn" class="pass-tab active" type="button" role="tab" aria-selected="true">1. Resume Check</button>
+            <button id="suggestionsPassBtn" class="pass-tab" type="button" role="tab" aria-selected="false">2. Suggestions</button>
+            <button id="missingExperiencePassBtn" class="pass-tab" type="button" role="tab" aria-selected="false">3. Missing Experience</button>
+          </div>
+          <div id="changeCards" class="change-list">
+            <p class="empty-state">Change cards will appear here. Each one needs your decision.</p>
+          </div>
+        </section>
+      </section>
+
+      <section class="final-panel" aria-labelledby="finalResumeLabel">
+        <div class="panel-heading">
+          <h2 id="finalResumeLabel">Final Resume Draft</h2>
+          <div class="final-actions">
+            <label class="export-style-control" for="exportStyleSelect">
+              <span>Export Style</span>
+              <select id="exportStyleSelect">
+                <option value="ats">ATS-friendly</option>
+                <option value="designed">Designed</option>
+              </select>
+            </label>
+            <button id="exportPdfBtn" class="primary-button" type="button">Export PDF</button>
+            <button id="copyFinalBtn" class="secondary-button" type="button">Copy</button>
+          </div>
+        </div>
+        <textarea id="finalResume" spellcheck="true" placeholder="Accepted changes will be applied here."></textarea>
+      </section>
+
+    </main>
+
+  <script src="src/resume/document-parser.js?v=20260727-5"></script>
+  <script src="src/resume/experience-parser.js?v=20260727-6"></script>
+  <script src="src/resume/placement-targets.js?v=20260727-1"></script>
+  <script src="src/resume/section-inserter.js?v=20260727-1"></script>
+  <script src="src/resume/text-editor.js?v=20260727-4"></script>
+  <script src="src/resume/preview-highlighter.js?v=20260727-5"></script>
+  <script src="src/resume/role-requirements.js?v=20260728-1"></script>
+  <script src="src/resume/missing-experience.js?v=20260728-1"></script>
+  <script src="src/resume/placement-flow.js?v=20260728-1"></script>
+  <script src="src/app.js?v=20260728-5"></script>
+  </body>
+</html>
