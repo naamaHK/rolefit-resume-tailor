@@ -65,13 +65,13 @@ Then open:
 http://127.0.0.1:8765/index.html
 ```
 
-To test on your phone, keep the phone and Mac on the same Wi-Fi and use the network URL printed by the server, for example:
+To test on your phone, keep the phone and the computer running the server on the same Wi-Fi and use the network URL printed by the server, for example:
 
 ```text
 http://192.168.x.x:8765/index.html
 ```
 
-Do not use `127.0.0.1` on the phone. On a phone, `127.0.0.1` means the phone itself, not your Mac.
+Do not use `127.0.0.1` on the phone. On a phone, `127.0.0.1` means the phone itself, not the computer running the server.
 
 ## Test Locally
 
