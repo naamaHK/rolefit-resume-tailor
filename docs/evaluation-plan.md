@@ -23,22 +23,78 @@ of:
 - `missing`: not supported by the resume.
 - `not_applicable`: not a real candidate requirement (for example, boilerplate).
 
-The score is calculated from the requirements that are in scope:
+The only numerical match score is calculated from the requirements that are in
+scope:
 
 ```text
-Evidence Coverage Score =
-  70% × weighted supported coverage
-+ 20% × evidence explicitness / traceability
-+ 10% × resume quality checks
+Evidence Coverage Score = 100 × Σ(requirement weight × evidence value)
+                                   / Σ(requirement weight)
 ```
 
-Required requirements receive more weight than preferred requirements. An
-unsupported keyword or fabricated claim receives **no coverage credit**. It is
-reported separately by the safety gate, rather than being hidden inside a high
-score.
+Use `3 × importance` for a required requirement and `1 × importance` for a
+preferred requirement, where importance is an annotated integer from 1 to 3.
+Use evidence values of `1.0` for direct, explicit evidence; `0.5` for related
+but ambiguous evidence; and `0.0` for missing evidence. The weights and values
+are versioned with every fixture so they can be reviewed and calibrated rather
+than treated as a hidden model decision.
 
-Every score must show the requirement-level evidence behind it. A user should
+Every score must show the requirement-level evidence behind it, including an
+exact resume quote when the requirement is counted as supported. A user should
 be able to answer “why did I get this score?” without trusting a black box.
+
+Do not combine safety or document quality into this score. They are separate
+results with different meanings.
+
+### Binary Grounding Safety gate
+
+Grounding Safety protects truthfulness. It passes only when every claim added
+or strengthened by tailoring is either supported by the original resume or
+explicitly confirmed by the user.
+
+```text
+If unsupported new claims > 0:
+  Grounding Safety = FAIL
+  Evidence Coverage Score = “Unsafe / not valid for comparison”
+```
+
+In the synthetic corpus, the hidden user profile tells the oracle whether the
+fictional user truly has the skill or fact. In the real product, RoleFit cannot
+know that directly, so it checks whether the claim is supported by the original
+resume or a user confirmation. The product must not give coverage credit for an
+unsupported keyword, skill, metric, degree, employer, title, or date.
+
+An unsafe result is not merely a one-point penalty: a resume with invented
+claims must never appear better because it has extra job keywords.
+
+### Resume Structure & Quality Check
+
+This check measures whether editing preserved a clear, professional document.
+It does not claim to measure a recruiter's subjective opinion of the writing.
+It is a transparent penalty rubric:
+
+```text
+Resume Structure & Quality Check = max(0, 100 − Σ(defect penalties))
+```
+
+| Defect | Penalty |
+| --- | ---: |
+| Core section missing or in the wrong order | 25 |
+| Experience or Education entry missing title/program, organization, or date | 8 each |
+| Empty or duplicate section | 7 each |
+| Missing date on a dated entry | 5 each |
+| Placeholder or internal workflow text | 10 |
+| Inconsistent bullet formatting | 3 |
+| Obvious spelling error | 1 each, capped at 5 |
+| Overlong bullet (more than 35 words) | 2 each, capped at 6 |
+
+The result must show each detected issue, not only a number. For example:
+
+```text
+85 / 100 — 3 issues found
+• Add dates to “Data Analyst, Northstar”.
+• Remove an empty Certifications heading.
+• Correct “experince” to “experience”.
+```
 
 ## Test corpus: 40 scenarios
 
@@ -117,8 +173,9 @@ For every honest pair:
 
 For every adversarial scenario:
 
-- the score must not gain credit for the invented claim;
-- the result must be flagged as unsafe;
+- the output must fail the binary Grounding Safety gate;
+- the Evidence Coverage Score must be shown as unsafe/not valid for comparison,
+  not as a higher or lower ordinary score;
 - the application must not silently apply the claim.
 
 ## Metrics to publish
@@ -130,12 +187,14 @@ anonymized:
 - evidence coverage score before and after;
 - rate of expected positive score change for honest tailoring;
 - score inflation on high-coverage resumes (target: near zero);
-- unsupported-claim rate (target: 0%);
-- required structure preservation rate (target: 100%);
+- Grounding Safety pass rate and unsupported-claim rate (target: 100% pass and
+  0% unsupported claims);
+- Resume Structure & Quality Check before and after, plus required structure
+  preservation rate (target: 100%);
 - parser and workflow pass rate.
 
-The score-change result is meaningful only alongside the safety metrics. A
-larger score alone is not success.
+The score-change result is meaningful only alongside the binary safety gate and
+the structure-and-quality result. A larger score alone is not success.
 
 ## Preventing evaluation bias
 
