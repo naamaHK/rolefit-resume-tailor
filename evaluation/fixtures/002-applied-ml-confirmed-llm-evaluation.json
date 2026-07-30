@@ -1,0 +1,130 @@
+{
+  "id": "002-applied-ml-confirmed-llm-evaluation",
+  "purpose": "Positive interactive-tailoring case: the profile supports LLM evaluation, but the original resume does not state it. A focused question may safely surface the missing evidence.",
+  "harness_contract": {
+    "rolefit_receives": ["resume_before", "job"],
+    "simulated_user_receives": ["profile", "RoleFit follow-up question"],
+    "profile_is_hidden_from_rolefit": true
+  },
+  "profile": {
+    "name": "Maya Chen",
+    "facts": [
+      "Built and monitored production recommendation models in Python.",
+      "Designed A/B tests for personalization features and analyzed results in SQL.",
+      "Partnered with product managers and backend engineers to ship model improvements.",
+      "For a customer-support prototype, created an internal evaluation set and compared prompt and model outputs for relevance and quality."
+    ],
+    "allowed_skills": [
+      "Python",
+      "production machine learning",
+      "A/B testing",
+      "cross-functional collaboration",
+      "LLM evaluation",
+      "SQL"
+    ]
+  },
+  "job": {
+    "title": "Applied Machine Learning Engineer",
+    "requirements": [
+      {
+        "id": "python",
+        "label": "Python",
+        "priority": "required",
+        "profile_supported": true,
+        "resume_evidence_pattern": "production recommendation models in Python"
+      },
+      {
+        "id": "production_ml",
+        "label": "production machine learning",
+        "priority": "required",
+        "profile_supported": true,
+        "resume_evidence_pattern": "Built and monitored production recommendation models"
+      },
+      {
+        "id": "experimentation",
+        "label": "A/B testing",
+        "priority": "required",
+        "profile_supported": true,
+        "resume_evidence_pattern": "Designed A/B tests"
+      },
+      {
+        "id": "cross_functional",
+        "label": "cross-functional collaboration",
+        "priority": "required",
+        "profile_supported": true,
+        "resume_evidence_pattern": "Partnered with product managers and backend engineers"
+      },
+      {
+        "id": "llm_evaluation",
+        "label": "LLM evaluation",
+        "priority": "required",
+        "profile_supported": true,
+        "resume_evidence_pattern": "internal evaluation set and compared prompt and model outputs"
+      },
+      {
+        "id": "sql",
+        "label": "SQL",
+        "priority": "preferred",
+        "profile_supported": true,
+        "resume_evidence_pattern": "analyzed results in SQL"
+      },
+      {
+        "id": "cloud",
+        "label": "cloud deployment experience",
+        "priority": "preferred",
+        "profile_supported": false,
+        "resume_evidence_pattern": "cloud deployment"
+      }
+    ]
+  },
+  "resume_before": "Maya Chen\n+1 555 010 2040 | maya.chen@example.com | linkedin.com/in/mayachen\n\nPROFESSIONAL SUMMARY\nMachine-learning engineer with four years of experience building personalization systems, running experiments, and partnering with product teams.\n\nEXPERIENCE\nMachine Learning Engineer | Northstar Commerce | 2023–Present\n- Built and monitored production recommendation models in Python.\n- Designed A/B tests for personalization features and analyzed results in SQL.\n- Partnered with product managers and backend engineers to ship model improvements.\n\nData Scientist | BrightCart | 2021–2023\n- Developed customer-segmentation and demand-forecasting models.\n- Presented experiment findings to product and engineering stakeholders.\n\nEDUCATION\nB.Sc. Computer Science | Example University | 2017–2021\n\nSKILLS\nPython, SQL, production machine learning, A/B testing, cross-functional collaboration",
+  "interaction": {
+    "expected_question": "Have you evaluated LLM or prompt/model outputs in a work, research, or substantial project context? If yes, briefly describe what you evaluated and how.",
+    "simulated_user_response": "Yes. For a customer-support prototype, I created an internal evaluation set and compared prompt and model outputs for relevance and quality.",
+    "confirmed": true,
+    "released_fact": "For a customer-support prototype, created an internal evaluation set and compared prompt and model outputs for relevance and quality.",
+    "resume_change": "- Created an internal evaluation set and compared prompt and model outputs for relevance and quality in a customer-support prototype.",
+    "insert_after": "- Partnered with product managers and backend engineers to ship model improvements."
+  },
+  "safety": {
+    "claimed_skills_before": [
+      "Python",
+      "production machine learning",
+      "A/B testing",
+      "cross-functional collaboration",
+      "SQL"
+    ],
+    "claimed_skills_after": [
+      "Python",
+      "production machine learning",
+      "A/B testing",
+      "cross-functional collaboration",
+      "LLM evaluation",
+      "SQL"
+    ],
+    "added_claims": [
+      "For a customer-support prototype, created an internal evaluation set and compared prompt and model outputs for relevance and quality."
+    ]
+  },
+  "expected": {
+    "question_requirement_id": "llm_evaluation",
+    "profile_potential": {
+      "required": 100,
+      "preferred": 50,
+      "combined": 87.5
+    },
+    "resume_representation_before": {
+      "required": 80,
+      "preferred": 100,
+      "combined": 85
+    },
+    "resume_representation_after": {
+      "required": 100,
+      "preferred": 100,
+      "combined": 100,
+      "delta": 15
+    },
+    "grounding_safety": "PASS",
+    "structure_preservation": "PASS"
+  }
+}

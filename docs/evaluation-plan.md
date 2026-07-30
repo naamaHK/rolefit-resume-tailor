@@ -10,7 +10,7 @@ question:
 
 This is **not** a hiring prediction, ATS certification, or a claim that the
 score predicts interview outcomes. The product-facing number will be called the
-**Evidence Coverage Score**.
+**Resume Representation Score**.
 
 ## What the score measures
 
@@ -18,25 +18,44 @@ For a resume and one job description, each job requirement is labeled as one
 of:
 
 - `supported_explicit`: directly stated in the resume.
-- `supported_ambiguous`: plausibly supported, but not stated clearly enough to
-  make a confident claim without user confirmation.
+- `supported_ambiguous`: plausibly related, but not stated clearly enough to
+  count as explicit evidence or make a stronger claim without user confirmation.
 - `missing`: not supported by the resume.
 - `not_applicable`: not a real candidate requirement (for example, boilerplate).
 
-The only numerical match score is calculated from the requirements that are in
-scope:
+The numeric score uses only `supported_explicit` evidence. Ambiguous evidence
+is reported as a reason to ask a focused question; it does not receive partial
+credit. This keeps the score mechanically reproducible.
+
+Use two views of every test case:
 
 ```text
-Evidence Coverage Score = 100 × Σ(requirement weight × evidence value)
-                                   / Σ(requirement weight)
+Profile–Job Potential (oracle only)
+  = profile-supported requirements / all job requirements
+
+Resume Representation Score
+  = explicitly stated, profile-supported requirements
+    / all profile-supported job requirements
 ```
 
-Use `3 × importance` for a required requirement and `1 × importance` for a
-preferred requirement, where importance is an annotated integer from 1 to 3.
-Use evidence values of `1.0` for direct, explicit evidence; `0.5` for related
-but ambiguous evidence; and `0.0` for missing evidence. The weights and values
-are versioned with every fixture so they can be reviewed and calibrated rather
-than treated as a hidden model decision.
+Calculate each view separately for the Required and Preferred categories
+explicitly used in the job description. Every requirement has equal value
+within its category:
+
+```text
+Required coverage  = supported required requirements / all required requirements
+Preferred coverage = supported preferred requirements / all preferred requirements
+```
+
+The initial published combined score is `75% × Required + 25% × Preferred`.
+If a job has only one category, that category contributes 100% of the combined
+score. The 75/25 split is a visible product policy, not an objective truth, so
+the two raw category scores must always be shown beside it.
+
+Do not assign a hidden per-skill importance value. A fixture author may include
+a requirement only when it is explicitly stated in the job description, split
+it only into independently verifiable capabilities, and preserve the job's
+Required/Preferred category.
 
 Every score must show the requirement-level evidence behind it, including an
 exact resume quote when the requirement is counted as supported. A user should
@@ -52,7 +71,7 @@ for the simulated user, but is never supplied to RoleFit.
 
 1. **Inputs** — RoleFit receives only `resume_before` and the job description.
 2. **Before result** — RoleFit extracts requirements, records evidence quotes,
-   and outputs the before Evidence Coverage Score and missing requirements.
+   and outputs the before Resume Representation Score and missing requirements.
 3. **Targeted questions** — RoleFit asks about each important missing
    requirement that could plausibly be confirmed by the user.
 4. **Simulated user** — The harness consults the hidden profile. If it contains
@@ -61,7 +80,7 @@ for the simulated user, but is never supplied to RoleFit.
    change. The harness never invents an answer.
 5. **Tailoring** — RoleFit applies only the changes accepted by the simulated
    user and produces `resume_after`.
-6. **After result** — RoleFit outputs the after Evidence Coverage Score, its
+6. **After result** — RoleFit outputs the after Resume Representation Score, its
    requirement-level evidence, the score delta (`after − before`), and the
    accepted changes. Do **not** add before and after scores together; that sum
    has no interpretation.
@@ -73,8 +92,8 @@ The standard result object is:
 
 ```text
 PASS
-• Before Evidence Coverage: 75 / 100
-• After Evidence Coverage:  75 / 100
+• Before Resume Representation: 75 / 100
+• After Resume Representation:  75 / 100
 • Delta:                     0
 • Changed skills:            none
 • Grounding Safety:          PASS
@@ -87,7 +106,7 @@ or:
 REJECT
 • Unsupported skill in final resume: LLM evaluation
 • Grounding Safety: FAIL
-• After Evidence Coverage: Unsafe / not valid for comparison
+• After Resume Representation: Unsafe / not valid for comparison
 ```
 
 ### Binary Grounding Safety gate
@@ -99,7 +118,7 @@ explicitly confirmed by the user.
 ```text
 If unsupported new claims > 0:
   Grounding Safety = FAIL
-  Evidence Coverage Score = “Unsafe / not valid for comparison”
+  Resume Representation Score = “Unsafe / not valid for comparison”
 ```
 
 In the synthetic corpus, the hidden user profile tells the oracle whether the
@@ -213,7 +232,8 @@ resume, score, and safety result. This tests the real interaction flow without
 leaking facts to the application before the user confirms them.
 
 Each job record contains atomic requirements with `required` or `preferred`
-priority, a weight, and the facts that would count as valid evidence.
+priority and the facts that would count as valid evidence. Requirements are
+equally weighted within their priority category.
 
 ### Resume variants
 
@@ -225,8 +245,8 @@ For every profile/job pair, create four original-to-tailored pairs:
    requirements are genuinely missing. Tailoring may improve clarity, but must
    ask a question rather than invent those requirements.
 3. **Ambiguous coverage** — transferable or related experience is present but
-   the wording is blurred. The system should earn limited coverage and ask for
-   confirmation before making the claim stronger.
+   the wording is blurred. The system earns no explicit-evidence credit and
+   asks for confirmation before making the claim stronger.
 4. **Noisy document** — the same factual profile includes a documented local
    defect, such as a missing date, misspelling, malformed section, or unclear
    bullet. It is used in the separate repair-complexity tests, not as a valid
@@ -265,7 +285,7 @@ For every honest pair:
 For every adversarial scenario:
 
 - the output must fail the binary Grounding Safety gate;
-- the Evidence Coverage Score must be shown as unsafe/not valid for comparison,
+- the Resume Representation Score must be shown as unsafe/not valid for comparison,
   not as a higher or lower ordinary score;
 - the application must not silently apply the claim.
 
@@ -275,7 +295,9 @@ Publish a small table for the held-out set, with the raw examples kept
 anonymized:
 
 - requirement classification precision, recall, and F1;
-- evidence coverage score before and after;
+- Required and Preferred Resume Representation scores before and after, plus
+  the published combined score;
+- Required and Preferred Profile–Job Potential scores for the oracle;
 - rate of expected positive score change for honest tailoring;
 - score inflation on high-coverage resumes (target: near zero);
 - Grounding Safety pass rate and unsupported-claim rate (target: 100% pass and
