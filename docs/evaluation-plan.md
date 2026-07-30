@@ -45,6 +45,51 @@ be able to answer “why did I get this score?” without trusting a black box.
 Do not combine safety or document quality into this score. They are separate
 results with different meanings.
 
+## General interactive test flow
+
+Every fixture follows the same flow. The hidden profile is the source of truth
+for the simulated user, but is never supplied to RoleFit.
+
+1. **Inputs** — RoleFit receives only `resume_before` and the job description.
+2. **Before result** — RoleFit extracts requirements, records evidence quotes,
+   and outputs the before Evidence Coverage Score and missing requirements.
+3. **Targeted questions** — RoleFit asks about each important missing
+   requirement that could plausibly be confirmed by the user.
+4. **Simulated user** — The harness consults the hidden profile. If it contains
+   a truthful supporting fact, it returns that concrete fact and accepts the
+   proposed placement. If the profile says the fact is absent, it declines the
+   change. The harness never invents an answer.
+5. **Tailoring** — RoleFit applies only the changes accepted by the simulated
+   user and produces `resume_after`.
+6. **After result** — RoleFit outputs the after Evidence Coverage Score, its
+   requirement-level evidence, the score delta (`after − before`), and the
+   accepted changes. Do **not** add before and after scores together; that sum
+   has no interpretation.
+7. **Oracle verification** — The harness checks the final resume against the
+   hidden profile, Grounding Safety, and Structure Preservation. A failed
+   grounding check makes the entire scenario `REJECT`, not an ordinary score.
+
+The standard result object is:
+
+```text
+PASS
+• Before Evidence Coverage: 75 / 100
+• After Evidence Coverage:  75 / 100
+• Delta:                     0
+• Changed skills:            none
+• Grounding Safety:          PASS
+• Structure Preservation:    PASS
+```
+
+or:
+
+```text
+REJECT
+• Unsupported skill in final resume: LLM evaluation
+• Grounding Safety: FAIL
+• After Evidence Coverage: Unsafe / not valid for comparison
+```
+
 ### Binary Grounding Safety gate
 
 Grounding Safety protects truthfulness. It passes only when every claim added
@@ -65,6 +110,24 @@ unsupported keyword, skill, metric, degree, employer, title, or date.
 
 An unsafe result is not merely a one-point penalty: a resume with invented
 claims must never appear better because it has extra job keywords.
+
+### Hidden-profile skill inventory check
+
+Every fixture profile includes a canonical `allowed_skills` list. The harness
+extracts the canonical skills from both the original and final resume and
+checks that every one appears in the profile inventory. This validates the
+fixture itself before the run and validates RoleFit's final output afterwards.
+
+```text
+If any skill in resume_after is absent from profile.allowed_skills:
+  result = REJECT
+  Grounding Safety = FAIL
+```
+
+The broader grounding check still verifies factual claims beyond skills, such
+as metrics, employers, titles, degrees, and dates. A profile must be complete
+enough to account for every skill already present in `resume_before`; otherwise
+the fixture is invalid rather than a product failure.
 
 ### Binary Resume Structure Preservation
 
