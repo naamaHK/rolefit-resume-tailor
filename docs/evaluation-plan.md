@@ -143,6 +143,12 @@ claim: roles, employers, dates, projects, tools, education, results, and
 explicitly absent skills. It is the oracle for grounding checks; it must not be
 shown to the application under test.
 
+The profile also powers a **simulated user**. A test run gives RoleFit only the
+initial resume and job description. When RoleFit asks a targeted confirmation
+question, the harness answers from the hidden profile and records the final
+resume, score, and safety result. This tests the real interaction flow without
+leaking facts to the application before the user confirms them.
+
 Each job record contains atomic requirements with `required` or `preferred`
 priority, a weight, and the facts that would count as valid evidence.
 
