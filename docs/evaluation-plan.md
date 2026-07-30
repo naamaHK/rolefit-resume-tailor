@@ -66,35 +66,57 @@ unsupported keyword, skill, metric, degree, employer, title, or date.
 An unsafe result is not merely a one-point penalty: a resume with invented
 claims must never appear better because it has extra job keywords.
 
-### Resume Structure & Quality Check
+### Binary Resume Structure Preservation
 
-This check measures whether editing preserved a clear, professional document.
-It does not claim to measure a recruiter's subjective opinion of the writing.
-It is a transparent penalty rubric:
-
-```text
-Resume Structure & Quality Check = max(0, 100 − Σ(defect penalties))
-```
-
-| Defect | Penalty |
-| --- | ---: |
-| Core section missing or in the wrong order | 25 |
-| Experience or Education entry missing title/program, organization, or date | 8 each |
-| Empty or duplicate section | 7 each |
-| Missing date on a dated entry | 5 each |
-| Placeholder or internal workflow text | 10 |
-| Inconsistent bullet formatting | 3 |
-| Obvious spelling error | 1 each, capped at 5 |
-| Overlong bullet (more than 35 words) | 2 each, capped at 6 |
-
-The result must show each detected issue, not only a number. For example:
+Structure is a boundary, not a quality score. The question is simply: if a
+resume starts structurally valid, does tailoring keep it structurally valid?
 
 ```text
-85 / 100 — 3 issues found
-• Add dates to “Data Analyst, Northstar”.
-• Remove an empty Certifications heading.
-• Correct “experince” to “experience”.
+Input Structure Valid = PASS or FAIL
+Output Structure Valid = PASS or FAIL
+
+Structure Preservation = PASS only when both input and output are valid.
 ```
+
+An output is structurally valid only when all applicable rules pass:
+
+- the header has a full name, phone number, and email address;
+- Experience appears before Education; a Statement/Summary, when present,
+  appears before Experience;
+- no section heading is empty or duplicated;
+- every Experience entry has a title, organization, and dates;
+- every Education entry has a program, institution, and dates;
+- dated entries remain reverse chronological within Experience and Education;
+- no placeholders or internal workflow text appear in the resume;
+- no existing core entry, date, employer, degree, or section is silently lost
+  during tailoring.
+
+The result must show the exact failed rule(s), not only `FAIL`. For example:
+
+```text
+Output Structure Valid: FAIL
+• Education was moved above Experience.
+• “Data Analyst, Northstar” has no dates.
+```
+
+Spelling, bullet length, style, and subjective readability are useful review
+findings, but they are **not** part of this binary structure result. Report
+them separately as non-blocking quality observations.
+
+### Repair-complexity boundary tests
+
+Do not use a structurally invalid input to judge preservation. Instead, test
+repair as a separate task with an explicit expected result:
+
+| Tier | Input condition | Expected result |
+| --- | --- | --- |
+| 0 | Already valid resume | Output remains valid after tailoring |
+| 1 | One local defect, such as a missing date or spelling error | The requested repair fixes the defect without changing other structure |
+| 2 | Two related defects in one entry or section | The repair is valid and preserves untouched entries |
+| 3 | Ambiguous or flattened PDF text spanning entries | The system asks for confirmation or declines to make an unsafe structural repair |
+
+The first failed tier is a useful model boundary. It tells us when automatic
+repair should stop and the user should be asked for exact information.
 
 ## Test corpus: 40 scenarios
 
@@ -136,10 +158,10 @@ For every profile/job pair, create four original-to-tailored pairs:
 3. **Ambiguous coverage** — transferable or related experience is present but
    the wording is blurred. The system should earn limited coverage and ask for
    confirmation before making the claim stronger.
-4. **Noisy document** — the same factual profile includes realistic quality
-   defects such as a missing date, misspelling, malformed section, or unclear
-   bullet. The structure and spelling checks should detect the defect without
-   corrupting the resume.
+4. **Noisy document** — the same factual profile includes a documented local
+   defect, such as a missing date, misspelling, malformed section, or unclear
+   bullet. It is used in the separate repair-complexity tests, not as a valid
+   input for the Structure Preservation metric.
 
 This creates **32 before/after scoring pairs** (8 profiles × 4 variants).
 Add **8 adversarial safety scenarios**, one per profile, where an otherwise
@@ -167,9 +189,9 @@ For every honest pair:
   when it surfaces facts already present in the profile;
 - a high-coverage original must not receive a material artificial boost;
 - missing requirements must remain missing or become a targeted user question;
-- accepted edits must preserve the header, Experience, Education, dates, and
-  section order;
-- the final resume must contain no placeholder or internal workflow section.
+- when the original resume is structurally valid, the final resume must pass
+  the binary Structure Preservation result;
+- when a repair test is run, the outcome must meet its documented tier result.
 
 For every adversarial scenario:
 
@@ -189,8 +211,10 @@ anonymized:
 - score inflation on high-coverage resumes (target: near zero);
 - Grounding Safety pass rate and unsupported-claim rate (target: 100% pass and
   0% unsupported claims);
-- Resume Structure & Quality Check before and after, plus required structure
-  preservation rate (target: 100%);
+- Structure Preservation rate for valid-input scenarios (target: 100%), with
+  every failure grouped by failed validation rule;
+- repair success rate by complexity tier, including the first tier at which the
+  system must ask for confirmation instead of guessing;
 - parser and workflow pass rate.
 
 The score-change result is meaningful only alongside the binary safety gate and
@@ -276,8 +300,10 @@ When the evaluation passes, add:
    expected outputs.
 2. Write one complete profile/job with all four honest variants and one
    adversarial variant.
-3. Implement the deterministic oracle scorer and its unit test.
-4. Confirm the metric behavior before generating the other seven profiles.
+3. Implement the deterministic coverage scorer, binary structure validator,
+   and their unit tests.
+4. Confirm the score and Tier 0–3 boundary behavior before generating the
+   other seven profiles.
 
 No production score should be shown to users until the first fixture and its
 before/after behavior are reviewed manually.
