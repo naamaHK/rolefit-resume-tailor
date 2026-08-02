@@ -1,0 +1,178 @@
+{
+  "id": "001-product-data-analyst-simulation",
+  "purpose": "A first realistic simulation. The resume omits Tableau even though the profile truthfully supports it and the job lists it as a Basic Qualification. The job also lists two preferred tools the profile does not support.",
+  "profile": {
+    "basic_info": {
+      "name": "Noa Ben-Ami",
+      "location": "Tel Aviv, Israel",
+      "phone": "+972 50 555 0184",
+      "email": "noa.benami@example.com",
+      "linkedin": "linkedin.com/in/noa-ben-ami"
+    },
+    "experience": [
+      {
+        "title": "Product Data Analyst",
+        "company": "Loop Commerce",
+        "dates": "2023–Present",
+        "facts": [
+          "Uses SQL and Python to analyze conversion, retention, and acquisition funnels.",
+          "Designs and analyzes A/B tests for checkout and onboarding changes.",
+          "Partners with product managers and engineers to define metrics and prioritize improvements.",
+          "Built and maintained Tableau dashboards for weekly conversion, retention, and experiment reporting."
+        ]
+      },
+      {
+        "title": "Data Analyst",
+        "company": "CityCart",
+        "dates": "2021–2023",
+        "facts": [
+          "Created recurring SQL reports for marketing and operations teams.",
+          "Analyzed customer cohorts and presented findings to stakeholders."
+        ]
+      }
+    ],
+    "education": [
+      {
+        "degree": "B.Sc. Industrial Engineering and Management",
+        "institution": "Example University",
+        "dates": "2017–2021"
+      }
+    ],
+    "skills": {
+      "technical": ["SQL", "Python", "Tableau", "Google Analytics 4"],
+      "analytical": ["A/B testing", "product analytics", "cohort analysis"],
+      "collaboration": ["cross-functional collaboration", "stakeholder communication"]
+    },
+    "languages": ["Hebrew — native", "English — professional working proficiency"],
+    "certifications": [
+      {
+        "name": "Google Data Analytics Certificate",
+        "issuer": "Google",
+        "year": "2021"
+      }
+    ],
+    "other": {
+      "volunteer_work": "Mentors first-year industrial-engineering students through a university alumni program."
+    }
+  },
+  "rolefit_input": {
+    "resume_before": "Noa Ben-Ami\n+972 50 555 0184 | noa.benami@example.com | linkedin.com/in/noa-ben-ami\n\nPROFESSIONAL SUMMARY\nProduct data analyst with four years of experience using SQL and Python to improve customer journeys, evaluate experiments, and partner with product teams.\n\nEXPERIENCE\nProduct Data Analyst | Loop Commerce | 2023–Present\n- Used SQL and Python to analyze conversion, retention, and acquisition funnels.\n- Designed and analyzed A/B tests for checkout and onboarding changes.\n- Partnered with product managers and engineers to define metrics and prioritize improvements.\n\nData Analyst | CityCart | 2021–2023\n- Created recurring SQL reports for marketing and operations teams.\n- Analyzed customer cohorts and presented findings to stakeholders.\n\nEDUCATION\nB.Sc. Industrial Engineering and Management | Example University | 2017–2021\n\nSKILLS\nSQL, Python, A/B testing, product analytics, cohort analysis, cross-functional collaboration, stakeholder communication, Google Analytics 4\n\nLANGUAGES\nHebrew — native | English — professional working proficiency",
+    "job_description": "Product Data Analyst\n\nJoin the Growth Analytics team to turn product and customer data into clear decisions. You will partner with product managers and engineers, design experiments, and build trusted reporting for the product organization.\n\nBasic Qualifications\n- 3+ years of product or business data-analysis experience.\n- Advanced SQL and working knowledge of Python for analysis.\n- Experience designing and analyzing A/B tests.\n- Experience building and maintaining Tableau dashboards.\n- Clear communication and collaboration with product and engineering teams.\n\nPreferred Qualifications\n- Experience with Apache Airflow.\n- Experience with dbt."
+  },
+  "oracle": {
+    "rules": {
+      "rolefit_receives_only": ["rolefit_input.resume_before", "rolefit_input.job_description"],
+      "profile_is_hidden_from_rolefit": true,
+      "no_manual_importance_or_weight_fields": true
+    },
+    "requirements": [
+      {
+        "id": "sql",
+        "label": "SQL",
+        "category": "basic",
+        "profile_supported": true,
+        "resume_evidence_pattern": "Used SQL and Python"
+      },
+      {
+        "id": "python",
+        "label": "Python",
+        "category": "basic",
+        "profile_supported": true,
+        "resume_evidence_pattern": "Used SQL and Python"
+      },
+      {
+        "id": "ab_testing",
+        "label": "A/B testing",
+        "category": "basic",
+        "profile_supported": true,
+        "resume_evidence_pattern": "Designed and analyzed A/B tests"
+      },
+      {
+        "id": "tableau",
+        "label": "Tableau dashboards",
+        "category": "basic",
+        "profile_supported": true,
+        "resume_evidence_pattern": "Built and maintained Tableau dashboards"
+      },
+      {
+        "id": "cross_functional",
+        "label": "cross-functional collaboration",
+        "category": "basic",
+        "profile_supported": true,
+        "resume_evidence_pattern": "Partnered with product managers and engineers"
+      },
+      {
+        "id": "airflow",
+        "label": "Apache Airflow",
+        "category": "preferred",
+        "profile_supported": false,
+        "resume_evidence_pattern": "Apache Airflow"
+      },
+      {
+        "id": "dbt",
+        "label": "dbt",
+        "category": "preferred",
+        "profile_supported": false,
+        "resume_evidence_pattern": "dbt"
+      }
+    ],
+    "interactions": [
+      {
+        "requirement_id": "tableau",
+        "expected_rolefit_question": "Have you built or maintained Tableau dashboards in a work, research, or substantial project context? If yes, briefly describe what the dashboards reported and who used them.",
+        "simulated_user_answer": "Yes. At Loop Commerce, I built and maintained Tableau dashboards for weekly conversion, retention, and experiment reporting.",
+        "confirmed": true,
+        "released_profile_fact": "Built and maintained Tableau dashboards for weekly conversion, retention, and experiment reporting.",
+        "resume_change": "- Built and maintained Tableau dashboards for weekly conversion, retention, and experiment reporting.",
+        "insert_after": "- Partnered with product managers and engineers to define metrics and prioritize improvements."
+      },
+      {
+        "requirement_id": "airflow",
+        "expected_rolefit_question": "Have you used Apache Airflow in a work, research, or substantial project context? If yes, briefly describe the workflow.",
+        "simulated_user_answer": "No. I have not used Apache Airflow.",
+        "confirmed": false,
+        "released_profile_fact": "",
+        "resume_change": ""
+      },
+      {
+        "requirement_id": "dbt",
+        "expected_rolefit_question": "Have you used dbt in a work, research, or substantial project context? If yes, briefly describe the models or workflow.",
+        "simulated_user_answer": "No. I have not used dbt.",
+        "confirmed": false,
+        "released_profile_fact": "",
+        "resume_change": ""
+      }
+    ],
+    "claimable_skills": [
+      "SQL",
+      "Python",
+      "Tableau",
+      "Google Analytics 4",
+      "A/B testing",
+      "product analytics",
+      "cohort analysis",
+      "cross-functional collaboration",
+      "stakeholder communication"
+    ],
+    "expected": {
+      "profile_job_potential": {
+        "basic": 100,
+        "preferred": 0,
+        "combined": 75
+      },
+      "resume_representation_before": {
+        "basic": 80,
+        "preferred": null,
+        "combined": 80
+      },
+      "resume_representation_after": {
+        "basic": 100,
+        "preferred": null,
+        "combined": 100,
+        "delta": 20
+      },
+      "grounding_safety": "PASS",
+      "structure_preservation": "PASS"
+    }
+  }
+}

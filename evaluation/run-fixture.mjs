@@ -2,46 +2,42 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const fixturePath = process.argv[2];
-
-if (!fixturePath) {
-  throw new Error("Usage: node evaluation/run-fixture.mjs <fixture.json>");
-}
+if (!fixturePath) throw new Error("Usage: node evaluation/run-fixture.mjs <fixture.json>");
 
 const fixture = JSON.parse(await readFile(fixturePath, "utf8"));
+const { rolefit_input: rolefitInput, oracle } = fixture;
+const requirements = oracle.requirements;
 
 function percentage(numerator, denominator) {
-  if (denominator === 0) return 100;
+  if (denominator === 0) return null;
   return Number(((100 * numerator) / denominator).toFixed(2));
 }
 
-function scoreGroup(requirements, predicate) {
-  const inScope = requirements.filter(predicate);
-  return percentage(inScope.filter((requirement) => requirement.profile_supported).length, inScope.length);
+function profilePotential(category) {
+  const scoped = requirements.filter((requirement) => requirement.category === category);
+  return percentage(scoped.filter((requirement) => requirement.profile_supported).length, scoped.length);
 }
 
-function representationGroup(requirements, resumeText, priority) {
-  const supported = requirements.filter((requirement) => requirement.priority === priority && requirement.profile_supported);
+function representation(resume, category) {
+  const supported = requirements.filter((requirement) => requirement.category === category && requirement.profile_supported);
   return percentage(
-    supported.filter((requirement) => resumeText.includes(requirement.resume_evidence_pattern)).length,
+    supported.filter((requirement) => resume.includes(requirement.resume_evidence_pattern)).length,
     supported.length
   );
 }
 
-function combined(required, preferred, requirements) {
-  const hasRequired = requirements.some((requirement) => requirement.priority === "required");
-  const hasPreferred = requirements.some((requirement) => requirement.priority === "preferred");
-  if (!hasPreferred) return required;
-  if (!hasRequired) return preferred;
-  return Number((required * 0.75 + preferred * 0.25).toFixed(2));
+function combined(basic, preferred) {
+  if (basic === null) return preferred;
+  if (preferred === null) return basic;
+  return Number((basic * 0.75 + preferred * 0.25).toFixed(2));
 }
 
 function structureErrors(resume) {
   const errors = [];
   const header = resume.split("\n\n")[0] || "";
-  if (!/^[A-Z][a-z]+\s+[A-Z][a-z]+$/m.test(header)) errors.push("Header must contain a full name.");
+  if (!/^[A-Z][a-z]+(?:[- ][A-Z][a-z]+)+$/m.test(header)) errors.push("Header must contain a full name.");
   if (!/\+?[\d][\d\s-]{7,}/.test(header)) errors.push("Header must contain a phone number.");
   if (!/\b[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}\b/.test(header)) errors.push("Header must contain an email address.");
-
   const summaryIndex = resume.indexOf("PROFESSIONAL SUMMARY");
   const experienceIndex = resume.indexOf("EXPERIENCE");
   const educationIndex = resume.indexOf("EDUCATION");
@@ -52,76 +48,87 @@ function structureErrors(resume) {
     const section = resume.split(heading)[1]?.split("\n\n")[0]?.trim();
     if (!section) errors.push(`${heading} must not be empty.`);
   }
-  for (const entry of resume.matchAll(/^([^\n]+) \| ([^\n]+) \| ((?:19|20)\d{2}[–-](?:Present|(19|20)\d{2}))$/gm)) {
-    if (!entry[1] || !entry[2] || !entry[3]) errors.push("Experience entries require title, company, and dates.");
-  }
   if (/\b(?:TBD|USER-CONFIRMED ADDITIONS|ask user)\b/i.test(resume)) errors.push("Resume contains internal or placeholder text.");
   return errors;
 }
 
-function safetyErrors(fixture, resumeAfter) {
-  const allowedSkills = new Set(fixture.profile.allowed_skills);
-  const errors = fixture.safety.claimed_skills_after
-    .filter((skill) => !allowedSkills.has(skill))
-    .map((skill) => `Unsupported skill: ${skill}`);
-  for (const claim of fixture.safety.added_claims) {
-    if (!fixture.profile.facts.includes(claim) || !resumeAfter.includes(fixture.interaction.resume_change)) {
-      errors.push(`Unsupported added claim: ${claim}`);
+function safetyErrors(resumeAfter) {
+  const errors = [];
+  const profileFacts = fixture.profile.experience.flatMap((entry) => entry.facts || []);
+  const profileSkills = Object.values(fixture.profile.skills).flat();
+  const profileSkillSet = new Set(profileSkills.map((skill) => skill.toLowerCase()));
+  const declaredSkillSet = new Set(oracle.claimable_skills.map((skill) => skill.toLowerCase()));
+  for (const skill of profileSkillSet) {
+    if (!declaredSkillSet.has(skill)) errors.push(`Profile skill is missing from the oracle inventory: ${skill}`);
+  }
+  const skillsSection = resumeAfter.match(/\nSKILLS\n([\s\S]*?)(?:\n\n[A-Z][A-Z ]+\n|$)/);
+  const resumeSkills = (skillsSection?.[1] || "")
+    .split(/[,\n]/)
+    .map((skill) => skill.trim())
+    .filter(Boolean);
+  for (const skill of resumeSkills) {
+    if (!profileSkillSet.has(skill.toLowerCase())) errors.push(`Unsupported skill in final resume: ${skill}`);
+  }
+  for (const requirement of requirements) {
+    if (!requirement.profile_supported && resumeAfter.includes(requirement.resume_evidence_pattern)) {
+      errors.push(`Unsupported requirement in final resume: ${requirement.label}`);
+    }
+  }
+  for (const interaction of oracle.interactions.filter((item) => item.confirmed)) {
+    if (!profileFacts.includes(interaction.released_profile_fact)
+      || !resumeAfter.includes(interaction.resume_change)) {
+      errors.push(`Confirmed change is not grounded: ${interaction.requirement_id}`);
     }
   }
   return errors;
 }
 
-const requirements = fixture.job.requirements;
-const before = fixture.resume_before;
-const expectedQuestionRequirement = requirements.find((requirement) => requirement.id === fixture.expected.question_requirement_id);
-assert.ok(expectedQuestionRequirement, "Fixture must identify the requirement that receives a question.");
-assert.equal(before.includes(expectedQuestionRequirement.resume_evidence_pattern), false, "Questioned requirement must be absent before tailoring.");
-assert.equal(fixture.interaction.confirmed, true, "This positive fixture requires a confirmed simulated answer.");
+assert.ok(rolefitInput.resume_before && rolefitInput.job_description, "RoleFit input must contain only a resume and normal job text.");
+assert.equal(/\b(?:importance|weight|profile_supported|claimable_skills)\b/i.test(JSON.stringify(rolefitInput)), false, "Oracle fields must never be sent to RoleFit.");
+assert.match(rolefitInput.job_description, /Basic Qualifications/i);
+assert.match(rolefitInput.job_description, /Preferred Qualifications/i);
 
-const resumeAfter = before.replace(
-  fixture.interaction.insert_after,
-  `${fixture.interaction.insert_after}\n${fixture.interaction.resume_change}`
-);
-assert.notEqual(resumeAfter, before, "The accepted change must be inserted into the resume.");
+const before = rolefitInput.resume_before;
+let after = before;
+for (const interaction of oracle.interactions.filter((item) => item.confirmed)) {
+  const requirement = requirements.find((item) => item.id === interaction.requirement_id);
+  assert.ok(requirement?.profile_supported, "Only profile-supported requirements may be confirmed.");
+  assert.equal(before.includes(requirement.resume_evidence_pattern), false, "The confirmed requirement must be missing from the original resume.");
+  after = after.replace(interaction.insert_after, `${interaction.insert_after}\n${interaction.resume_change}`);
+}
+assert.notEqual(after, before, "At least one confirmed resume change must be applied.");
 
-const profilePotential = {
-  required: scoreGroup(requirements, (requirement) => requirement.priority === "required"),
-  preferred: scoreGroup(requirements, (requirement) => requirement.priority === "preferred")
+const profileJobPotential = {
+  basic: profilePotential("basic"),
+  preferred: profilePotential("preferred")
 };
-profilePotential.combined = combined(profilePotential.required, profilePotential.preferred, requirements);
+profileJobPotential.combined = combined(profileJobPotential.basic, profileJobPotential.preferred);
 
 const representationBefore = {
-  required: representationGroup(requirements, before, "required"),
-  preferred: representationGroup(requirements, before, "preferred")
+  basic: representation(before, "basic"),
+  preferred: representation(before, "preferred")
 };
-representationBefore.combined = combined(representationBefore.required, representationBefore.preferred, requirements);
+representationBefore.combined = combined(representationBefore.basic, representationBefore.preferred);
 
 const representationAfter = {
-  required: representationGroup(requirements, resumeAfter, "required"),
-  preferred: representationGroup(requirements, resumeAfter, "preferred")
+  basic: representation(after, "basic"),
+  preferred: representation(after, "preferred")
 };
-representationAfter.combined = combined(representationAfter.required, representationAfter.preferred, requirements);
+representationAfter.combined = combined(representationAfter.basic, representationAfter.preferred);
 representationAfter.delta = Number((representationAfter.combined - representationBefore.combined).toFixed(2));
 
-assert.deepEqual(profilePotential, fixture.expected.profile_potential);
-assert.deepEqual(representationBefore, fixture.expected.resume_representation_before);
-assert.deepEqual(representationAfter, fixture.expected.resume_representation_after);
-
-const inputStructureErrors = structureErrors(before);
-const outputStructureErrors = structureErrors(resumeAfter);
-const groundingErrors = safetyErrors(fixture, resumeAfter);
-assert.deepEqual(inputStructureErrors, [], "Input resume must be structurally valid.");
-assert.deepEqual(outputStructureErrors, [], "Tailored resume must preserve structure.");
-assert.deepEqual(groundingErrors, [], "Tailored resume must be grounded in the hidden profile.");
+assert.deepEqual(profileJobPotential, oracle.expected.profile_job_potential);
+assert.deepEqual(representationBefore, oracle.expected.resume_representation_before);
+assert.deepEqual(representationAfter, oracle.expected.resume_representation_after);
+assert.deepEqual(structureErrors(before), [], "Input resume must be structurally valid.");
+assert.deepEqual(structureErrors(after), [], "Tailored resume must preserve structure.");
+assert.deepEqual(safetyErrors(after), [], "Tailored resume must be grounded in the profile.");
 
 console.log(`Evaluation fixture: ${fixture.id}`);
-console.log(`Question: ${fixture.interaction.expected_question}`);
-console.log(`Simulated answer: ${fixture.interaction.simulated_user_response}`);
-console.log("");
-console.log(`Profile–job potential: required ${profilePotential.required}% | preferred ${profilePotential.preferred}% | combined ${profilePotential.combined}%`);
-console.log(`Resume representation before: required ${representationBefore.required}% | preferred ${representationBefore.preferred}% | combined ${representationBefore.combined}%`);
-console.log(`Resume representation after: required ${representationAfter.required}% | preferred ${representationAfter.preferred}% | combined ${representationAfter.combined}% | delta +${representationAfter.delta}`);
-console.log(`Grounding Safety: ${groundingErrors.length ? "FAIL" : "PASS"}`);
-console.log(`Structure Preservation: ${inputStructureErrors.length || outputStructureErrors.length ? "FAIL" : "PASS"}`);
+console.log("RoleFit receives: resume_before + ordinary job description only");
+console.log(`Profile–job potential: Basic ${profileJobPotential.basic}% | Preferred ${profileJobPotential.preferred}% | Combined ${profileJobPotential.combined}%`);
+console.log(`Resume representation before: Basic ${representationBefore.basic}% | Preferred N/A | Combined ${representationBefore.combined}%`);
+console.log(`Resume representation after: Basic ${representationAfter.basic}% | Preferred N/A | Combined ${representationAfter.combined}% | Delta +${representationAfter.delta}`);
+console.log("Grounding Safety: PASS");
+console.log("Structure Preservation: PASS");
 console.log("Result: PASS");

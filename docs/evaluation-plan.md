@@ -38,16 +38,18 @@ Resume Representation Score
     / all profile-supported job requirements
 ```
 
-Calculate each view separately for the Required and Preferred categories
-explicitly used in the job description. Every requirement has equal value
-within its category:
+Calculate each view separately for the **Basic Qualifications** and
+**Preferred Qualifications** categories explicitly used in the job description.
+Basic Qualifications are the job's must-have requirements; Preferred
+Qualifications are its nice-to-haves. Every requirement has equal value within
+its category:
 
 ```text
-Required coverage  = supported required requirements / all required requirements
+Basic coverage     = supported basic requirements / all basic requirements
 Preferred coverage = supported preferred requirements / all preferred requirements
 ```
 
-The initial published combined score is `75% × Required + 25% × Preferred`.
+The initial published combined score is `75% × Basic + 25% × Preferred`.
 If a job has only one category, that category contributes 100% of the combined
 score. The 75/25 split is a visible product policy, not an objective truth, so
 the two raw category scores must always be shown beside it.
@@ -55,7 +57,7 @@ the two raw category scores must always be shown beside it.
 Do not assign a hidden per-skill importance value. A fixture author may include
 a requirement only when it is explicitly stated in the job description, split
 it only into independently verifiable capabilities, and preserve the job's
-Required/Preferred category.
+Basic/Preferred category.
 
 Every score must show the requirement-level evidence behind it, including an
 exact resume quote when the requirement is counted as supported. A user should
@@ -69,7 +71,9 @@ results with different meanings.
 Every fixture follows the same flow. The hidden profile is the source of truth
 for the simulated user, but is never supplied to RoleFit.
 
-1. **Inputs** — RoleFit receives only `resume_before` and the job description.
+1. **Inputs** — RoleFit receives only `rolefit_input.resume_before` and
+   `rolefit_input.job_description`. The job text is a normal job post with a
+   role description, Basic Qualifications, and Preferred Qualifications.
 2. **Before result** — RoleFit extracts requirements, records evidence quotes,
    and outputs the before Resume Representation Score and missing requirements.
 3. **Targeted questions** — RoleFit asks about each important missing
@@ -132,18 +136,20 @@ claims must never appear better because it has extra job keywords.
 
 ### Hidden-profile skill inventory check
 
-Every fixture profile includes a canonical `allowed_skills` list. The harness
-extracts the canonical skills from both the original and final resume and
-checks that every one appears in the profile inventory. This validates the
-fixture itself before the run and validates RoleFit's final output afterwards.
+Every fixture profile includes canonical skills, grouped naturally under
+`profile.skills`, while the hidden oracle keeps a flattened
+`claimable_skills` inventory for deterministic checking. The harness checks
+that every canonical skill claimed by the final resume appears in that profile
+inventory. This validates the fixture itself before the run and validates
+RoleFit's final output afterwards.
 
 ```text
-If any skill in resume_after is absent from profile.allowed_skills:
+If any skill in resume_after is absent from oracle.claimable_skills:
   result = REJECT
   Grounding Safety = FAIL
 ```
 
-The broader grounding check still verifies factual claims beyond skills, such
+The broader grounding check also verifies factual claims beyond skills, such
 as metrics, employers, titles, degrees, and dates. A profile must be complete
 enough to account for every skill already present in `resume_before`; otherwise
 the fixture is invalid rather than a product failure.
@@ -231,9 +237,30 @@ question, the harness answers from the hidden profile and records the final
 resume, score, and safety result. This tests the real interaction flow without
 leaking facts to the application before the user confirms them.
 
-Each job record contains atomic requirements with `required` or `preferred`
-priority and the facts that would count as valid evidence. Requirements are
-equally weighted within their priority category.
+Each job record contains atomic requirements with `basic` or `preferred`
+category and the facts that would count as valid evidence. Requirements are
+equally weighted within their category. The actual job description uses the
+human-facing headings `Basic Qualifications` and `Preferred Qualifications`.
+
+### Fixture layout
+
+Each fixture has three deliberately separate parts:
+
+```text
+profile
+  Hidden factual source of truth: basic information, experience, education,
+  skills, and optional fields such as languages or certifications.
+
+rolefit_input
+  The only data sent to the web app: resume_before and a normal job description.
+
+oracle
+  Hidden requirement labels, simulated answers, approved changes, and expected
+  checks. It must never be sent to RoleFit.
+```
+
+`importance`, `weight`, and other manual per-skill point fields are forbidden
+in fixtures. They are neither job-post content nor oracle data.
 
 ### Resume variants
 
@@ -295,9 +322,9 @@ Publish a small table for the held-out set, with the raw examples kept
 anonymized:
 
 - requirement classification precision, recall, and F1;
-- Required and Preferred Resume Representation scores before and after, plus
+- Basic and Preferred Resume Representation scores before and after, plus
   the published combined score;
-- Required and Preferred Profile–Job Potential scores for the oracle;
+- Basic and Preferred Profile–Job Potential scores for the oracle;
 - rate of expected positive score change for honest tailoring;
 - score inflation on high-coverage resumes (target: near zero);
 - Grounding Safety pass rate and unsupported-claim rate (target: 100% pass and
