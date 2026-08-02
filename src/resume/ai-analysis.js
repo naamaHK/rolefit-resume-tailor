@@ -206,6 +206,10 @@ function titleCaseKnownTerm(term) {
     python: "Python",
     langchain: "LangChain",
     spark: "Spark",
+    tableau: "Tableau",
+    "apache airflow": "Apache Airflow",
+    airflow: "Apache Airflow",
+    dbt: "dbt",
     "llm-as-judge": "LLM-as-judge",
     "llm evaluation": "LLM evaluation",
     "openai": "OpenAI"
@@ -1414,4 +1418,3 @@ async function analyzeWithAi(options = {}) {
     analyzeAiBtn.disabled = false;
   }
 }
-

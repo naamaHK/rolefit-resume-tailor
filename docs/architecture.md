@@ -90,6 +90,7 @@ node tests/experience-parser-tests.mjs
 node tests/document-parser-tests.mjs
 node tests/text-editor-tests.mjs
 node tests/preview-highlighter-tests.mjs
+node tests/role-requirements-tests.mjs
 node tests/regression-tests.mjs
 node tests/placement-flow-tests.mjs
 node tests/mobile-layout-tests.mjs

@@ -46,6 +46,7 @@
       if (value === "ml") return "machine learning";
       if (value === "cs") return "computer science";
       if (value === "ce") return "computer engineering";
+      if (/^(?:apache\s+)?airflow$/.test(value)) return "apache-airflow";
       if (/^(?:master'?s degree|msc|m\.sc\.?)$/.test(value)) return "master's degree";
       return value;
     }
@@ -55,6 +56,7 @@
       return ignoredTopics.has(key)
         || /^(?:required|preferred|minimum|basic)?\s*qualifications?$/.test(key)
         || /^(?:strong|excellent|good|effective)$/.test(key)
+        || /^(?:dashboard(?:s)?|reporting|decision(?:s)?|customer data)$/.test(key)
         || /\bjob\s+description\b/.test(key)
         || /^(?:description|details?|requirements?)$/.test(key);
     }
@@ -71,6 +73,9 @@
         "machine learning": "Machine Learning",
         "computer science": "Computer Science",
         "computer engineering": "Computer Engineering",
+        tableau: "Tableau",
+        "apache-airflow": "Apache Airflow",
+        dbt: "dbt",
         "master's degree": "Master's degree",
         python: "Python",
         java: "Java",
@@ -160,21 +165,51 @@
       return resumeCoversSkillTerm(resumeText, key);
     }
 
+    function qualificationLines(jobText = "") {
+      const lines = splitLines(jobText);
+      const qualificationHeader = /^(?:(?:basic|minimum|required|preferred|nice[-\s]+to[-\s]+have)\s+)?(?:qualifications?|requirements?)\s*:?$/i;
+      const nextSectionHeader = /^(?:about(?:\s+the)?(?:\s+(?:role|team|company))?|responsibilities|what you(?:'|’)ll do|what you will do|benefits|compensation|equal opportunity|how to apply|application process|location|work arrangement)\s*:?$/i;
+      let inQualifications = false;
+      let foundQualificationSection = false;
+      const qualificationItems = [];
+
+      for (const line of lines) {
+        if (qualificationHeader.test(line)) {
+          inQualifications = true;
+          foundQualificationSection = true;
+          continue;
+        }
+        if (inQualifications && nextSectionHeader.test(line)) {
+          inQualifications = false;
+          continue;
+        }
+        if (inQualifications) qualificationItems.push(line);
+      }
+
+      // A normally formatted job posting separates qualifications from its
+      // narrative. Restrict local extraction to those sections so prose such
+      // as the company description cannot become a question. Older free-form
+      // postings retain the broad fallback for backwards compatibility.
+      return foundQualificationSection ? qualificationItems : lines;
+    }
+
     function collect(data, jobText = "") {
       const job = data?.job_analysis || {};
       const finalChecks = data?.final_checks || {};
-      const localTerms = splitLines(jobText).flatMap((line) => extractMissingExperienceTopics(line));
-      const jobTerms = [
+      const modeledRequirementTerms = [
         ...(job.required_skills || []),
-        ...(job.preferred_skills || []),
-        ...(job.keywords || []),
-        ...localTerms
+        ...(job.preferred_skills || [])
       ];
+      const localTerms = qualificationLines(jobText).flatMap((line) => extractMissingExperienceTopics(line));
       const fallbackTerms = [
         ...(finalChecks.keywords_covered || []),
         ...(finalChecks.keywords_missing || [])
       ];
-      const rawTerms = jobTerms.length ? jobTerms : fallbackTerms;
+      const rawTerms = modeledRequirementTerms.length
+        ? modeledRequirementTerms
+        : localTerms.length
+          ? localTerms
+          : fallbackTerms;
       const byKey = new Map();
 
       for (const item of rawTerms) {
@@ -226,6 +261,7 @@
       isAbstract,
       isGroundedInJob,
       normalizeKey,
+      qualificationLines,
       resumeCovers
     });
   }
