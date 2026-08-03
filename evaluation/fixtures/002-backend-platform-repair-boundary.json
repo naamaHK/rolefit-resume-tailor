@@ -1,0 +1,24 @@
+{
+  "id": "002-backend-platform-repair-boundary",
+  "base_fixture": "shared/backend-platform-profile-and-job.json",
+  "purpose": "Repair-boundary scenario: the resume contains all profile skills, but two typos, a missing Experience year, and an invalid Education-before-Experience order.",
+  "test_metadata": {
+    "mode": "repair_boundary",
+    "expected_resume_check_findings": ["maintaned", "collaberated", "missing Experience years", "Education appears before Experience"],
+    "live_runner_status": "not_ready: requires repair decision handling"
+  },
+  "rolefit_input": {
+    "resume_before": "Maya Cohen\n+972 52 555 0147 | maya.cohen@example.com | linkedin.com/in/maya-cohen\n\nPROFESSIONAL SUMMARY\nBackend engineer with four years of experience building Java services, internal tools, and cloud delivery workflows.\n\nEDUCATION\nB.Sc. Computer Information Systems | Northern Israel Institute of Technology | 2016–2020\n\nEXPERIENCE\nBackend Engineer | CivicFlow | 2022–Present\n- Built Java and Spring Boot services and maintaned PostgreSQL schemas for municipal workflow products.\n- Containerized Docker services, built GitHub Actions pipelines, and collaberated on REST API contracts.\n- Used AWS ECS, Amazon RDS, and CloudWatch for delivery and incident follow-up.\n\nSoftware Engineer | Atlas Systems\n- Built React and JavaScript interfaces for internal operations tools.\n- Designed REST APIs and automated tests for workflow features.\n\nSKILLS\nJava, Spring Boot, PostgreSQL, REST APIs, Docker, GitHub Actions, AWS, AWS ECS, Amazon RDS, CloudWatch, React, JavaScript, API design, cross-functional collaboration, incident follow-up\n\nLANGUAGES\nHebrew — native | English — professional working proficiency"
+  },
+  "oracle": {
+    "interactions": [],
+    "expected": {
+      "requires_resume_change": false,
+      "profile_job_potential": { "basic": 71.43, "preferred": 66.67, "combined": 70.24 },
+      "resume_representation_before": { "basic": 100, "preferred": 100, "combined": 100 },
+      "resume_representation_after": { "basic": 100, "preferred": 100, "combined": 100, "delta": 0 },
+      "grounding_safety": "PASS",
+      "structure_preservation": "FAIL"
+    }
+  }
+}

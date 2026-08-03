@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import { interactionMatchTerms } from "../evaluation/live-flow-runner.mjs";
+import { interactionMatchTerms, runLiveFixture } from "../evaluation/live-flow-runner.mjs";
 
 const fixture = JSON.parse(await readFile(
   new URL("../evaluation/fixtures/001-product-data-analyst-simulation.json", import.meta.url),
@@ -21,6 +21,15 @@ assert.equal(
   fixture.oracle.interactions[0].placement.target_match,
   "Product Data Analyst",
   "a live fixture should use a stable Experience target match instead of a rendered dropdown label"
+);
+
+await assert.rejects(
+  runLiveFixture(
+    new URL("../evaluation/fixtures/002-backend-platform-repair-boundary.json", import.meta.url).pathname,
+    { skipReachabilityCheck: true }
+  ),
+  /not ready for the live runner/,
+  "a repair-boundary fixture must stop before it spends a model call"
 );
 
 console.log("Live flow runner tests passed.");

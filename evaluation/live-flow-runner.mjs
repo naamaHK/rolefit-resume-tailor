@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
+import { loadEvaluationFixture } from "./fixture-loader.mjs";
 import { scoreFixtureResult, validateFixtureInput } from "./oracle-scorer.mjs";
 
 const DEFAULT_APP_URL = "http://127.0.0.1:8765/index.html";
@@ -157,8 +158,11 @@ async function verifyAppIsReachable(appUrl) {
 export async function runLiveFixture(fixturePath, options = {}) {
   const appUrl = options.appUrl || process.env.ROLEFIT_EVALUATION_URL || DEFAULT_APP_URL;
   const timeoutMs = Number(options.timeoutMs || process.env.ROLEFIT_EVALUATION_TIMEOUT_MS || DEFAULT_TIMEOUT_MS);
-  const fixture = JSON.parse(await readFile(fixturePath, "utf8"));
+  const fixture = await loadEvaluationFixture(fixturePath);
   validateFixtureInput(fixture);
+  if (String(fixture.test_metadata?.live_runner_status || "").startsWith("not_ready")) {
+    throw new Error(`Fixture ${fixture.id} is not ready for the live runner: ${fixture.test_metadata.live_runner_status}`);
+  }
   if (!options.skipReachabilityCheck) await verifyAppIsReachable(appUrl);
 
   const playwrightModule = await loadPlaywright();

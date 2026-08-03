@@ -1,0 +1,25 @@
+{
+  "id": "005-backend-platform-minimal-resume",
+  "base_fixture": "shared/backend-platform-profile-and-job.json",
+  "purpose": "Minimal-resume boundary scenario: the input contains only two skills, so the product must identify missing resume information and never infer the rest of the profile.",
+  "test_metadata": {
+    "mode": "minimal_resume_boundary",
+    "expected_resume_check_findings": ["missing name", "missing phone", "missing email", "missing summary", "missing Experience", "missing Education"],
+    "expected_model_behaviour": ["ask targeted questions rather than infer work history, degree, AWS, React, TypeScript, Kubernetes, or GraphQL"],
+    "live_runner_status": "not_ready: requires multi-section confirmation support"
+  },
+  "rolefit_input": {
+    "resume_before": "SKILLS\nJava, PostgreSQL"
+  },
+  "oracle": {
+    "interactions": [],
+    "expected": {
+      "requires_resume_change": false,
+      "profile_job_potential": { "basic": 71.43, "preferred": 66.67, "combined": 70.24 },
+      "resume_representation_before": { "basic": 20, "preferred": 0, "combined": 15 },
+      "resume_representation_after": { "basic": 20, "preferred": 0, "combined": 15, "delta": 0 },
+      "grounding_safety": "PASS",
+      "structure_preservation": "FAIL"
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "id": "003-backend-platform-implied-degree-and-similar-skill",
+  "base_fixture": "shared/backend-platform-profile-and-job.json",
+  "purpose": "Valid matching scenario: the resume omits the profile's closely related Computer Information Systems degree and lists JavaScript, a similar but non-equivalent skill to the job's TypeScript requirement.",
+  "test_metadata": {
+    "mode": "matching_and_confirmation",
+    "expected_model_behaviour": ["ask about the omitted closely related degree", "treat JavaScript as insufficient evidence for TypeScript", "ask and reject Kubernetes and GraphQL"],
+    "live_runner_status": "not_ready: needs Education placement support"
+  },
+  "rolefit_input": {
+    "resume_before": "Maya Cohen\n+972 52 555 0147 | maya.cohen@example.com | linkedin.com/in/maya-cohen\n\nPROFESSIONAL SUMMARY\nBackend engineer with four years of experience building Java services, cloud delivery workflows, and internal tools.\n\nEXPERIENCE\nBackend Engineer | CivicFlow | 2022–Present\n- Built Java and Spring Boot services for municipal workflow products.\n- Designed PostgreSQL schemas, REST APIs, Docker delivery workflows, and GitHub Actions pipelines.\n- Used AWS ECS, Amazon RDS, and CloudWatch for application delivery and monitoring.\n\nSoftware Engineer | Atlas Systems | 2020–2022\n- Built React and JavaScript interfaces for internal operations tools.\n\nEDUCATION\nAWS Certified Cloud Practitioner | Amazon Web Services | 2021\n\nSKILLS\nJava, Spring Boot, PostgreSQL, REST APIs, Docker, GitHub Actions, AWS, AWS ECS, Amazon RDS, CloudWatch, React, JavaScript, API design, cross-functional collaboration\n\nLANGUAGES\nHebrew — native | English — professional working proficiency"
+  },
+  "oracle": {
+    "interactions": [
+      {
+        "requirement_id": "cs_degree",
+        "simulated_user_answer": "Yes. I earned a B.Sc. in Computer Information Systems from Northern Israel Institute of Technology in 2016–2020.",
+        "confirmed": true,
+        "released_profile_fact": "B.Sc. Computer Information Systems",
+        "resume_change": "B.Sc. Computer Information Systems | Northern Israel Institute of Technology | 2016–2020",
+        "insert_after": "AWS Certified Cloud Practitioner | Amazon Web Services | 2021",
+        "placement": { "section": "education", "action": "new" }
+      },
+      { "requirement_id": "typescript", "simulated_user_answer": "No. I have used JavaScript, but not TypeScript.", "confirmed": false, "released_profile_fact": "", "resume_change": "" },
+      { "requirement_id": "kubernetes", "simulated_user_answer": "No. I have not operated Kubernetes workloads.", "confirmed": false, "released_profile_fact": "", "resume_change": "" },
+      { "requirement_id": "graphql", "simulated_user_answer": "No. I have not built GraphQL APIs.", "confirmed": false, "released_profile_fact": "", "resume_change": "" }
+    ],
+    "expected": {
+      "profile_job_potential": { "basic": 71.43, "preferred": 66.67, "combined": 70.24 },
+      "resume_representation_before": { "basic": 80, "preferred": 100, "combined": 85 },
+      "resume_representation_after": { "basic": 100, "preferred": 100, "combined": 100, "delta": 15 },
+      "grounding_safety": "PASS",
+      "structure_preservation": "PASS"
+    }
+  }
+}

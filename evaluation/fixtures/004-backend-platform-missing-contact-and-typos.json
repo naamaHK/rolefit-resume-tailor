@@ -1,0 +1,24 @@
+{
+  "id": "004-backend-platform-missing-contact-and-typos",
+  "base_fixture": "shared/backend-platform-profile-and-job.json",
+  "purpose": "Header-repair scenario: the resume omits all basic user information while preserving the profile's job evidence; it also contains two spelling defects.",
+  "test_metadata": {
+    "mode": "repair_boundary",
+    "expected_resume_check_findings": ["missing name", "missing phone", "missing email", "architechture", "monitering"],
+    "live_runner_status": "not_ready: requires Header confirmation handling"
+  },
+  "rolefit_input": {
+    "resume_before": "PROFESSIONAL SUMMARY\nBackend engineer who builds reliable services and internal tools.\n\nEXPERIENCE\nBackend Engineer | CivicFlow | 2022–Present\n- Built Java and Spring Boot services and PostgreSQL architechture for municipal workflow products.\n- Used Docker, GitHub Actions, AWS ECS, Amazon RDS, and CloudWatch monitering for delivery.\n\nSoftware Engineer | Atlas Systems | 2020–2022\n- Built React and JavaScript interfaces and REST APIs for internal operations tools.\n\nEDUCATION\nB.Sc. Computer Information Systems | Northern Israel Institute of Technology | 2016–2020\n\nSKILLS\nJava, Spring Boot, PostgreSQL, REST APIs, Docker, GitHub Actions, AWS, AWS ECS, Amazon RDS, CloudWatch, React, JavaScript, API design, cross-functional collaboration, incident follow-up"
+  },
+  "oracle": {
+    "interactions": [],
+    "expected": {
+      "requires_resume_change": false,
+      "profile_job_potential": { "basic": 71.43, "preferred": 66.67, "combined": 70.24 },
+      "resume_representation_before": { "basic": 100, "preferred": 100, "combined": 100 },
+      "resume_representation_after": { "basic": 100, "preferred": 100, "combined": 100, "delta": 0 },
+      "grounding_safety": "PASS",
+      "structure_preservation": "FAIL"
+    }
+  }
+}

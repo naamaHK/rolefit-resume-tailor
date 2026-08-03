@@ -1,0 +1,81 @@
+{
+  "profile_id": "maya-cohen-backend-platform-v1",
+  "profile": {
+    "basic_info": {
+      "name": "Maya Cohen",
+      "location": "Haifa, Israel",
+      "phone": "+972 52 555 0147",
+      "email": "maya.cohen@example.com",
+      "linkedin": "linkedin.com/in/maya-cohen"
+    },
+    "experience": [
+      {
+        "title": "Backend Engineer",
+        "company": "CivicFlow",
+        "dates": "2022–Present",
+        "facts": [
+          "Built Java and Spring Boot services for municipal workflow products.",
+          "Designed PostgreSQL schemas and query improvements for case-management data.",
+          "Containerized services with Docker and maintained GitHub Actions delivery pipelines.",
+          "Collaborated with product, frontend, and platform engineers on API contracts and incident follow-up.",
+          "Used AWS ECS, RDS, and CloudWatch for application delivery and monitoring."
+        ]
+      },
+      {
+        "title": "Software Engineer",
+        "company": "Atlas Systems",
+        "dates": "2020–2022",
+        "facts": [
+          "Built React and JavaScript interfaces for internal operations tools.",
+          "Integrated REST APIs and wrote automated tests for workflow features."
+        ]
+      }
+    ],
+    "education": [
+      {
+        "degree": "B.Sc. Computer Information Systems",
+        "institution": "Northern Israel Institute of Technology",
+        "dates": "2016–2020"
+      }
+    ],
+    "skills": {
+      "backend": ["Java", "Spring Boot", "PostgreSQL", "REST APIs", "Docker", "GitHub Actions"],
+      "cloud": ["AWS", "AWS ECS", "Amazon RDS", "CloudWatch"],
+      "frontend": ["React", "JavaScript"],
+      "collaboration": ["API design", "cross-functional collaboration", "incident follow-up"]
+    },
+    "languages": ["Hebrew — native", "English — professional working proficiency"],
+    "certifications": [
+      {
+        "name": "AWS Certified Cloud Practitioner",
+        "issuer": "Amazon Web Services",
+        "year": "2021"
+      }
+    ],
+    "other": {
+      "explicit_absences": ["TypeScript", "Kubernetes", "GraphQL"]
+    }
+  },
+  "rolefit_input": {
+    "job_description": "Backend Platform Engineer\n\nJoin our Platform Engineering group to build reliable services and developer tooling for product teams. You will design APIs, improve data access, operate cloud services, and partner across engineering.\n\nBasic Qualifications\n- 3+ years of backend software-engineering experience.\n- Strong Java and Spring Boot experience.\n- Experience with PostgreSQL and REST API design.\n- Experience building and deploying Dockerized services.\n- Bachelor’s degree in Computer Science or a closely related field.\n- Working knowledge of TypeScript for service-adjacent tooling.\n- Experience operating Kubernetes workloads.\n\nPreferred Qualifications\n- Experience with AWS cloud services.\n- Experience building React internal tools.\n- Experience with GraphQL APIs."
+  },
+  "oracle": {
+    "rules": {
+      "profile_is_hidden_from_rolefit": true,
+      "no_manual_importance_or_weight_fields": true
+    },
+    "requirements": [
+      { "id": "backend_experience", "label": "backend software-engineering experience", "category": "basic", "profile_supported": true, "resume_evidence_pattern": "Backend Engineer" },
+      { "id": "java_spring", "label": "Java and Spring Boot", "category": "basic", "profile_supported": true, "resume_evidence_pattern": "Java and Spring Boot" },
+      { "id": "postgresql", "label": "PostgreSQL", "category": "basic", "profile_supported": true, "resume_evidence_pattern": "PostgreSQL" },
+      { "id": "docker", "label": "Dockerized services", "category": "basic", "profile_supported": true, "resume_evidence_pattern": "Docker" },
+      { "id": "cs_degree", "label": "Computer Science or closely related degree", "category": "basic", "profile_supported": true, "resume_evidence_pattern": "B.Sc. Computer Information Systems" },
+      { "id": "typescript", "label": "TypeScript", "category": "basic", "profile_supported": false, "resume_evidence_pattern": "TypeScript" },
+      { "id": "kubernetes", "label": "Kubernetes", "category": "basic", "profile_supported": false, "resume_evidence_pattern": "Kubernetes" },
+      { "id": "aws", "label": "AWS cloud services", "category": "preferred", "profile_supported": true, "resume_evidence_pattern": "AWS" },
+      { "id": "react", "label": "React", "category": "preferred", "profile_supported": true, "resume_evidence_pattern": "React" },
+      { "id": "graphql", "label": "GraphQL", "category": "preferred", "profile_supported": false, "resume_evidence_pattern": "GraphQL" }
+    ],
+    "claimable_skills": ["Java", "Spring Boot", "PostgreSQL", "REST APIs", "Docker", "GitHub Actions", "AWS", "AWS ECS", "Amazon RDS", "CloudWatch", "React", "JavaScript", "API design", "cross-functional collaboration", "incident follow-up"]
+  }
+}

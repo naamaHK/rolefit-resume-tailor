@@ -44,6 +44,11 @@ export function structureErrors(resume) {
     const section = resume.split(heading)[1]?.split("\n\n")[0]?.trim();
     if (!section) errors.push(`${heading} must not be empty.`);
   }
+  const experienceSection = String(resume || "").match(/\nEXPERIENCE\n([\s\S]*?)(?=\n\n[A-Z][A-Z ]+\n|$)/)?.[1] || "";
+  for (const line of experienceSection.split("\n").map((item) => item.trim())) {
+    if (!line || /^[-*•]/.test(line) || !line.includes("|")) continue;
+    if (!/\b(?:19|20)\d{2}\b/.test(line)) errors.push(`Experience entry is missing years: ${line}`);
+  }
   if (/\b(?:TBD|USER-CONFIRMED ADDITIONS|ask user)\b/i.test(resume)) errors.push("Resume contains internal or placeholder text.");
   return errors;
 }
@@ -67,7 +72,9 @@ export function buildExpectedAfterResume(fixture) {
     after = after.replace(interaction.insert_after, `${interaction.insert_after}\n${interaction.resume_change}`);
   }
 
-  if (after === rolefitInput.resume_before) throw new Error("At least one confirmed resume change must be applied.");
+  if (after === rolefitInput.resume_before && oracle.expected?.requires_resume_change !== false) {
+    throw new Error("At least one confirmed resume change must be applied.");
+  }
   return after;
 }
 
@@ -94,7 +101,11 @@ function scoreCategories(requirements, resume, profileOnly) {
 export function safetyErrors(fixture, resumeAfter) {
   const errors = [];
   const { profile, oracle } = fixture;
-  const profileFacts = profile.experience.flatMap((entry) => entry.facts || []);
+  const profileFacts = [
+    ...profile.experience.flatMap((entry) => entry.facts || []),
+    ...profile.education.flatMap((entry) => [entry.degree, entry.institution, entry.dates]),
+    ...(profile.certifications || []).flatMap((entry) => [entry.name, entry.issuer, entry.year])
+  ].filter(Boolean);
   const profileSkills = Object.values(profile.skills).flat();
   const profileSkillSet = new Set(profileSkills.map((skill) => skill.toLowerCase()));
   const declaredSkillSet = new Set(oracle.claimable_skills.map((skill) => skill.toLowerCase()));

@@ -6,6 +6,7 @@ import {
   safetyErrors,
   validateFixtureInput
 } from "../evaluation/oracle-scorer.mjs";
+import { loadEvaluationFixture } from "../evaluation/fixture-loader.mjs";
 
 const fixture = JSON.parse(await readFile(
   new URL("../evaluation/fixtures/001-product-data-analyst-simulation.json", import.meta.url),
@@ -38,5 +39,24 @@ assert.match(
   /Unsupported (?:skill|requirement) in final resume: Apache Airflow/,
   "the oracle must reject a skill absent from the hidden profile"
 );
+
+const relatedFixturePaths = [
+  "002-backend-platform-repair-boundary.json",
+  "003-backend-platform-implied-degree-and-similar-skill.json",
+  "004-backend-platform-missing-contact-and-typos.json",
+  "005-backend-platform-minimal-resume.json"
+];
+
+for (const fixtureName of relatedFixturePaths) {
+  const relatedFixture = await loadEvaluationFixture(
+    new URL(`../evaluation/fixtures/${fixtureName}`, import.meta.url).pathname
+  );
+  const relatedResult = scoreFixtureResult(relatedFixture, buildExpectedAfterResume(relatedFixture));
+  assert.deepEqual(relatedResult.profile_job_potential, relatedFixture.oracle.expected.profile_job_potential);
+  assert.deepEqual(relatedResult.resume_representation_before, relatedFixture.oracle.expected.resume_representation_before);
+  assert.deepEqual(relatedResult.resume_representation_after, relatedFixture.oracle.expected.resume_representation_after);
+  assert.equal(relatedResult.grounding_safety, relatedFixture.oracle.expected.grounding_safety);
+  assert.equal(relatedResult.structure_preservation, relatedFixture.oracle.expected.structure_preservation);
+}
 
 console.log("Evaluation oracle tests passed.");
