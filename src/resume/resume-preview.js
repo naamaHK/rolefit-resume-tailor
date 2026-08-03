@@ -321,7 +321,19 @@ function highlightRewriteDiffInHtml(html, target) {
   const { change, rewrite: pair, anchors } = target;
   if (!pair.after) return { html, matched: "" };
   const fragments = getChangedAfterFragments(pair.before, pair.after);
-  if (!fragments.length) return { html, matched: "" };
+  if (!fragments.length) {
+    // A deletion has no after-side fragment to wrap: the removed word is no
+    // longer in the rendered preview. Highlight the resulting sentence/bullet
+    // instead, so an edit such as "legacy" -> "" is still visible.
+    const deletedFragments = getChangedBeforeFragments(pair.before, pair.after);
+    if (!deletedFragments.length) return { html, matched: "" };
+    return highlightBestBlockInSectionHtml(
+      html,
+      [pair.after],
+      change.section,
+      { threshold: 0.45 }
+    );
+  }
   return resumePreviewHighlighter.highlightRewriteDiffInHtml(html, change.section, pair, fragments, anchors);
 }
 
