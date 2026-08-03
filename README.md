@@ -83,6 +83,9 @@ node tests/document-parser-tests.mjs
 node tests/text-editor-tests.mjs
 node tests/preview-highlighter-tests.mjs
 node tests/deletion-preview-tests.mjs
+node tests/evaluation-oracle-tests.mjs
+node tests/live-flow-runner-tests.mjs
+node tests/live-flow-runner-integration-tests.mjs
 node tests/role-requirements-tests.mjs
 node tests/regression-tests.mjs
 node tests/placement-flow-tests.mjs
@@ -130,6 +133,31 @@ To try the free NVIDIA model:
 ```bash
 OPENROUTER_API_KEY="your_key_here" OPENROUTER_MODEL="nvidia/nemotron-3-ultra-550b-a55b:free" node server.mjs
 ```
+
+## Live Evaluation Flow
+
+The evaluation runner drives the actual RoleFit web page and its configured
+OpenRouter model. It gives the page only the fixture's initial resume and
+ordinary job description; the hidden profile is used only after RoleFit asks a
+question. The runner records the final resume and then applies the independent
+oracle scorer.
+
+With the OpenRouter-backed server already running, run one fixture:
+
+```bash
+node evaluation/live-flow-runner.mjs evaluation/fixtures/001-product-data-analyst-simulation.json --output tmp/001-live-result.json
+```
+
+Run every fixture sequentially (the intended command once the corpus grows to
+50–100 cases):
+
+```bash
+node evaluation/run-live-suite.mjs evaluation/fixtures tmp/live-evaluation-summary.json
+```
+
+These are real model calls. They are intentionally sequential so every run has
+a clear model output, simulated-user decision, final resume, and oracle result.
+The fast deterministic fixture tests remain separate and do not call a model.
 
 ## MVP Flow
 

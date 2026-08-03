@@ -91,6 +91,9 @@ node tests/document-parser-tests.mjs
 node tests/text-editor-tests.mjs
 node tests/preview-highlighter-tests.mjs
 node tests/deletion-preview-tests.mjs
+node tests/evaluation-oracle-tests.mjs
+node tests/live-flow-runner-tests.mjs
+node tests/live-flow-runner-integration-tests.mjs
 node tests/role-requirements-tests.mjs
 node tests/regression-tests.mjs
 node tests/placement-flow-tests.mjs

@@ -400,6 +400,41 @@ The small model is sufficient for the first experiment. The point is to learn
 whether better prompting, structured output, and validation close the gap—not
 to spend money before knowing where the failures are.
 
+## Live web-run protocol
+
+The live corpus is run through the actual RoleFit page and its configured
+OpenRouter-backed `/api/analyze` endpoint. It is not a replay of an expected
+resume and it does not call the oracle instead of the product.
+
+For each fixture, `evaluation/live-flow-runner.mjs` does the following in a
+real browser session:
+
+1. fills the page with only `resume_before` and the normal job description;
+2. clicks **Get Suggestions with AI** and waits for the real model response;
+3. finds each expected Missing Experience question in the visible UI;
+4. uses the hidden profile only at that point to confirm a truthful fact or
+   reject an absent capability;
+5. captures RoleFit's actual final resume; and
+6. passes that captured text to the independent oracle scorer.
+
+Thus, an initial corpus of 100 fixtures means 100 model-backed web flows—one
+normal analysis call per fixture. Provider/model fallback retries can make the
+number of provider calls higher if the first provider fails. Runs are
+intentionally sequential, not parallel, to keep costs, rate limits, and each
+fixture's evidence trail easy to inspect.
+
+Use the suite command only after reviewing the staged corpus:
+
+```bash
+node evaluation/run-live-suite.mjs evaluation/fixtures tmp/live-evaluation-summary.json
+```
+
+Start with five fixtures, inspect every result, then expand in batches of five.
+The initial runner supports confirmations that add a factual bullet to an
+existing Experience entry, plus explicit rejections. Add support for a new
+placement type (Skills, Projects, Education, and so on) together with the
+first fixture that needs it; never silently force a different placement.
+
 ## Demo and publication deliverables
 
 When the evaluation passes, add:

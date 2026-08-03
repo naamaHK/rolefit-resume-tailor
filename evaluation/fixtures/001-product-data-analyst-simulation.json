@@ -124,7 +124,12 @@
         "confirmed": true,
         "released_profile_fact": "Built and maintained Tableau dashboards for weekly conversion, retention, and experiment reporting.",
         "resume_change": "- Built and maintained Tableau dashboards for weekly conversion, retention, and experiment reporting.",
-        "insert_after": "- Partnered with product managers and engineers to define metrics and prioritize improvements."
+        "insert_after": "- Partnered with product managers and engineers to define metrics and prioritize improvements.",
+        "placement": {
+          "section": "experience",
+          "target_label": "Product Data Analyst - Loop Commerce - 2023–Present",
+          "action": "new"
+        }
       },
       {
         "requirement_id": "airflow",
