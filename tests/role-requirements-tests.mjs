@@ -50,11 +50,17 @@ assert.deepEqual(
 assert.deepEqual(
   JSON.parse(JSON.stringify(requirements.collect({ job_analysis: { required_skills: [], preferred_skills: [] } }, jobDescription))),
   [
-    { key: "tableau", display: "Tableau" },
+    { key: "tableau", display: "Tableau dashboards" },
     { key: "apache-airflow", display: "Apache Airflow" },
     { key: "dbt", display: "dbt" }
   ],
   "job-description prose must not become a Missing Experience question"
+);
+
+assert.deepEqual(
+  JSON.parse(JSON.stringify(requirements.groupForJob("Tableau", jobDescription))),
+  { key: "tableau", display: "Tableau dashboards" },
+  "Tableau and Tableau dashboards should be one requirement when the job names the dashboard work"
 );
 
 assert.deepEqual(
@@ -66,7 +72,7 @@ assert.deepEqual(
     }
   }, jobDescription))),
   [
-    { key: "tableau", display: "Tableau" },
+    { key: "tableau", display: "Tableau dashboards" },
     { key: "apache-airflow", display: "Apache Airflow" },
     { key: "dbt", display: "dbt" }
   ],

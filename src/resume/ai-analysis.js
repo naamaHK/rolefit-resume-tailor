@@ -883,6 +883,7 @@ function missingExperienceDedupeTopic(change) {
   if (/\bcommunication\b/.test(normalizedTopic)) return "communication";
   if (/\b(?:collaboration|cross functional|cross-functional)\b/.test(normalizedTopic)) return "collaboration";
   if (/\b(?:research areas?|research details?|research background)\b/.test(normalizedTopic)) return "research details";
+  if (/^tableau(?:\s+dashboards?)?$/.test(normalizedTopic)) return "tableau";
   if (topic && !genericTopic && !topic.includes(",")) {
     if (/\bpatents?\b/.test(normalizedTopic)) return "patents";
     if (/\b(publications?|peer reviewed papers?|research papers?)\b/.test(normalizedTopic)) return "publications";

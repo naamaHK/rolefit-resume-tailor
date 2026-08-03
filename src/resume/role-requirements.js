@@ -46,6 +46,7 @@
       if (value === "ml") return "machine learning";
       if (value === "cs") return "computer science";
       if (value === "ce") return "computer engineering";
+      if (/^tableau(?:\s+dashboards?)?$/.test(value)) return "tableau";
       if (/^(?:apache\s+)?airflow$/.test(value)) return "apache-airflow";
       if (/^(?:master'?s degree|msc|m\.sc\.?)$/.test(value)) return "master's degree";
       return value;
@@ -89,6 +90,10 @@
     function groupForJob(term, jobText = "") {
       const key = normalizeKey(term);
       const job = normalize(String(jobText || "")).replace(/\s+/g, " ");
+
+      if (key === "tableau" && /\btableau\s+dashboards?\b/.test(job)) {
+        return { key: "tableau", display: "Tableau dashboards" };
+      }
 
       if (
         ["c", "c++", "c/c++"].includes(key)
