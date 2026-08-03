@@ -22,6 +22,16 @@ assert.deepEqual(result.resume_representation_after, fixture.oracle.expected.res
 assert.equal(result.grounding_safety, "PASS");
 assert.equal(result.structure_preservation, "PASS");
 
+const groupedSkillResume = expectedAfter.replace(
+  "SQL, Python, A/B testing, product analytics, cohort analysis, cross-functional collaboration, stakeholder communication, Google Analytics 4",
+  "A/B Testing • product analytics • cohort analysis • cross-functional collaboration • stakeholder communication • Google Analytics 4\nProgramming Languages: SQL • Python"
+);
+assert.deepEqual(
+  safetyErrors(fixture, groupedSkillResume),
+  [],
+  "grouped Skills lines should be checked as individual skills"
+);
+
 const unsafeResume = `${expectedAfter}\n\nSKILLS\nSQL, Apache Airflow`;
 assert.match(
   safetyErrors(fixture, unsafeResume).join("\n"),

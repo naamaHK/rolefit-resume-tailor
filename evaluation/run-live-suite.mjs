@@ -1,4 +1,4 @@
-import { readdir, writeFile } from "node:fs/promises";
+import { mkdir, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { runLiveFixture } from "./live-flow-runner.mjs";
 
@@ -30,5 +30,8 @@ const summary = {
   results
 };
 
-if (outputPath) await writeFile(outputPath, `${JSON.stringify(summary, null, 2)}\n`);
+if (outputPath) {
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeFile(outputPath, `${JSON.stringify(summary, null, 2)}\n`);
+}
 console.log(JSON.stringify(summary, null, 2));

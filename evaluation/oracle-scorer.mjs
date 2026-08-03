@@ -105,8 +105,8 @@ export function safetyErrors(fixture, resumeAfter) {
 
   const skillsSection = String(resumeAfter || "").match(/\nSKILLS\n([\s\S]*?)(?:\n\n[A-Z][A-Z ]+\n|$)/);
   const resumeSkills = (skillsSection?.[1] || "")
-    .split(/[,\n]/)
-    .map((skill) => skill.trim())
+    .split(/[,•|\n]/)
+    .map((skill) => skill.replace(/^[^:]+:\s*/, "").trim())
     .filter(Boolean);
   for (const skill of resumeSkills) {
     if (!profileSkillSet.has(skill.toLowerCase())) errors.push(`Unsupported skill in final resume: ${skill}`);

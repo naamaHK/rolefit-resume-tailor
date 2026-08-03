@@ -70,7 +70,11 @@ try {
       timeoutMs: 10_000
     }
   );
-  assert.equal(result.result, "PASS");
+  assert.equal(result.result, "PASS", JSON.stringify({
+    grounding_errors: result.grounding_errors,
+    structure_errors: result.structure_errors,
+    resume_after: result.resume_after
+  }, null, 2));
   assert.equal(result.resume_representation_after.combined, 100);
   assert.equal(result.events.filter((event) => event.type === "confirmed_and_added").length, 1);
   assert.equal(result.events.filter((event) => event.type === "declined").length, 2);

@@ -17,5 +17,10 @@ assert.deepEqual(
   ["apache airflow", "airflow"],
   "the runner should use the job requirement when locating a question card"
 );
+assert.equal(
+  fixture.oracle.interactions[0].placement.target_match,
+  "Product Data Analyst",
+  "a live fixture should use a stable Experience target match instead of a rendered dropdown label"
+);
 
 console.log("Live flow runner tests passed.");

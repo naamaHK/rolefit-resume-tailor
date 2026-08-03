@@ -127,7 +127,7 @@
         "insert_after": "- Partnered with product managers and engineers to define metrics and prioritize improvements.",
         "placement": {
           "section": "experience",
-          "target_label": "Product Data Analyst - Loop Commerce - 2023–Present",
+          "target_match": "Product Data Analyst",
           "action": "new"
         }
       },

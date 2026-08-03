@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { existsSync } from "node:fs";
-import { readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { homedir } from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
@@ -72,6 +72,28 @@ async function requireExactlyOne(locator, description) {
   return locator;
 }
 
+async function selectExperienceTarget(targetSelect, placement, requirementId) {
+  if (placement.target_label) {
+    await targetSelect.selectOption({ label: placement.target_label });
+    return;
+  }
+  if (!placement.target_match) return;
+
+  const options = targetSelect.locator("option");
+  const count = await options.count();
+  const targetMatch = normalized(placement.target_match);
+  for (let index = 0; index < count; index += 1) {
+    const option = options.nth(index);
+    if (!normalized(await option.innerText()).includes(targetMatch)) continue;
+    const value = await option.getAttribute("value");
+    if (value) {
+      await targetSelect.selectOption(value);
+      return;
+    }
+  }
+  throw new Error(`Could not find Experience target "${placement.target_match}" for ${requirementId}.`);
+}
+
 async function applyConfirmedInteraction(page, interaction, cardId) {
   const placement = interaction.placement || {};
   if ((placement.section || "experience") !== "experience") {
@@ -86,7 +108,7 @@ async function applyConfirmedInteraction(page, interaction, cardId) {
   card = cardLocator(page, cardId);
   const targetSelect = card.locator(".experience-entry-select");
   await requireExactlyOne(targetSelect, `Expected an experience target selector for ${interaction.requirement_id}.`);
-  if (placement.target_label) await targetSelect.selectOption({ label: placement.target_label });
+  await selectExperienceTarget(targetSelect, placement, interaction.requirement_id);
 
   card = cardLocator(page, cardId);
   const actionSelect = card.locator(".experience-action-select");
@@ -215,6 +237,7 @@ export async function runLiveFixture(fixturePath, options = {}) {
     };
 
     if (options.outputPath) {
+      await mkdir(path.dirname(options.outputPath), { recursive: true });
       await writeFile(options.outputPath, `${JSON.stringify(result, null, 2)}\n`);
     }
     return result;

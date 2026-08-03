@@ -1277,11 +1277,24 @@ function buildLocalSuggestionFallbackCards(resumeText, jobText) {
   const analysis = buildJobAnalysis(resumeText, jobText);
   const generated = prepareActionableChanges(resumeText, generateChanges(resumeText, analysis));
   const filteredGenerated = hasJobDescription ? generated : generated.filter(isGeneralResumeSuggestionAllowed);
-  if (filteredGenerated.length) return filteredGenerated;
+  if (hasJobDescription) {
+    // A malformed model response must not turn a role-specific review into a
+    // generic wording-only review. Keep any safe local suggestions, but also
+    // surface every concrete job requirement the resume does not establish.
+    const missingFallbacks = prepareActionableChanges(
+      resumeText,
+      buildSpecificMissingExperienceFallbacks(resumeText, analysis, 50, jobText)
+    );
+    if (filteredGenerated.length || missingFallbacks.length) {
+      return uniqueById([...filteredGenerated, ...missingFallbacks]);
+    }
+  } else if (filteredGenerated.length) {
+    return filteredGenerated;
+  }
   const guaranteed = buildGuaranteedFallbackChange(resumeText, jobText);
   const guaranteedCards = guaranteed ? prepareActionableChanges(resumeText, [guaranteed]) : [];
   if (!hasJobDescription) return guaranteedCards.filter(isGeneralResumeSuggestionAllowed);
-  const missingFallbacks = prepareActionableChanges(resumeText, buildSpecificMissingExperienceFallbacks(resumeText, analysis));
+  const missingFallbacks = prepareActionableChanges(resumeText, buildSpecificMissingExperienceFallbacks(resumeText, analysis, 50, jobText));
   return uniqueById([...guaranteedCards, ...missingFallbacks]);
 }
 
