@@ -1,0 +1,61 @@
+{
+  "fixture_id": "001-product-data-analyst-simulation",
+  "execution_date": "2026-08-03",
+  "runner": "live-rolefit-web-flow",
+  "model": "google/gemini-2.5-flash-lite",
+  "result": "PASS",
+  "events": [
+    {
+      "type": "question_asked",
+      "requirement_id": "tableau",
+      "question": "Do you have real, resume-worthy experience with Tableau dashboards?"
+    },
+    {
+      "type": "confirmed_and_added",
+      "requirement_id": "tableau",
+      "resume_change": "- Built and maintained Tableau dashboards for weekly conversion, retention, and experiment reporting."
+    },
+    {
+      "type": "question_asked",
+      "requirement_id": "airflow",
+      "question": "Do you have real, resume-worthy experience with Apache Airflow?"
+    },
+    {
+      "type": "declined",
+      "requirement_id": "airflow"
+    },
+    {
+      "type": "question_asked",
+      "requirement_id": "dbt",
+      "question": "Do you have real, resume-worthy experience with dbt?"
+    },
+    {
+      "type": "declined",
+      "requirement_id": "dbt"
+    }
+  ],
+  "profile_job_potential": {
+    "basic": 100,
+    "preferred": 0,
+    "combined": 75
+  },
+  "resume_representation_before": {
+    "basic": 80,
+    "preferred": null,
+    "combined": 80
+  },
+  "resume_representation_after": {
+    "basic": 100,
+    "preferred": null,
+    "combined": 100,
+    "delta": 20
+  },
+  "grounding_safety": "PASS",
+  "grounding_errors": [],
+  "structure_preservation": "PASS",
+  "structure_errors": [],
+  "notes": [
+    "The first provider response was malformed. RoleFit did not apply it and showed its safe local fallback.",
+    "After the fallback behavior was corrected, the retry used the listed model and completed the expected live flow."
+  ]
+}

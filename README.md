@@ -158,6 +158,7 @@ node evaluation/run-live-suite.mjs evaluation/fixtures tmp/live-evaluation-summa
 These are real model calls. They are intentionally sequential so every run has
 a clear model output, simulated-user decision, final resume, and oracle result.
 The fast deterministic fixture tests remain separate and do not call a model.
+Completed live-run records are available in `evaluation/results/`.
 
 ## MVP Flow
 
