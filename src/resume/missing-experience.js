@@ -17,10 +17,13 @@
         const dedupeKey = normalize(key || label);
         if (!dedupeKey || !label || seen.has(dedupeKey)) continue;
         seen.add(dedupeKey);
+        const promptText = key === "relevant-research-background"
+          ? "Do you have research experience in Computer Science, Computer Engineering, Machine Learning, or a closely related field? If yes, briefly name the field and project."
+          : `Do you have real, resume-worthy experience with ${label}?`;
         specs.push({
           key: dedupeKey,
           label,
-          promptText: `Do you have real, resume-worthy experience with ${label}?`,
+          promptText,
           relatedRequirement: label,
           whyItMatters: "This concrete requirement appears in the target job but is not currently supported by the resume."
         });

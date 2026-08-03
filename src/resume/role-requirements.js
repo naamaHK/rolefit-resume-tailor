@@ -58,6 +58,7 @@
         || /^(?:required|preferred|minimum|basic)?\s*qualifications?$/.test(key)
         || /^(?:strong|excellent|good|effective)$/.test(key)
         || /^(?:dashboard(?:s)?|reporting|decision(?:s)?|customer data)$/.test(key)
+        || /^(?:related|relevant)\s+(?:(?:field\s+)?research|field|background)(?:\s+(?:experience|work))?$/.test(key)
         || /\bjob\s+description\b/.test(key)
         || /^(?:description|details?|requirements?)$/.test(key);
     }

@@ -913,6 +913,7 @@ function isUnhelpfulMissingExperienceQuestion(change) {
     && !extractQuestionTopicTerms(fullText).length;
   return !topic
     || /^(specific|relevant|targeted)( research)? experience$/.test(topic)
+    || /^(?:related|relevant)\s+(?:(?:field\s+)?research|field|background)(?:\s+(?:experience|work))?$/.test(topic)
     || /^(experience|skills?|projects?|missing evidence)$/.test(topic)
     || isAbstractRoleRequirement(topic)
     || isOrganizationOnlyTopic(topic)

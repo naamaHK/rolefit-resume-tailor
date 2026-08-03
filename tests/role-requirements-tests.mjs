@@ -9,6 +9,11 @@ vm.runInContext(
   context,
   { filename: "src/resume/role-requirements.js" }
 );
+vm.runInContext(
+  await readFile(new URL("../src/resume/missing-experience.js", import.meta.url), "utf8"),
+  context,
+  { filename: "src/resume/missing-experience.js" }
+);
 
 const knownTerms = ["Tableau", "Apache Airflow", "dbt", "Growth Analytics", "customer data", "decisions", "reporting", "dashboards"];
 const requirements = context.RoleFitRoleRequirements.create({
@@ -61,6 +66,21 @@ assert.deepEqual(
   JSON.parse(JSON.stringify(requirements.groupForJob("Tableau", jobDescription))),
   { key: "tableau", display: "Tableau dashboards" },
   "Tableau and Tableau dashboards should be one requirement when the job names the dashboard work"
+);
+
+assert.equal(
+  requirements.isAbstract("related field research"),
+  true,
+  "a vague research phrase must never become a confirmation question"
+);
+
+const missingExperienceFlow = context.RoleFitMissingExperience.create({
+  normalize: (value) => String(value || "").toLowerCase().trim()
+});
+assert.equal(
+  missingExperienceFlow.buildQuestionSpecs([{ key: "relevant-research-background", display: "Relevant CS/CE/ML research background" }])[0].promptText,
+  "Do you have research experience in Computer Science, Computer Engineering, Machine Learning, or a closely related field? If yes, briefly name the field and project.",
+  "the research requirement must name its actual fields instead of asking about a vague related field"
 );
 
 assert.deepEqual(
