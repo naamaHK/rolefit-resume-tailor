@@ -503,6 +503,56 @@ function suggestSpellingFixes(resumeText) {
   return changes.slice(0, 5);
 }
 
+// Core sections have a fixed order. This is deterministic resume hygiene, so it
+// belongs in Resume Check rather than relying on a provider to notice it.
+function suggestCoreSectionOrderFixes(resumeText) {
+  const parsed = parseResumeText(resumeText);
+  const positions = new Map();
+  parsed.sections.forEach((section, index) => {
+    const canonical = canonicalSectionTitle(section.title);
+    if (!positions.has(canonical)) positions.set(canonical, index);
+  });
+
+  const summaryIndex = positions.get("summary");
+  const experienceIndex = positions.get("experience");
+  const educationIndex = positions.get("education");
+  const changes = [];
+
+  if (summaryIndex != null && experienceIndex != null && summaryIndex > experienceIndex) {
+    changes.push({
+      id: "resume-order-summary",
+      type: "reorder_section",
+      section: "Professional Summary",
+      originalText: "PROFESSIONAL SUMMARY",
+      suggestedText: "Move Professional Summary to before Experience.",
+      whyItHelps: "A professional summary belongs directly after the header, before Experience.",
+      evidence: "Professional Summary appears after Experience.",
+      riskLevel: "low",
+      supportLevel: "resume_supported",
+      status: "pending",
+      mode: "reorderSection"
+    });
+  }
+
+  if (experienceIndex != null && educationIndex != null && experienceIndex > educationIndex) {
+    changes.push({
+      id: "resume-order-education",
+      type: "reorder_section",
+      section: "Education",
+      originalText: "EDUCATION",
+      suggestedText: "Move Education to after Experience.",
+      whyItHelps: "Education must follow Experience in the core resume order.",
+      evidence: "Education appears before Experience.",
+      riskLevel: "low",
+      supportLevel: "resume_supported",
+      status: "pending",
+      mode: "reorderSection"
+    });
+  }
+
+  return changes;
+}
+
 function suggestSkillAdditions(resumeText, analysis) {
   const resumeLower = normalize(resumeText);
   const safeSkillTerms = analysis.covered.filter((term) => !resumeLower.includes(`skills`) || !resumeLower.includes(term));
@@ -666,4 +716,3 @@ function renderAnalysis(analysis) {
     })
     .join("");
 }
-

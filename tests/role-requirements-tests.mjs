@@ -15,7 +15,7 @@ vm.runInContext(
   { filename: "src/resume/missing-experience.js" }
 );
 
-const knownTerms = ["Tableau", "Apache Airflow", "dbt", "Growth Analytics", "customer data", "decisions", "reporting", "dashboards"];
+const knownTerms = ["Tableau", "Apache Airflow", "dbt", "Growth Analytics", "customer data", "decisions", "reporting", "dashboards", "Computer Science"];
 const requirements = context.RoleFitRoleRequirements.create({
   cleanConfirmedText: (value) => String(value || "").trim(),
   extractMissingExperienceTopics: (line) => knownTerms.filter((term) => String(line).toLowerCase().includes(term.toLowerCase())),
@@ -97,6 +97,39 @@ assert.deepEqual(
     { key: "dbt", display: "dbt" }
   ],
   "model keywords are context, not requirements eligible for confirmation questions"
+);
+
+const relatedDegreeJob = `Backend Platform Engineer
+
+Basic Qualifications
+- Bachelor’s degree in Computer Science or a closely related field.
+
+Preferred Qualifications
+- Experience with AWS cloud services.`;
+
+assert.deepEqual(
+  JSON.parse(JSON.stringify(requirements.groupForJob("Computer Science", relatedDegreeJob))),
+  { key: "related-computing-degree", display: "Computer Science or closely related degree" },
+  "a CS-or-related degree should be a single qualification rather than a generic Computer Science skill"
+);
+assert.deepEqual(
+  JSON.parse(JSON.stringify(requirements.collect({
+    job_analysis: { required_skills: ["Computer Science or closely related degree"], preferred_skills: [] }
+  }, relatedDegreeJob))),
+  [{ key: "related-computing-degree", display: "Computer Science or closely related degree" }],
+  "the related-degree requirement should survive provider-card filtering"
+);
+assert.deepEqual(
+  JSON.parse(JSON.stringify(requirements.collect({
+    job_analysis: { required_skills: ["TypeScript"], preferred_skills: [] }
+  }, relatedDegreeJob))),
+  [{ key: "related-computing-degree", display: "Computer Science or closely related degree" }],
+  "a concrete degree requirement in Basic Qualifications must not disappear when the provider omits it"
+);
+assert.equal(
+  requirements.resumeCovers("B.Sc. Computer Information Systems\nNorthern Institute", "related-computing-degree"),
+  true,
+  "Computer Information Systems is a valid closely related degree"
 );
 
 console.log("Role requirement tests passed");

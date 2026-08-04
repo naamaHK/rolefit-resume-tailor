@@ -60,16 +60,71 @@ const mockAiResponse = {
   final_checks: { keywords_covered: [], keywords_missing: ["Tableau", "Apache Airflow", "dbt"] }
 };
 
-try {
-  const result = await runLiveFixture(
-    path.resolve("evaluation/fixtures/001-product-data-analyst-simulation.json"),
+const emptyMockAiResponse = {
+  model: "evaluation-fixture-mock",
+  job_analysis: { required_skills: [], preferred_skills: [] },
+  change_cards: [],
+  user_questions: [],
+  final_checks: { keywords_covered: [], keywords_missing: [] }
+};
+
+const backendMatchingMockAiResponse = {
+  ...emptyMockAiResponse,
+  job_analysis: {
+    required_skills: ["Computer Science or closely related degree", "TypeScript", "Kubernetes"],
+    preferred_skills: ["GraphQL"]
+  },
+  change_cards: [
     {
-      appUrl: pathToFileURL(path.resolve("index.html")).href,
-      skipReachabilityCheck: true,
-      mockAiResponse,
-      timeoutMs: 10_000
+      id: "fixture-cs-degree",
+      type: "ask_user",
+      section: "Missing Evidence",
+      related_job_requirement: "Computer Science or closely related degree",
+      question: "Do you have a Computer Science or closely related degree?",
+      why_it_matters: "The target role requires a related degree.",
+      evidence: "No related degree appears in the resume."
+    },
+    {
+      id: "fixture-typescript",
+      type: "ask_user",
+      section: "Missing Evidence",
+      related_job_requirement: "TypeScript",
+      question: "Have you used TypeScript?",
+      why_it_matters: "The target role requires TypeScript.",
+      evidence: "No TypeScript evidence appears in the resume."
+    },
+    {
+      id: "fixture-kubernetes",
+      type: "ask_user",
+      section: "Missing Evidence",
+      related_job_requirement: "Kubernetes",
+      question: "Have you operated Kubernetes workloads?",
+      why_it_matters: "The target role requires Kubernetes.",
+      evidence: "No Kubernetes evidence appears in the resume."
+    },
+    {
+      id: "fixture-graphql",
+      type: "ask_user",
+      section: "Missing Evidence",
+      related_job_requirement: "GraphQL",
+      question: "Have you built GraphQL APIs?",
+      why_it_matters: "The target role prefers GraphQL.",
+      evidence: "No GraphQL evidence appears in the resume."
     }
-  );
+  ]
+};
+
+async function runMockFixture(name, mockResponse) {
+  return runLiveFixture(path.resolve(`evaluation/fixtures/${name}`), {
+    appUrl: pathToFileURL(path.resolve("index.html")).href,
+    skipReachabilityCheck: true,
+    mockAiResponse: mockResponse,
+    timeoutMs: 10_000
+  });
+}
+
+try {
+  const result = await runMockFixture("001-product-data-analyst-simulation.json", mockAiResponse);
   assert.equal(result.result, "PASS", JSON.stringify({
     grounding_errors: result.grounding_errors,
     structure_errors: result.structure_errors,
@@ -78,6 +133,28 @@ try {
   assert.equal(result.resume_representation_after.combined, 100);
   assert.equal(result.events.filter((event) => event.type === "confirmed_and_added").length, 1);
   assert.equal(result.events.filter((event) => event.type === "declined").length, 2);
+
+  const repairResult = await runMockFixture("002-backend-platform-repair-boundary.json", emptyMockAiResponse);
+  assert.equal(repairResult.result, "PASS", JSON.stringify(repairResult, null, 2));
+  assert.equal(repairResult.repair_integrity, "PASS");
+  assert.equal(repairResult.structure_before, "FAIL");
+  assert.equal(repairResult.structure_preservation, "PASS");
+  assert.equal(repairResult.events.filter((event) => event.type === "resume_check_applied").length, 4);
+
+  const degreeResult = await runMockFixture("003-backend-platform-implied-degree-and-similar-skill.json", backendMatchingMockAiResponse);
+  assert.equal(degreeResult.result, "PASS", JSON.stringify(degreeResult, null, 2));
+  assert.equal(degreeResult.resume_representation_after.combined, 100);
+  assert.equal(degreeResult.events.filter((event) => event.type === "confirmed_and_added").length, 1);
+
+  const headerResult = await runMockFixture("004-backend-platform-missing-contact-and-typos.json", emptyMockAiResponse);
+  assert.equal(headerResult.result, "PASS", JSON.stringify(headerResult, null, 2));
+  assert.equal(headerResult.repair_integrity, "PASS");
+  assert.equal(headerResult.structure_before, "FAIL");
+  assert.equal(headerResult.structure_preservation, "PASS");
+
+  const minimalResult = await runMockFixture("005-backend-platform-minimal-resume.json", emptyMockAiResponse);
+  assert.equal(minimalResult.result, "REJECT");
+  assert.equal(minimalResult.resume_representation_after.combined, 15);
   console.log("Live flow runner integration test passed.");
 } catch (error) {
   if (/Executable doesn't exist|browserType\.launch|Target page, context or browser has been closed/i.test(error.message || "")) {

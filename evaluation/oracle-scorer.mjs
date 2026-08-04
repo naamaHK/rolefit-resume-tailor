@@ -9,6 +9,14 @@ function combined(basic, preferred) {
   return Number((basic * 0.75 + preferred * 0.25).toFixed(2));
 }
 
+function normalizedResumeText(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/[–—]/g, "-")
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
 export function validateFixtureInput(fixture) {
   const { rolefit_input: rolefitInput, oracle } = fixture || {};
   if (!rolefitInput?.resume_before || !rolefitInput?.job_description) {
@@ -45,18 +53,79 @@ export function structureErrors(resume) {
     if (!section) errors.push(`${heading} must not be empty.`);
   }
   const experienceSection = String(resume || "").match(/\nEXPERIENCE\n([\s\S]*?)(?=\n\n[A-Z][A-Z ]+\n|$)/)?.[1] || "";
-  for (const line of experienceSection.split("\n").map((item) => item.trim())) {
+  const experienceLines = experienceSection.split("\n").map((item) => item.trim());
+  for (let index = 0; index < experienceLines.length; index += 1) {
+    const line = experienceLines[index];
     if (!line || /^[-*•]/.test(line) || !line.includes("|")) continue;
     if (!/\b(?:19|20)\d{2}\b/.test(line)) errors.push(`Experience entry is missing years: ${line}`);
+  }
+  for (let index = 0; index < experienceLines.length - 1; index += 1) {
+    const line = experienceLines[index];
+    const next = experienceLines[index + 1];
+    if (!line || !next || /^[-*•]/.test(line) || /^[-*•]/.test(next)) continue;
+    if (/\b(?:19|20)\d{2}\b/.test(line)) continue;
+    errors.push(`Experience entry is missing years: ${line}`);
   }
   if (/\b(?:TBD|USER-CONFIRMED ADDITIONS|ask user)\b/i.test(resume)) errors.push("Resume contains internal or placeholder text.");
   return errors;
 }
 
+function moveSectionAfter(text, sectionTitle, targetTitle) {
+  const blocks = String(text || "").trim().split(/\n{2,}/);
+  const sectionPattern = new RegExp(`^${sectionTitle}\\s*$`, "im");
+  const targetPattern = new RegExp(`^${targetTitle}\\s*$`, "im");
+  const sectionIndex = blocks.findIndex((block) => sectionPattern.test(block));
+  const targetIndex = blocks.findIndex((block) => targetPattern.test(block));
+  if (sectionIndex === -1 || targetIndex === -1 || sectionIndex === targetIndex + 1) return text;
+  const [section] = blocks.splice(sectionIndex, 1);
+  const nextTargetIndex = blocks.findIndex((block) => targetPattern.test(block));
+  blocks.splice(nextTargetIndex + 1, 0, section);
+  return blocks.join("\n\n");
+}
+
+function applyExpectedResumeCheckInteractions(resume, interactions = []) {
+  let after = String(resume || "");
+
+  for (const interaction of interactions) {
+    if (interaction.type === "spelling") {
+      after = after.replaceAll(String(interaction.before || ""), String(interaction.answer || ""));
+      continue;
+    }
+    if (interaction.type === "date") {
+      const anchor = String(interaction.before || "");
+      if (anchor && !anchor.includes(String(interaction.answer || ""))) {
+        after = after.replace(anchor, `${anchor}${interaction.separator ?? " | "}${interaction.answer}`);
+      }
+      continue;
+    }
+    if (interaction.type === "reorder_section") {
+      after = moveSectionAfter(after, interaction.section || "EDUCATION", interaction.after_section || "EXPERIENCE");
+      continue;
+    }
+    if (interaction.type === "header") {
+      const value = String(interaction.answer || "").trim();
+      if (!value || after.includes(value)) continue;
+      const firstSection = after.search(/^PROFESSIONAL SUMMARY$/m);
+      if (firstSection === -1) {
+        after = `${value}\n${after}`;
+        continue;
+      }
+      const header = after.slice(0, firstSection).trim();
+      const body = after.slice(firstSection);
+      const lines = header ? header.split("\n") : [];
+      if (interaction.field === "name") lines.unshift(value);
+      else lines.push(value);
+      after = `${lines.join("\n")}\n\n${body}`;
+    }
+  }
+
+  return after.replace(/\n{3,}/g, "\n\n").trim();
+}
+
 export function buildExpectedAfterResume(fixture) {
   validateFixtureInput(fixture);
   const { rolefit_input: rolefitInput, oracle } = fixture;
-  let after = rolefitInput.resume_before;
+  let after = applyExpectedResumeCheckInteractions(rolefitInput.resume_before, oracle.resume_check_interactions);
 
   for (const interaction of oracle.interactions.filter((item) => item.confirmed)) {
     const requirement = oracle.requirements.find((item) => item.id === interaction.requirement_id);
@@ -131,8 +200,25 @@ export function safetyErrors(fixture, resumeAfter) {
 
   for (const interaction of oracle.interactions.filter((item) => item.confirmed)) {
     if (!profileFacts.includes(interaction.released_profile_fact)
-      || !String(resumeAfter || "").includes(interaction.resume_change)) {
+      || !normalizedResumeText(resumeAfter).includes(normalizedResumeText(interaction.resume_change))) {
       errors.push(`Confirmed change is not grounded: ${interaction.requirement_id}`);
+    }
+  }
+  return errors;
+}
+
+export function repairErrors(fixture, resumeAfter) {
+  const errors = [];
+  for (const interaction of fixture.oracle.resume_check_interactions || []) {
+    const text = String(resumeAfter || "");
+    if (interaction.expect_absent && text.includes(interaction.expect_absent)) {
+      errors.push(`Resume Check repair remains: ${interaction.expect_absent}`);
+    }
+    if (interaction.expect_present && !text.includes(interaction.expect_present)) {
+      errors.push(`Resume Check repair is missing: ${interaction.expect_present}`);
+    }
+    if (interaction.expect_pattern && !(new RegExp(interaction.expect_pattern, "i")).test(text)) {
+      errors.push(`Resume Check repair does not match: ${interaction.expect_pattern}`);
     }
   }
   return errors;
@@ -152,15 +238,20 @@ export function scoreFixtureResult(fixture, resumeAfter) {
   const representationAfter = scoreCategories(requirements, resumeAfter, true);
   representationAfter.delta = Number((representationAfter.combined - representationBefore.combined).toFixed(2));
 
+  const inputStructureErrors = structureErrors(before);
   const outputStructureErrors = structureErrors(resumeAfter);
   const groundingErrors = safetyErrors(fixture, resumeAfter);
+  const repairIssues = repairErrors(fixture, resumeAfter);
   return {
     profile_job_potential: profileJobPotential,
     resume_representation_before: representationBefore,
     resume_representation_after: representationAfter,
     grounding_safety: groundingErrors.length ? "FAIL" : "PASS",
     grounding_errors: groundingErrors,
-    structure_preservation: structureErrors(before).length || outputStructureErrors.length ? "FAIL" : "PASS",
+    repair_integrity: repairIssues.length ? "FAIL" : "PASS",
+    repair_errors: repairIssues,
+    structure_before: inputStructureErrors.length ? "FAIL" : "PASS",
+    structure_preservation: outputStructureErrors.length ? "FAIL" : "PASS",
     structure_errors: outputStructureErrors
   };
 }

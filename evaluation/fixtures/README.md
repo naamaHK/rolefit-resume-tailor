@@ -7,11 +7,12 @@ resume and ordinary job description.
 
 | Fixture | Purpose | Expected boundary |
 | --- | --- | --- |
-| 002 | All profile skills shown, with two typos, a missing Experience year, and wrong core section order | Repair detection; no invented repair |
+| 002 | All profile skills shown, with two typos, a missing Experience year, and wrong core section order | Resume Check repairs spelling, confirms the date, and restores the core order |
 | 003 | Related Computer Information Systems degree omitted; JavaScript shown while TypeScript is required | Ask about the degree; do not treat JavaScript as TypeScript |
-| 004 | Missing phone and email plus two typos | Header and spelling repair detection |
+| 004 | Missing name, phone, and email plus two typos | Resume Check confirms header fields and repairs spelling |
 | 005 | Only Java and PostgreSQL in the input resume | Ask for information; do not infer the rest of the profile |
 
-Only fixture 003 is a structurally valid matching scenario. The other three
-are deliberately invalid-input repair boundaries and need repair-decision
-automation before their live flow can be run automatically.
+Fixtures 002, 003, and 004 are now live-runner scenarios. Fixtures 002 and
+004 start structurally invalid and must become valid after their confirmed
+Resume Check repairs. Fixture 005 intentionally remains a rejection boundary:
+with only two skills, RoleFit must not invent the rest of the user's profile.

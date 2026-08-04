@@ -56,6 +56,7 @@ for (const fixtureName of relatedFixturePaths) {
   assert.deepEqual(relatedResult.resume_representation_before, relatedFixture.oracle.expected.resume_representation_before);
   assert.deepEqual(relatedResult.resume_representation_after, relatedFixture.oracle.expected.resume_representation_after);
   assert.equal(relatedResult.grounding_safety, relatedFixture.oracle.expected.grounding_safety);
+  assert.equal(relatedResult.repair_integrity, "PASS");
   assert.equal(relatedResult.structure_preservation, relatedFixture.oracle.expected.structure_preservation);
 }
 

@@ -129,6 +129,7 @@ function collectResumeCheckChanges(resumeText) {
     ...collectMissingHeaderQuestions(resumeText),
     ...collectMissingRequiredFieldQuestions(resumeText),
     ...collectMissingDateQuestions(resumeText),
+    ...suggestCoreSectionOrderFixes(resumeText),
     ...suggestSpellingFixes(resumeText)
   ]);
 }

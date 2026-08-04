@@ -20,6 +20,7 @@ assert.deepEqual(result.resume_representation_before, fixture.oracle.expected.re
 assert.deepEqual(result.resume_representation_after, fixture.oracle.expected.resume_representation_after);
 assert.equal(result.structure_preservation, fixture.oracle.expected.structure_preservation);
 assert.equal(result.grounding_safety, fixture.oracle.expected.grounding_safety);
+assert.equal(result.repair_integrity, "PASS");
 
 console.log(`Evaluation fixture: ${fixture.id}`);
 console.log("RoleFit receives: resume_before + ordinary job description only");
@@ -27,5 +28,7 @@ console.log(`Profile–job potential: Basic ${formatScore(result.profile_job_pot
 console.log(`Resume representation before: Basic ${formatScore(result.resume_representation_before.basic)} | Preferred ${formatScore(result.resume_representation_before.preferred)} | Combined ${formatScore(result.resume_representation_before.combined)}`);
 console.log(`Resume representation after: Basic ${formatScore(result.resume_representation_after.basic)} | Preferred ${formatScore(result.resume_representation_after.preferred)} | Combined ${formatScore(result.resume_representation_after.combined)} | Delta +${result.resume_representation_after.delta}`);
 console.log(`Grounding Safety: ${result.grounding_safety}`);
+console.log(`Resume Check Repairs: ${result.repair_integrity}`);
+console.log(`Structure Before: ${result.structure_before}`);
 console.log(`Structure Preservation: ${result.structure_preservation}`);
 console.log("Fixture validation: PASS");

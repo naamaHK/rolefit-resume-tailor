@@ -176,6 +176,55 @@ assert.equal(
   "after adding year, the same experience entry should not be asked again"
 );
 
+const wronglyOrderedResume = `ALEX MORGAN
+050-555-0198 alex.morgan@example.com
+
+PROFESSIONAL SUMMARY
+Data analyst with experience building reporting workflows.
+
+EDUCATION
+M.Sc. in Data Science 2018-2020
+Northbridge Institute
+
+EXPERIENCE
+Lead Data Analyst 2022-Present
+Northstar Research
+- Built customer analytics workflows.
+
+SKILLS
+SQL, Python`;
+const orderCard = context.collectResumeCheckChanges(wronglyOrderedResume)
+  .find((card) => card.id === "resume-order-education");
+assert.ok(orderCard, "Resume Check should detect Education before Experience");
+const reorderedResume = context.applySingleChange(wronglyOrderedResume, orderCard);
+assert.ok(
+  reorderedResume.indexOf("EXPERIENCE") < reorderedResume.indexOf("EDUCATION"),
+  "accepting the Resume Check reorder card should restore the core section order"
+);
+
+const fixtureTypos = context.collectResumeCheckChanges(`ALEX MORGAN
+050-555-0198 alex.morgan@example.com
+
+PROFESSIONAL SUMMARY
+Engineer who maintaned services and collaberated on architechture monitering.
+
+EXPERIENCE
+Software Engineer 2022-Present
+Northstar Research
+- Built APIs.
+
+EDUCATION
+B.Sc. Computer Science 2018-2022
+Northbridge Institute
+
+SKILLS
+Java`);
+assert.equal(
+  JSON.stringify(fixtureTypos.filter((card) => card.type === "spelling_check").map((card) => card.spellingBefore).sort()),
+  JSON.stringify(["architechture", "collaberated", "maintaned", "monitering"]),
+  "Resume Check should surface the fixture spelling repairs as separate cards"
+);
+
 const resumeMissingCompany = `ALEX MORGAN
 050-555-0198 alex.morgan@example.com
 

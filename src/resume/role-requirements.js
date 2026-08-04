@@ -112,6 +112,11 @@
       ) return { key: "relevant-research-background", display: "Relevant CS/CE/ML research background" };
 
       if (
+        /\b(?:computer science|computer engineering|computer information systems|information systems)\b/.test(key)
+        && /\b(?:bachelor'?s|b\.?\s*sc\.?|degree)\b[\s\S]{0,90}\b(?:computer science|computer engineering|related field|closely related)\b|\b(?:computer science|computer engineering|related field|closely related)\b[\s\S]{0,90}\b(?:bachelor'?s|b\.?\s*sc\.?|degree)\b/.test(job)
+      ) return { key: "related-computing-degree", display: "Computer Science or closely related degree" };
+
+      if (
         ["patents", "publications", "peer-reviewed-research-output"].includes(key)
         && /\bpatents?\b.{0,45}\bor\b.{0,45}\bpublications?\b|\bpublications?\b.{0,45}\bor\b.{0,45}\bpatents?\b/.test(job)
       ) return { key: "patents-or-publications", display: "Patents or peer-reviewed publications" };
@@ -130,6 +135,7 @@
       if (["advanced-degree", "relevant-research-background", "patents-or-publications", "communication-and-collaboration"].includes(grouped.key)) {
         return true;
       }
+      if (grouped.key === "related-computing-degree") return true;
       if (textContainsTopicTerm(job, term) || textContainsTopicTerm(job, grouped.display)) return true;
       const key = normalizeKey(term);
       if (key === "machine learning") return /\b(?:ML|machine learning)\b/i.test(job);
@@ -148,6 +154,10 @@
       if (key === "relevant-research-background") {
         return /\b(?:Computer Science|Computer Engineering|Data Science|Machine Learning|CS|CE|ML)\b/i.test(resumeText)
           && /\b(?:research|thesis|engineer|scientist)\b/i.test(resumeText);
+      }
+      if (key === "related-computing-degree") {
+        return /\b(?:Computer Science|Computer Engineering|Computer Information Systems|Information Systems)\b/i.test(resumeText)
+          && /\b(?:Bachelor'?s|B\.?\s*Sc\.?|degree)\b/i.test(resumeText);
       }
       if (key === "patents-or-publications") return hasSection(resumeText, ["patents", "patent", "publications", "publication"]);
       if (key === "peer-reviewed-research-output") {
@@ -211,14 +221,18 @@
         ...(finalChecks.keywords_covered || []),
         ...(finalChecks.keywords_missing || [])
       ];
-      const rawTerms = modeledRequirementTerms.length
-        ? modeledRequirementTerms
-        : localTerms.length
-          ? localTerms
-          : fallbackTerms;
+      // Providers can omit a plainly stated Basic Qualification. Keep their
+      // useful interpretation, but merge it with concrete terms extracted from
+      // the job's qualification sections so those requirements still receive a
+      // grounded confirmation question.
+      const rawTerms = [
+        ...modeledRequirementTerms,
+        ...localTerms
+      ];
+      const termsToCollect = rawTerms.length ? rawTerms : fallbackTerms;
       const byKey = new Map();
 
-      for (const item of rawTerms) {
+      for (const item of termsToCollect) {
         const label = display(item);
         const grouped = groupForJob(label, jobText);
         if (

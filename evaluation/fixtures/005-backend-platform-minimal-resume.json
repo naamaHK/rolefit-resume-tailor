@@ -5,8 +5,7 @@
   "test_metadata": {
     "mode": "minimal_resume_boundary",
     "expected_resume_check_findings": ["missing name", "missing phone", "missing email", "missing summary", "missing Experience", "missing Education"],
-    "expected_model_behaviour": ["ask targeted questions rather than infer work history, degree, AWS, React, TypeScript, Kubernetes, or GraphQL"],
-    "live_runner_status": "not_ready: requires multi-section confirmation support"
+    "expected_model_behaviour": ["ask targeted questions rather than infer work history, degree, AWS, React, TypeScript, Kubernetes, or GraphQL"]
   },
   "rolefit_input": {
     "resume_before": "SKILLS\nJava, PostgreSQL"

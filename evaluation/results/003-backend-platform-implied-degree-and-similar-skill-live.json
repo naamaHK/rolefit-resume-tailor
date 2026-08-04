@@ -1,0 +1,78 @@
+{
+  "fixture_id": "003-backend-platform-implied-degree-and-similar-skill",
+  "runner": "live-web-flow",
+  "app_url": "http://127.0.0.1:8765/index.html",
+  "timestamp": "2026-08-04T07:56:58.829Z",
+  "events": [
+    {
+      "type": "analysis_complete",
+      "status": "AI analysis complete using google/gemini-2.5-flash-lite in 6s. 10 comments ready."
+    },
+    {
+      "type": "question_asked",
+      "requirement_id": "cs_degree",
+      "question": "#4Confirm Computer Science or closely related degree\nJob Specific\nhigh risk\nUser Confirmation Needed\n\nConfirm Experience: Computer Science or closely related degree\n\nThis information is not currently in the resume. Add it only if it is true and you can discuss it in an interview.\nQUESTION / IMPORTANCE\n\nDo you have real, resume-worthy experience with Computer Science or closely related degree?\n\nWHICH SECTION IS RELEVANT?\nSkills\nExperience\nProjects\nEducation\nCertifications\nOther\nDo not add\n\nChoose where this confirmed information may belong. The next questions will depend on that destination.\n\nChoose one or more relevant sections first. The next fields will appear only for the sections you choose.\nWhy this came up: This concrete requirement appears in the target job but is not currently supported by the resume.\nResume evidence so far: Computer Science or closely related degree\n9 other open comments remain: 4 more in Missing Experience, 5 in Suggestions.\nReject"
+    },
+    {
+      "type": "confirmed_and_added",
+      "requirement_id": "cs_degree",
+      "answer": "Yes. I earned a B.Sc. in Computer Information Systems from Northern Israel Institute of Technology in 2016–2020.",
+      "resume_change": "B.Sc. Computer Information Systems 2016–2020\nNorthern Israel Institute of Technology"
+    },
+    {
+      "type": "question_asked",
+      "requirement_id": "typescript",
+      "question": "#1Confirm TypeScript\nJob Specific\nhigh risk\nUser Confirmation Needed\n\nConfirm Experience: TypeScript\n\nThis information is not currently in the resume. Add it only if it is true and you can discuss it in an interview.\nQUESTION / IMPORTANCE\n\nDo you have working knowledge of TypeScript for service-adjacent tooling?\n\nWHICH SECTION IS RELEVANT?\nSkills\nExperience\nProjects\nEducation\nCertifications\nOther\nDo not add\n\nChoose where this confirmed information may belong. The next questions will depend on that destination.\n\nChoose one or more relevant sections first. The next fields will appear only for the sections you choose.\nWhy this came up: The job description lists working knowledge of TypeScript as a required qualification for service-adjacent tooling.\nResume evidence so far: Working knowledge of TypeScript for service-adjacent tooling\n8 other open comments remain: 3 more in Missing Experience, 5 in Suggestions.\nReject"
+    },
+    {
+      "type": "declined",
+      "requirement_id": "typescript",
+      "answer": "No. I have used JavaScript, but not TypeScript."
+    },
+    {
+      "type": "question_asked",
+      "requirement_id": "kubernetes",
+      "question": "#2Confirm Kubernetes\nJob Specific\nhigh risk\nUser Confirmation Needed\n\nConfirm Experience: Kubernetes\n\nThis information is not currently in the resume. Add it only if it is true and you can discuss it in an interview.\nQUESTION / IMPORTANCE\n\nDo you have real, resume-worthy experience with Kubernetes?\n\nWHICH SECTION IS RELEVANT?\nSkills\nExperience\nProjects\nEducation\nCertifications\nOther\nDo not add\n\nChoose where this confirmed information may belong. The next questions will depend on that destination.\n\nChoose one or more relevant sections first. The next fields will appear only for the sections you choose.\nWhy this came up: This concrete requirement appears in the target job but is not currently supported by the resume.\nResume evidence so far: Kubernetes\n7 other open comments remain: 2 more in Missing Experience, 5 in Suggestions.\nReject"
+    },
+    {
+      "type": "declined",
+      "requirement_id": "kubernetes",
+      "answer": "No. I have not operated Kubernetes workloads."
+    },
+    {
+      "type": "question_asked",
+      "requirement_id": "graphql",
+      "question": "#2Confirm GraphQL APIs\nJob Specific\nhigh risk\nUser Confirmation Needed\n\nConfirm Experience: GraphQL APIs\n\nThis information is not currently in the resume. Add it only if it is true and you can discuss it in an interview.\nQUESTION / IMPORTANCE\n\nDo you have real, resume-worthy experience with GraphQL APIs?\n\nWHICH SECTION IS RELEVANT?\nSkills\nExperience\nProjects\nEducation\nCertifications\nOther\nDo not add\n\nChoose where this confirmed information may belong. The next questions will depend on that destination.\n\nChoose one or more relevant sections first. The next fields will appear only for the sections you choose.\nWhy this came up: This concrete requirement appears in the target job but is not currently supported by the resume.\nResume evidence so far: GraphQL APIs\n6 other open comments remain: 1 more in Missing Experience, 5 in Suggestions.\nReject"
+    },
+    {
+      "type": "declined",
+      "requirement_id": "graphql",
+      "answer": "No. I have not built GraphQL APIs."
+    }
+  ],
+  "resume_after": "Maya Cohen\n+972 52 555 0147 | maya.cohen@example.com | linkedin.com/in/maya-cohen\n\nPROFESSIONAL SUMMARY\nBackend engineer with four years of experience building Java services, cloud delivery workflows, and internal tools.\n\nEXPERIENCE\nBackend Engineer 2022 - Present\nCivicFlow\n- Built Java and Spring Boot services for municipal workflow products.\n- Designed PostgreSQL schemas, REST APIs, Docker delivery workflows, and GitHub Actions pipelines.\n- Used AWS ECS, Amazon RDS, and CloudWatch for application delivery and monitoring.\nSoftware Engineer 2020 - 2022\nAtlas Systems\n- Built React and JavaScript interfaces for internal operations tools.\n\nEDUCATION\nAWS Certified Cloud Practitioner 2021\nAmazon Web Services\nB.Sc. Computer Information Systems 2016 - 2020\nNorthern Israel Institute of Technology\n\nSKILLS\nSpring Boot • PostgreSQL • REST APIs • Docker • GitHub Actions • AWS • AWS ECS • Amazon RDS • CloudWatch • React • API design • cross-functional collaboration\nProgramming Languages: Java • JavaScript\n\nLANGUAGES\nHebrew — native | English — professional working proficiency",
+  "profile_job_potential": {
+    "basic": 71.43,
+    "preferred": 66.67,
+    "combined": 70.24
+  },
+  "resume_representation_before": {
+    "basic": 80,
+    "preferred": 100,
+    "combined": 85
+  },
+  "resume_representation_after": {
+    "basic": 100,
+    "preferred": 100,
+    "combined": 100,
+    "delta": 15
+  },
+  "grounding_safety": "PASS",
+  "grounding_errors": [],
+  "repair_integrity": "PASS",
+  "repair_errors": [],
+  "structure_before": "PASS",
+  "structure_preservation": "PASS",
+  "structure_errors": [],
+  "result": "PASS"
+}

@@ -1,0 +1,61 @@
+{
+  "fixture_id": "002-backend-platform-repair-boundary",
+  "runner": "live-web-flow",
+  "app_url": "http://127.0.0.1:8765/index.html",
+  "timestamp": "2026-08-04T07:53:19.302Z",
+  "events": [
+    {
+      "type": "analysis_complete",
+      "status": "AI analysis complete using google/gemini-2.5-flash-lite in 8s. 7 comments ready."
+    },
+    {
+      "type": "resume_check_applied",
+      "card_match": "Move Education",
+      "card": "#1Reorder Section in Education\nResume Improvement\nlow risk\nResume Supported\n\nReorder Section: Education\n\nBEFORE\nEDUCATION\nAFTER\nWhy: Education must follow Experience in the core resume order.\nEvidence: Education appears before Experience.\n10 other open comments remain: 3 more in Resume Check, 3 in Suggestions, 4 in Missing Experience.\nPreview on Resume\nAccept Change\nReject",
+      "answer": ""
+    },
+    {
+      "type": "resume_check_applied",
+      "card_match": "maintaned",
+      "card": "#1Spelling Check in Experience\nResume Improvement\nlow risk\nResume Supported\n\nSpelling Check: Experience\n\nBEFORE\nmaintaned\nAFTER\nWhy: Fixes spelling mistakes.\nEvidence: - Built Java and Spring Boot services and maintaned PostgreSQL schemas for municipal workflow products.\n9 other open comments remain: 2 more in Resume Check, 3 in Suggestions, 4 in Missing Experience.\nPreview on Resume\nAccept Change\nReject",
+      "answer": "maintained"
+    },
+    {
+      "type": "resume_check_applied",
+      "card_match": "collaberated",
+      "card": "#1Spelling Check in Experience\nResume Improvement\nlow risk\nResume Supported\n\nSpelling Check: Experience\n\nBEFORE\ncollaberated\nAFTER\nWhy: Fixes spelling mistakes.\nEvidence: - Containerized Docker services, built GitHub Actions pipelines, and collaberated on REST API contracts.\n8 other open comments remain: 1 more in Resume Check, 3 in Suggestions, 4 in Missing Experience.\nPreview on Resume\nAccept Change\nReject",
+      "answer": "collaborated"
+    },
+    {
+      "type": "resume_check_applied",
+      "card_match": "Software Engineer",
+      "card": "#1Add years for Software Engineer\nResume Improvement\nmedium risk\nUser Confirmation Needed\n\nConfirm Years: Software Engineer\n\nThis entry is missing years/dates. Add exact years only. Do not guess.\nQUESTION / IMPORTANCE\n\nThis experience entry is missing years/dates: Software Engineer. Enter the exact years to keep this section consistent.\n\nBEFORE\nSoftware Engineer\nAFTER\nEntry: Software Engineer\n7 other open comments remain: 3 in Suggestions, 4 in Missing Experience.\nPreview on Resume\nSave Years\nReject",
+      "answer": "2020–2022"
+    }
+  ],
+  "resume_after": "Maya Cohen\n+972 52 555 0147 | maya.cohen@example.com | linkedin.com/in/maya-cohen\n\nPROFESSIONAL SUMMARY\nBackend engineer with four years of experience building Java services, internal tools, and cloud delivery workflows.\n\nEXPERIENCE\nBackend Engineer 2022 - Present\nCivicFlow\n- Built Java and Spring Boot services and maintained PostgreSQL schemas for municipal workflow products.\n- Containerized Docker services, built GitHub Actions pipelines, and collaborated on REST API contracts.\n- Used AWS ECS, Amazon RDS, and CloudWatch for delivery and incident follow-up.\nSoftware Engineer 2020 - 2022\nAtlas Systems\n- Built React and JavaScript interfaces for internal operations tools.\n- Designed REST APIs and automated tests for workflow features.\n\nEDUCATION\nB.Sc. Computer Information Systems 2016 - 2020\nNorthern Israel Institute of Technology\n\nSKILLS\nSpring Boot • PostgreSQL • REST APIs • Docker • GitHub Actions • AWS • AWS ECS • Amazon RDS • CloudWatch • React • API design • cross-functional collaboration • incident follow-up\nProgramming Languages: Java • JavaScript\n\nLANGUAGES\nHebrew — native | English — professional working proficiency",
+  "profile_job_potential": {
+    "basic": 71.43,
+    "preferred": 66.67,
+    "combined": 70.24
+  },
+  "resume_representation_before": {
+    "basic": 100,
+    "preferred": 100,
+    "combined": 100
+  },
+  "resume_representation_after": {
+    "basic": 100,
+    "preferred": 100,
+    "combined": 100,
+    "delta": 0
+  },
+  "grounding_safety": "PASS",
+  "grounding_errors": [],
+  "repair_integrity": "PASS",
+  "repair_errors": [],
+  "structure_before": "FAIL",
+  "structure_preservation": "PASS",
+  "structure_errors": [],
+  "result": "PASS"
+}

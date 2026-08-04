@@ -37,31 +37,47 @@ function normalized(value) {
   return String(value || "").toLowerCase().replace(/[^a-z0-9+#]+/g, " ").trim();
 }
 
+function matchTerms(...values) {
+  return [...new Set(values.flatMap((value) => Array.isArray(value) ? value : [value])
+    .map(normalized)
+    .filter((term) => term.length >= 3))];
+}
+
 export function interactionMatchTerms(fixture, interaction) {
   const requirement = fixture.oracle.requirements.find((item) => item.id === interaction.requirement_id);
   if (!requirement) throw new Error(`Unknown interaction requirement: ${interaction.requirement_id}`);
-  return [...new Set([
+  return matchTerms([
     interaction.card_match,
     requirement.label,
     interaction.requirement_id.replaceAll("_", " ")
-  ].map(normalized).filter((term) => term.length >= 3))];
+  ]);
 }
 
-async function findQuestionCard(page, fixture, interaction) {
-  const terms = interactionMatchTerms(fixture, interaction);
+async function findCardByTerms(page, terms, description) {
   const cards = page.locator("#changeCards [data-change-id]");
   const count = await cards.count();
+  const available = [];
 
   for (let index = 0; index < count; index += 1) {
     const card = cards.nth(index);
-    const cardText = normalized(await card.innerText());
+    const rawCardText = await card.innerText();
+    const cardText = normalized(rawCardText);
+    available.push(cardText);
     if (terms.some((term) => cardText.includes(term))) {
       const id = await card.getAttribute("data-change-id");
       if (id) return { id, text: await card.innerText() };
     }
   }
 
-  throw new Error(`RoleFit did not ask the expected question for ${interaction.requirement_id}. Looked for: ${terms.join(", ")}.`);
+  throw new Error(`RoleFit did not show the expected ${description}. Looked for: ${terms.join(", ")}. Available: ${available.join(" || ") || "none"}.`);
+}
+
+async function findQuestionCard(page, fixture, interaction) {
+  return findCardByTerms(
+    page,
+    interactionMatchTerms(fixture, interaction),
+    `question for ${interaction.requirement_id}`
+  );
 }
 
 function cardLocator(page, id) {
@@ -95,11 +111,54 @@ async function selectExperienceTarget(targetSelect, placement, requirementId) {
   throw new Error(`Could not find Experience target "${placement.target_match}" for ${requirementId}.`);
 }
 
+async function fillDraftField(card, field, value, requirementId) {
+  const draft = card.locator(`[data-draft-field="${field}"]`);
+  await requireExactlyOne(draft, `Expected ${field} field for ${requirementId}.`);
+  await draft.fill(String(value || ""));
+}
+
+async function applyEducationPlacement(page, interaction, cardId) {
+  const placement = interaction.placement || {};
+  const fields = placement.fields || {};
+  let card = cardLocator(page, cardId);
+  const educationCheckbox = card.locator('.placement-checkbox[value="education"]');
+  await requireExactlyOne(educationCheckbox, `Expected one Education placement checkbox for ${interaction.requirement_id}.`);
+  await educationCheckbox.check();
+
+  card = cardLocator(page, cardId);
+  const actionSelect = card.locator(".education-action-select");
+  await requireExactlyOne(actionSelect, `Expected an Education action selector for ${interaction.requirement_id}.`);
+  await actionSelect.selectOption(placement.action || "new");
+
+  card = cardLocator(page, cardId);
+  if ((placement.action || "new") === "new") {
+    await fillDraftField(card, "educationProgram", fields.program, interaction.requirement_id);
+    await fillDraftField(card, "educationInstitution", fields.institution, interaction.requirement_id);
+    await fillDraftField(card, "educationYear", fields.year, interaction.requirement_id);
+    if (fields.details) await fillDraftField(card, "educationDetails", fields.details, interaction.requirement_id);
+  } else {
+    if (placement.target_label) {
+      const target = card.locator(".education-entry-select");
+      await requireExactlyOne(target, `Expected an Education target selector for ${interaction.requirement_id}.`);
+      await target.selectOption({ label: placement.target_label });
+    }
+    await fillDraftField(card, "educationDetails", fields.details || interaction.resume_change, interaction.requirement_id);
+  }
+
+  card = cardLocator(page, cardId);
+  const accept = card.locator('[data-action="accept-placement"][data-accept-placement="education"]');
+  await requireExactlyOne(accept, `Expected one Add to Education button for ${interaction.requirement_id}.`);
+  await accept.click();
+}
+
 async function applyConfirmedInteraction(page, interaction, cardId) {
   const placement = interaction.placement || {};
-  if ((placement.section || "experience") !== "experience") {
-    throw new Error(`Live runner currently supports Experience placement only; ${interaction.requirement_id} requested ${placement.section}.`);
+  const section = placement.section || "experience";
+  if (section === "education") {
+    await applyEducationPlacement(page, interaction, cardId);
+    return;
   }
+  if (section !== "experience") throw new Error(`Live runner does not support ${section} placement for ${interaction.requirement_id}.`);
 
   let card = cardLocator(page, cardId);
   const experienceCheckbox = card.locator('.placement-checkbox[value="experience"]');
@@ -125,6 +184,21 @@ async function applyConfirmedInteraction(page, interaction, cardId) {
   const accept = card.locator('[data-action="accept-placement"][data-accept-placement="experience"]');
   await requireExactlyOne(accept, `Expected one Add to Experience button for ${interaction.requirement_id}.`);
   await accept.click();
+}
+
+async function applyResumeCheckInteraction(page, interaction) {
+  const terms = matchTerms(interaction.card_match, interaction.before, interaction.field, interaction.type);
+  if (!terms.length) throw new Error("Each resume-check interaction needs card_match, before, field, or type.");
+  const card = await findCardByTerms(page, terms, "Resume Check card");
+  const editBox = cardLocator(page, card.id).locator(".edit-box");
+  if (interaction.answer != null) {
+    await requireExactlyOne(editBox, `Expected an input for Resume Check card ${interaction.card_match || interaction.type}.`);
+    await editBox.fill(String(interaction.answer));
+  }
+  const accept = cardLocator(page, card.id).locator('[data-action="accept"]');
+  await requireExactlyOne(accept, `Expected an accept button for Resume Check card ${interaction.card_match || interaction.type}.`);
+  await accept.click();
+  return card.text;
 }
 
 async function waitForAnalysis(page, timeoutMs) {
@@ -160,9 +234,6 @@ export async function runLiveFixture(fixturePath, options = {}) {
   const timeoutMs = Number(options.timeoutMs || process.env.ROLEFIT_EVALUATION_TIMEOUT_MS || DEFAULT_TIMEOUT_MS);
   const fixture = await loadEvaluationFixture(fixturePath);
   validateFixtureInput(fixture);
-  if (String(fixture.test_metadata?.live_runner_status || "").startsWith("not_ready")) {
-    throw new Error(`Fixture ${fixture.id} is not ready for the live runner: ${fixture.test_metadata.live_runner_status}`);
-  }
   if (!options.skipReachabilityCheck) await verifyAppIsReachable(appUrl);
 
   const playwrightModule = await loadPlaywright();
@@ -194,6 +265,19 @@ export async function runLiveFixture(fixturePath, options = {}) {
     await page.locator("#analyzeAiBtn").click();
     const analysisStatus = await waitForAnalysis(page, timeoutMs);
     events.push({ type: "analysis_complete", status: analysisStatus });
+
+    const cleanupPass = page.locator("#cleanupPassBtn");
+    await requireExactlyOne(cleanupPass, "Expected one Resume Check tab.");
+    await cleanupPass.click();
+    for (const interaction of fixture.oracle.resume_check_interactions || []) {
+      const cardText = await applyResumeCheckInteraction(page, interaction);
+      events.push({
+        type: "resume_check_applied",
+        card_match: interaction.card_match || interaction.type,
+        card: cardText,
+        answer: interaction.answer || ""
+      });
+    }
 
     const missingExperienceTab = page.locator("#missingExperiencePassBtn");
     await requireExactlyOne(missingExperienceTab, "Expected one Missing Experience tab.");
@@ -227,7 +311,8 @@ export async function runLiveFixture(fixturePath, options = {}) {
       }
     }
 
-    const resumeAfter = await page.locator("#finalResume").inputValue();
+    const resumeAfter = (await page.locator("#finalResume").inputValue()).trim()
+      || await page.locator("#resumeInput").inputValue();
     const scoring = scoreFixtureResult(fixture, resumeAfter);
     const result = {
       fixture_id: fixture.id,
@@ -237,7 +322,9 @@ export async function runLiveFixture(fixturePath, options = {}) {
       events,
       resume_after: resumeAfter,
       ...scoring,
-      result: scoring.grounding_safety === "PASS" && scoring.structure_preservation === "PASS" ? "PASS" : "REJECT"
+      result: scoring.grounding_safety === "PASS"
+        && scoring.repair_integrity === "PASS"
+        && scoring.structure_preservation === "PASS" ? "PASS" : "REJECT"
     };
 
     if (options.outputPath) {
@@ -271,6 +358,8 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
     after: result.resume_representation_after.combined,
     delta: result.resume_representation_after.delta,
     grounding_safety: result.grounding_safety,
+    repair_integrity: result.repair_integrity,
+    structure_before: result.structure_before,
     structure_preservation: result.structure_preservation
   }, null, 2));
 }
