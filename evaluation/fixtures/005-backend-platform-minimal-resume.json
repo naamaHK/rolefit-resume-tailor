@@ -12,6 +12,11 @@
   },
   "oracle": {
     "interactions": [],
+    "auto_profile_lookup": {
+      "headers": true,
+      "dates": true,
+      "required_fields": true
+    },
     "expected": {
       "requires_resume_change": false,
       "profile_job_potential": { "basic": 71.43, "preferred": 66.67, "combined": 70.24 },

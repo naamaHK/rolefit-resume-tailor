@@ -155,6 +155,9 @@ try {
   const minimalResult = await runMockFixture("005-backend-platform-minimal-resume.json", emptyMockAiResponse);
   assert.equal(minimalResult.result, "REJECT");
   assert.equal(minimalResult.resume_representation_after.combined, 15);
+  assert.equal(minimalResult.events.filter((event) => event.type === "profile_lookup_applied").length, 3);
+  assert.match(minimalResult.resume_after, /Maya Cohen/);
+  assert.match(minimalResult.resume_after, /maya\.cohen@example\.com/);
   console.log("Live flow runner integration test passed.");
 } catch (error) {
   if (/Executable doesn't exist|browserType\.launch|Target page, context or browser has been closed/i.test(error.message || "")) {

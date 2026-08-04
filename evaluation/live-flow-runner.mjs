@@ -43,6 +43,58 @@ function matchTerms(...values) {
     .filter((term) => term.length >= 3))];
 }
 
+function uniqueMatch(values) {
+  return values.length === 1 ? values[0] : null;
+}
+
+function profileEntryMatchesCard(entry, cardText) {
+  return [entry.title, entry.company, entry.degree, entry.institution]
+    .map(normalized)
+    .filter((value) => value.length >= 4)
+    .some((value) => cardText.includes(value));
+}
+
+/**
+ * Return only a literal value already stored in the hidden profile.  This is
+ * deliberately not an equivalence or skill matcher: an ambiguous card, or a
+ * job-specific question, stays for the fixture's explicit interaction map.
+ */
+export function profileLookupForResumeCheckCard(profile, rawCardText, options = {}) {
+  const cardText = normalized(rawCardText);
+  const basicInfo = profile?.basic_info || {};
+
+  if (options.headers) {
+    if (cardText.includes("missing header full name") && basicInfo.name) {
+      return { field: "name", value: basicInfo.name, source: "profile.basic_info.name" };
+    }
+    if (cardText.includes("missing header phone number") && basicInfo.phone) {
+      return { field: "phone", value: basicInfo.phone, source: "profile.basic_info.phone" };
+    }
+    if (cardText.includes("missing header email address") && basicInfo.email) {
+      return { field: "email", value: basicInfo.email, source: "profile.basic_info.email" };
+    }
+  }
+
+  if (options.dates && cardText.includes("confirm years")) {
+    const entry = uniqueMatch([
+      ...(profile?.experience || []),
+      ...(profile?.education || [])
+    ].filter((candidate) => candidate.dates && profileEntryMatchesCard(candidate, cardText)));
+    if (entry) return { field: "dates", value: entry.dates, source: "profile entry dates" };
+  }
+
+  if (options.required_fields && cardText.includes("missing required field")) {
+    const field = cardText.includes("institution") ? "institution"
+      : cardText.includes("degree") ? "degree"
+        : "";
+    const entry = field && uniqueMatch((profile?.education || [])
+      .filter((candidate) => candidate[field] && profileEntryMatchesCard(candidate, cardText)));
+    if (entry) return { field, value: entry[field], source: `profile.education.${field}` };
+  }
+
+  return null;
+}
+
 export function interactionMatchTerms(fixture, interaction) {
   const requirement = fixture.oracle.requirements.find((item) => item.id === interaction.requirement_id);
   if (!requirement) throw new Error(`Unknown interaction requirement: ${interaction.requirement_id}`);
@@ -201,6 +253,46 @@ async function applyResumeCheckInteraction(page, interaction) {
   return card.text;
 }
 
+async function applyAutomaticProfileLookups(page, fixture, events) {
+  const options = fixture.oracle.auto_profile_lookup;
+  if (!options) return;
+
+  const attempted = new Set();
+  // A successful acceptance re-renders the cards, so apply at most one direct
+  // lookup per pass and then inspect the current UI again.
+  for (let pass = 0; pass < 12; pass += 1) {
+    const cards = page.locator("#changeCards [data-change-id]");
+    const count = await cards.count();
+    let applied = false;
+
+    for (let index = 0; index < count; index += 1) {
+      const card = cards.nth(index);
+      const cardText = await card.innerText();
+      const lookup = profileLookupForResumeCheckCard(fixture.profile, cardText, options);
+      if (!lookup) continue;
+
+      const key = `${normalized(cardText)}|${lookup.field}|${lookup.value}`;
+      if (attempted.has(key)) continue;
+      attempted.add(key);
+
+      const id = await card.getAttribute("data-change-id");
+      if (!id) continue;
+      const editBox = cardLocator(page, id).locator(".edit-box");
+      await requireExactlyOne(editBox, `Expected a direct profile lookup input for ${lookup.field}.`);
+      await editBox.fill(String(lookup.value));
+      const accept = cardLocator(page, id).locator('[data-action="accept"]');
+      await requireExactlyOne(accept, `Expected a direct profile lookup accept button for ${lookup.field}.`);
+      await accept.click();
+      events.push({ type: "profile_lookup_applied", field: lookup.field, source: lookup.source });
+      applied = true;
+      break;
+    }
+
+    if (!applied) return;
+  }
+  throw new Error("Stopped automatic profile lookup after 12 accepted cards; a card may not be resolving.");
+}
+
 async function waitForAnalysis(page, timeoutMs) {
   const status = page.locator("#aiStatus");
   const button = page.locator("#analyzeAiBtn");
@@ -269,6 +361,7 @@ export async function runLiveFixture(fixturePath, options = {}) {
     const cleanupPass = page.locator("#cleanupPassBtn");
     await requireExactlyOne(cleanupPass, "Expected one Resume Check tab.");
     await cleanupPass.click();
+    await applyAutomaticProfileLookups(page, fixture, events);
     for (const interaction of fixture.oracle.resume_check_interactions || []) {
       const cardText = await applyResumeCheckInteraction(page, interaction);
       events.push({

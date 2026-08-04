@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import { interactionMatchTerms } from "../evaluation/live-flow-runner.mjs";
+import { interactionMatchTerms, profileLookupForResumeCheckCard } from "../evaluation/live-flow-runner.mjs";
 import { loadEvaluationFixture } from "../evaluation/fixture-loader.mjs";
 
 const fixture = JSON.parse(await readFile(
@@ -32,6 +32,50 @@ assert.equal(
   repairFixture.test_metadata.live_runner_status,
   undefined,
   "a repair fixture should be runnable once the runner can drive Resume Check cards"
+);
+
+const backendFixture = await loadEvaluationFixture(
+  new URL("../evaluation/fixtures/005-backend-platform-minimal-resume.json", import.meta.url).pathname
+);
+assert.deepEqual(
+  profileLookupForResumeCheckCard(
+    backendFixture.profile,
+    "Missing Header: Full Name",
+    backendFixture.oracle.auto_profile_lookup
+  ),
+  { field: "name", value: "Maya Cohen", source: "profile.basic_info.name" },
+  "the runner may copy an explicit header value from the hidden profile"
+);
+assert.deepEqual(
+  profileLookupForResumeCheckCard(
+    backendFixture.profile,
+    "Confirm Years: Experience\nEntry: Backend Engineer at CivicFlow",
+    backendFixture.oracle.auto_profile_lookup
+  ),
+  { field: "dates", value: "2022–Present", source: "profile entry dates" },
+  "the runner may copy dates only when one profile entry is explicitly identified"
+);
+assert.deepEqual(
+  profileLookupForResumeCheckCard(
+    backendFixture.profile,
+    "Missing Required Field: Institution\nEntry: B.Sc. Computer Information Systems",
+    backendFixture.oracle.auto_profile_lookup
+  ),
+  {
+    field: "institution",
+    value: "Northern Israel Institute of Technology",
+    source: "profile.education.institution"
+  },
+  "the runner may copy one identified education field without inventing it"
+);
+assert.equal(
+  profileLookupForResumeCheckCard(
+    backendFixture.profile,
+    "Do you have resume-worthy experience with Kubernetes?",
+    backendFixture.oracle.auto_profile_lookup
+  ),
+  null,
+  "the runner must not infer a job skill from the profile"
 );
 
 console.log("Live flow runner tests passed.");

@@ -2,14 +2,29 @@
   "fixture_id": "005-backend-platform-minimal-resume",
   "runner": "live-web-flow",
   "app_url": "http://127.0.0.1:8765/index.html",
-  "timestamp": "2026-08-04T08:54:54.013Z",
+  "timestamp": "2026-08-04T09:26:11.508Z",
   "events": [
     {
       "type": "analysis_complete",
-      "status": "AI analysis complete using google/gemini-2.5-flash-lite in 4s. 6 comments ready."
+      "status": "AI analysis complete using google/gemini-2.5-flash-lite in 9s. 7 comments ready."
+    },
+    {
+      "type": "profile_lookup_applied",
+      "field": "name",
+      "source": "profile.basic_info.name"
+    },
+    {
+      "type": "profile_lookup_applied",
+      "field": "phone",
+      "source": "profile.basic_info.phone"
+    },
+    {
+      "type": "profile_lookup_applied",
+      "field": "email",
+      "source": "profile.basic_info.email"
     }
   ],
-  "resume_after": "SKILLS\nJava, PostgreSQL",
+  "resume_after": "Maya Cohen\n+972 52 555 0147\nmaya.cohen@example.com\n\nSKILLS\nJava • PostgreSQL",
   "profile_job_potential": {
     "basic": 71.43,
     "preferred": 66.67,
@@ -33,9 +48,6 @@
   "structure_before": "FAIL",
   "structure_preservation": "FAIL",
   "structure_errors": [
-    "Header must contain a full name.",
-    "Header must contain a phone number.",
-    "Header must contain an email address.",
     "Summary, Experience, and Education must appear in that order.",
     "PROFESSIONAL SUMMARY must not be empty.",
     "EXPERIENCE must not be empty.",
