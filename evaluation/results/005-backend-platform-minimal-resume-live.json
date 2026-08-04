@@ -1,0 +1,45 @@
+{
+  "fixture_id": "005-backend-platform-minimal-resume",
+  "runner": "live-web-flow",
+  "app_url": "http://127.0.0.1:8765/index.html",
+  "timestamp": "2026-08-04T08:54:54.013Z",
+  "events": [
+    {
+      "type": "analysis_complete",
+      "status": "AI analysis complete using google/gemini-2.5-flash-lite in 4s. 6 comments ready."
+    }
+  ],
+  "resume_after": "SKILLS\nJava, PostgreSQL",
+  "profile_job_potential": {
+    "basic": 71.43,
+    "preferred": 66.67,
+    "combined": 70.24
+  },
+  "resume_representation_before": {
+    "basic": 20,
+    "preferred": 0,
+    "combined": 15
+  },
+  "resume_representation_after": {
+    "basic": 20,
+    "preferred": 0,
+    "combined": 15,
+    "delta": 0
+  },
+  "grounding_safety": "PASS",
+  "grounding_errors": [],
+  "repair_integrity": "PASS",
+  "repair_errors": [],
+  "structure_before": "FAIL",
+  "structure_preservation": "FAIL",
+  "structure_errors": [
+    "Header must contain a full name.",
+    "Header must contain a phone number.",
+    "Header must contain an email address.",
+    "Summary, Experience, and Education must appear in that order.",
+    "PROFESSIONAL SUMMARY must not be empty.",
+    "EXPERIENCE must not be empty.",
+    "EDUCATION must not be empty."
+  ],
+  "result": "REJECT"
+}

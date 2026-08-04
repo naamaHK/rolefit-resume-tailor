@@ -1,0 +1,67 @@
+{
+  "fixture_id": "004-backend-platform-missing-contact-and-typos",
+  "runner": "live-web-flow",
+  "app_url": "http://127.0.0.1:8765/index.html",
+  "timestamp": "2026-08-04T08:54:39.418Z",
+  "events": [
+    {
+      "type": "analysis_complete",
+      "status": "AI analysis complete using google/gemini-2.5-flash-lite in 3s. 2 comments ready."
+    },
+    {
+      "type": "resume_check_applied",
+      "card_match": "full name",
+      "card": "#1Fill missing full name\nResume Improvement\nhigh risk\nUser Confirmation Needed\n\nMissing Header: Full Name\n\nThis resume is missing an essential header field. Add it exactly as it should appear.\nQUESTION / IMPORTANCE\n\nThe resume header is missing the full name. Enter it exactly as it should appear on the resume.\n\nBEFORE\nNot currently in resume.\nAFTER\n6 other open comments remain: 4 more in Resume Check, 2 in Missing Experience.\nPreview on Resume\nSave Header Field\nReject",
+      "answer": "Maya Cohen"
+    },
+    {
+      "type": "resume_check_applied",
+      "card_match": "phone number",
+      "card": "#1Fill missing phone number\nResume Improvement\nhigh risk\nUser Confirmation Needed\n\nMissing Header: Phone Number\n\nThis resume is missing an essential header field. Add it exactly as it should appear.\nQUESTION / IMPORTANCE\n\nThe resume header is missing the phone number. Enter it exactly as it should appear on the resume.\n\nBEFORE\nNot currently in resume.\nAFTER\n5 other open comments remain: 3 more in Resume Check, 2 in Missing Experience.\nPreview on Resume\nSave Header Field\nReject",
+      "answer": "+972 52 555 0147"
+    },
+    {
+      "type": "resume_check_applied",
+      "card_match": "email address",
+      "card": "#1Fill missing email address\nResume Improvement\nhigh risk\nUser Confirmation Needed\n\nMissing Header: Email Address\n\nThis resume is missing an essential header field. Add it exactly as it should appear.\nQUESTION / IMPORTANCE\n\nThe resume header is missing the email address. Enter it exactly as it should appear on the resume.\n\nBEFORE\nNot currently in resume.\nAFTER\n4 other open comments remain: 2 more in Resume Check, 2 in Missing Experience.\nPreview on Resume\nSave Header Field\nReject",
+      "answer": "maya.cohen@example.com"
+    },
+    {
+      "type": "resume_check_applied",
+      "card_match": "architechture",
+      "card": "#1Spelling Check in Experience\nResume Improvement\nlow risk\nResume Supported\n\nSpelling Check: Experience\n\nBEFORE\narchitechture\nAFTER\nWhy: Fixes spelling mistakes.\nEvidence: - Built Java and Spring Boot services and PostgreSQL architechture for municipal workflow products.\n3 other open comments remain: 1 more in Resume Check, 2 in Missing Experience.\nPreview on Resume\nAccept Change\nReject",
+      "answer": "architecture"
+    },
+    {
+      "type": "resume_check_applied",
+      "card_match": "monitering",
+      "card": "#1Spelling Check in Experience\nResume Improvement\nlow risk\nResume Supported\n\nSpelling Check: Experience\n\nBEFORE\nmonitering\nAFTER\nWhy: Fixes spelling mistakes.\nEvidence: - Used Docker, GitHub Actions, AWS ECS, Amazon RDS, and CloudWatch monitering for delivery.\n2 other open comments remain: 2 in Missing Experience.\nPreview on Resume\nAccept Change\nReject",
+      "answer": "monitoring"
+    }
+  ],
+  "resume_after": "Maya Cohen\n+972 52 555 0147\nmaya.cohen@example.com\n\nPROFESSIONAL SUMMARY\nBackend engineer who builds reliable services and internal tools.\n\nEXPERIENCE\nBackend Engineer 2022 - Present\nCivicFlow\n- Built Java and Spring Boot services and PostgreSQL architecture for municipal workflow products.\n- Used Docker, GitHub Actions, AWS ECS, Amazon RDS, and CloudWatch monitoring for delivery.\nSoftware Engineer 2020 - 2022\nAtlas Systems\n- Built React and JavaScript interfaces and REST APIs for internal operations tools.\n\nEDUCATION\nB.Sc. Computer Information Systems 2016 - 2020\nNorthern Israel Institute of Technology\n\nSKILLS\nSpring Boot • PostgreSQL • REST APIs • Docker • GitHub Actions • AWS • AWS ECS • Amazon RDS • CloudWatch • React • API design • cross-functional collaboration • incident follow-up\nProgramming Languages: Java • JavaScript",
+  "profile_job_potential": {
+    "basic": 71.43,
+    "preferred": 66.67,
+    "combined": 70.24
+  },
+  "resume_representation_before": {
+    "basic": 100,
+    "preferred": 100,
+    "combined": 100
+  },
+  "resume_representation_after": {
+    "basic": 100,
+    "preferred": 100,
+    "combined": 100,
+    "delta": 0
+  },
+  "grounding_safety": "PASS",
+  "grounding_errors": [],
+  "repair_integrity": "PASS",
+  "repair_errors": [],
+  "structure_before": "FAIL",
+  "structure_preservation": "PASS",
+  "structure_errors": [],
+  "result": "PASS"
+}
