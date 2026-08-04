@@ -1,6 +1,10 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import { interactionMatchTerms, profileLookupForResumeCheckCard } from "../evaluation/live-flow-runner.mjs";
+import {
+  interactionMatchTerms,
+  profileEvidenceForQuestion,
+  profileLookupForResumeCheckCard
+} from "../evaluation/live-flow-runner.mjs";
 import { loadEvaluationFixture } from "../evaluation/fixture-loader.mjs";
 
 const fixture = JSON.parse(await readFile(
@@ -67,6 +71,18 @@ assert.deepEqual(
     source: "profile.education.institution"
   },
   "the runner may copy one identified education field without inventing it"
+);
+assert.deepEqual(
+  profileEvidenceForQuestion(
+    backendFixture.profile,
+    "Do you have real, resume-worthy experience with AWS cloud services?"
+  ),
+  {
+    entry: backendFixture.profile.experience[0],
+    evidence: "Used AWS ECS, RDS, and CloudWatch for application delivery and monitoring.",
+    matched_skills: ["AWS"]
+  },
+  "the runner may use one verbatim profile fact when an exact skill identifies it"
 );
 assert.equal(
   profileLookupForResumeCheckCard(

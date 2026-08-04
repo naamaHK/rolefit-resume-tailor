@@ -2,11 +2,11 @@
   "fixture_id": "005-backend-platform-minimal-resume",
   "runner": "live-web-flow",
   "app_url": "http://127.0.0.1:8765/index.html",
-  "timestamp": "2026-08-04T09:26:11.508Z",
+  "timestamp": "2026-08-04T09:39:30.613Z",
   "events": [
     {
       "type": "analysis_complete",
-      "status": "AI analysis complete using google/gemini-2.5-flash-lite in 9s. 7 comments ready."
+      "status": "AI analysis complete using google/gemini-2.5-flash-lite in 5s. 6 comments ready."
     },
     {
       "type": "profile_lookup_applied",
@@ -22,9 +22,39 @@
       "type": "profile_lookup_applied",
       "field": "email",
       "source": "profile.basic_info.email"
+    },
+    {
+      "type": "profile_evidence_applied",
+      "matched_skills": [
+        "Spring Boot"
+      ],
+      "experience": "Backend Engineer at CivicFlow"
+    },
+    {
+      "type": "profile_evidence_applied",
+      "matched_skills": [
+        "React"
+      ],
+      "experience": "Software Engineer at Atlas Systems"
+    },
+    {
+      "type": "question_unhandled",
+      "question": "#1Confirm TypeScript\nJob Specific\nhigh risk\nUser Confirmation Needed\n\nConfirm Experience: TypeScript\n\nThis information is not currently in the resume. Add it only if it is true and you can discuss it in an interview.\nQUESTION / IMPORTANCE\n\nDo you have working knowledge of TypeScript for service-adjacent tooling?\n\nWHICH SECTION IS RELEVANT?\nSkills\nExperience\nProjects\nEducation\nCertifications\nOther\nDo not add\n\nChoose where this confirmed information may belong. The next questions will depend on that destination.\n\nChoose one or more relevant sections first. The next fields will appear only for the sections you choose.\nWhy this came up: TypeScript is a required skill for this Backend Platform Engineer role.\nResume evidence so far: Working knowledge of TypeScript for service-adjacent tooling\n3 other open comments remain: 3 more in Missing Experience.\nReject"
+    },
+    {
+      "type": "question_unhandled",
+      "question": "#2Confirm REST API design\nJob Specific\nhigh risk\nUser Confirmation Needed\n\nConfirm Experience: REST API design\n\nThis information is not currently in the resume. Add it only if it is true and you can discuss it in an interview.\nQUESTION / IMPORTANCE\n\nDo you have real, resume-worthy experience with REST API design?\n\nWHICH SECTION IS RELEVANT?\nSkills\nExperience\nProjects\nEducation\nCertifications\nOther\nDo not add\n\nChoose where this confirmed information may belong. The next questions will depend on that destination.\n\nChoose one or more relevant sections first. The next fields will appear only for the sections you choose.\nWhy this came up: This concrete requirement appears in the target job but is not currently supported by the resume.\nResume evidence so far: REST API design\n3 other open comments remain: 3 more in Missing Experience.\nReject"
+    },
+    {
+      "type": "question_unhandled",
+      "question": "#3Confirm Kubernetes\nJob Specific\nhigh risk\nUser Confirmation Needed\n\nConfirm Experience: Kubernetes\n\nThis information is not currently in the resume. Add it only if it is true and you can discuss it in an interview.\nQUESTION / IMPORTANCE\n\nDo you have real, resume-worthy experience with Kubernetes?\n\nWHICH SECTION IS RELEVANT?\nSkills\nExperience\nProjects\nEducation\nCertifications\nOther\nDo not add\n\nChoose where this confirmed information may belong. The next questions will depend on that destination.\n\nChoose one or more relevant sections first. The next fields will appear only for the sections you choose.\nWhy this came up: This concrete requirement appears in the target job but is not currently supported by the resume.\nResume evidence so far: Kubernetes\n3 other open comments remain: 3 more in Missing Experience.\nReject"
+    },
+    {
+      "type": "question_unhandled",
+      "question": "#4Confirm GraphQL\nJob Specific\nhigh risk\nUser Confirmation Needed\n\nConfirm Experience: GraphQL\n\nThis information is not currently in the resume. Add it only if it is true and you can discuss it in an interview.\nQUESTION / IMPORTANCE\n\nDo you have real, resume-worthy experience with GraphQL?\n\nWHICH SECTION IS RELEVANT?\nSkills\nExperience\nProjects\nEducation\nCertifications\nOther\nDo not add\n\nChoose where this confirmed information may belong. The next questions will depend on that destination.\n\nChoose one or more relevant sections first. The next fields will appear only for the sections you choose.\nWhy this came up: This concrete requirement appears in the target job but is not currently supported by the resume.\nResume evidence so far: GraphQL\n3 other open comments remain: 3 more in Missing Experience.\nReject"
     }
   ],
-  "resume_after": "Maya Cohen\n+972 52 555 0147\nmaya.cohen@example.com\n\nSKILLS\nJava • PostgreSQL",
+  "resume_after": "Maya Cohen\n+972 52 555 0147\nmaya.cohen@example.com\n\nEXPERIENCE\nBackend Engineer 2022 - Present\nCivicFlow\n- Built Java and Spring Boot services for municipal workflow products.\nSoftware Engineer 2020 - 2022\nAtlas Systems\n- Built React and JavaScript interfaces for internal operations tools.\n\nSKILLS\nJava • PostgreSQL",
   "profile_job_potential": {
     "basic": 71.43,
     "preferred": 66.67,
@@ -36,10 +66,10 @@
     "combined": 15
   },
   "resume_representation_after": {
-    "basic": 20,
-    "preferred": 0,
-    "combined": 15,
-    "delta": 0
+    "basic": 60,
+    "preferred": 50,
+    "combined": 57.5,
+    "delta": 42.5
   },
   "grounding_safety": "PASS",
   "grounding_errors": [],
@@ -50,7 +80,6 @@
   "structure_errors": [
     "Summary, Experience, and Education must appear in that order.",
     "PROFESSIONAL SUMMARY must not be empty.",
-    "EXPERIENCE must not be empty.",
     "EDUCATION must not be empty."
   ],
   "result": "REJECT"

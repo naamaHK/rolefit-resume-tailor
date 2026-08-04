@@ -15,7 +15,8 @@
     "auto_profile_lookup": {
       "headers": true,
       "dates": true,
-      "required_fields": true
+      "required_fields": true,
+      "missing_experience": true
     },
     "expected": {
       "requires_resume_change": false,

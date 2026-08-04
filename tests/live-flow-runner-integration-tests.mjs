@@ -114,6 +114,22 @@ const backendMatchingMockAiResponse = {
   ]
 };
 
+const directProfileEvidenceMockAiResponse = {
+  ...emptyMockAiResponse,
+  job_analysis: { required_skills: [], preferred_skills: ["AWS cloud services"] },
+  change_cards: [
+    {
+      id: "fixture-aws",
+      type: "ask_user",
+      section: "Missing Evidence",
+      related_job_requirement: "AWS cloud services",
+      question: "Do you have real, resume-worthy experience with AWS cloud services?",
+      why_it_matters: "The target role prefers AWS cloud services.",
+      evidence: "No AWS experience appears in the resume."
+    }
+  ]
+};
+
 async function runMockFixture(name, mockResponse) {
   return runLiveFixture(path.resolve(`evaluation/fixtures/${name}`), {
     appUrl: pathToFileURL(path.resolve("index.html")).href,
@@ -152,12 +168,15 @@ try {
   assert.equal(headerResult.structure_before, "FAIL");
   assert.equal(headerResult.structure_preservation, "PASS");
 
-  const minimalResult = await runMockFixture("005-backend-platform-minimal-resume.json", emptyMockAiResponse);
+  const minimalResult = await runMockFixture("005-backend-platform-minimal-resume.json", directProfileEvidenceMockAiResponse);
   assert.equal(minimalResult.result, "REJECT");
-  assert.equal(minimalResult.resume_representation_after.combined, 15);
+  assert.ok(minimalResult.resume_representation_after.combined > 15);
+  assert.equal(minimalResult.grounding_safety, "PASS");
   assert.equal(minimalResult.events.filter((event) => event.type === "profile_lookup_applied").length, 3);
+  assert.ok(minimalResult.events.filter((event) => event.type === "profile_evidence_applied").length >= 1);
   assert.match(minimalResult.resume_after, /Maya Cohen/);
   assert.match(minimalResult.resume_after, /maya\.cohen@example\.com/);
+  assert.match(minimalResult.resume_after, /Used AWS ECS, RDS, and CloudWatch/);
   console.log("Live flow runner integration test passed.");
 } catch (error) {
   if (/Executable doesn't exist|browserType\.launch|Target page, context or browser has been closed/i.test(error.message || "")) {

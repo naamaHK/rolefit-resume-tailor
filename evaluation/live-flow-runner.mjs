@@ -54,6 +54,41 @@ function profileEntryMatchesCard(entry, cardText) {
     .some((value) => cardText.includes(value));
 }
 
+function includesExactPhrase(text, phrase) {
+  return ` ${text} `.includes(` ${phrase} `);
+}
+
+function profileSkillTerms(profile) {
+  return Object.values(profile?.skills || {})
+    .flatMap((skills) => Array.isArray(skills) ? skills : [])
+    .map((skill) => ({ original: String(skill), normalized: normalized(skill) }))
+    .filter((skill) => skill.normalized.length >= 3);
+}
+
+/**
+ * Match a Missing Experience card only when its wording includes profile skill
+ * labels verbatim and those labels identify one factual experience bullet.
+ * This prevents the test harness from deciding that related skills are equal.
+ */
+export function profileEvidenceForQuestion(profile, rawCardText) {
+  const cardText = normalized(rawCardText);
+  const matchedSkills = profileSkillTerms(profile)
+    .filter((skill) => includesExactPhrase(cardText, skill.normalized));
+  if (!matchedSkills.length) return null;
+
+  const evidence = (profile?.experience || []).flatMap((entry) => (entry.facts || [])
+    .filter((fact) => matchedSkills.every((skill) => includesExactPhrase(normalized(fact), skill.normalized)))
+    .map((fact) => ({ entry, fact })));
+  const uniqueEvidence = uniqueMatch(evidence);
+  if (!uniqueEvidence) return null;
+
+  return {
+    entry: uniqueEvidence.entry,
+    evidence: uniqueEvidence.fact,
+    matched_skills: matchedSkills.map((skill) => skill.original)
+  };
+}
+
 /**
  * Return only a literal value already stored in the hidden profile.  This is
  * deliberately not an equivalence or skill matcher: an ambiguous card, or a
@@ -238,6 +273,57 @@ async function applyConfirmedInteraction(page, interaction, cardId) {
   await accept.click();
 }
 
+async function selectExperienceEntryOrNew(card, evidence) {
+  const targetSelect = card.locator(".experience-entry-select");
+  const count = await targetSelect.count();
+  if (!count) return "new";
+  await requireExactlyOne(targetSelect, "Expected one Experience target selector.");
+
+  const options = targetSelect.locator("option");
+  const optionCount = await options.count();
+  for (let index = 0; index < optionCount; index += 1) {
+    const option = options.nth(index);
+    const optionText = normalized(await option.innerText());
+    if (includesExactPhrase(optionText, normalized(evidence.entry.title))
+      && includesExactPhrase(optionText, normalized(evidence.entry.company))) {
+      const value = await option.getAttribute("value");
+      if (value) {
+        await targetSelect.selectOption(value);
+        return "existing";
+      }
+    }
+  }
+
+  await targetSelect.selectOption({ label: "Add new experience entry" });
+  return "new";
+}
+
+async function applyProfileEvidenceToExperience(page, cardId, evidence) {
+  let card = cardLocator(page, cardId);
+  const experienceCheckbox = card.locator('.placement-checkbox[value="experience"]');
+  await requireExactlyOne(experienceCheckbox, "Expected one Experience placement checkbox for a profile-backed answer.");
+  await experienceCheckbox.check();
+
+  card = cardLocator(page, cardId);
+  const targetKind = await selectExperienceEntryOrNew(card, evidence);
+  card = cardLocator(page, cardId);
+  if (targetKind === "new") {
+    await fillDraftField(card, "experienceNewTitle", evidence.entry.title, "profile-backed experience");
+    await fillDraftField(card, "experienceNewCompany", evidence.entry.company, "profile-backed experience");
+    await fillDraftField(card, "experienceNewYears", evidence.entry.dates, "profile-backed experience");
+  } else {
+    const actionSelect = card.locator(".experience-action-select");
+    await requireExactlyOne(actionSelect, "Expected an action selector for a profile-backed experience answer.");
+    await actionSelect.selectOption("new");
+  }
+
+  card = cardLocator(page, cardId);
+  await fillDraftField(card, "experienceDraftText", evidence.evidence, "profile-backed experience");
+  const accept = card.locator('[data-action="accept-placement"][data-accept-placement="experience"]');
+  await requireExactlyOne(accept, "Expected an Add to Experience button for a profile-backed answer.");
+  await accept.click();
+}
+
 async function applyResumeCheckInteraction(page, interaction) {
   const terms = matchTerms(interaction.card_match, interaction.before, interaction.field, interaction.type);
   if (!terms.length) throw new Error("Each resume-check interaction needs card_match, before, field, or type.");
@@ -291,6 +377,47 @@ async function applyAutomaticProfileLookups(page, fixture, events) {
     if (!applied) return;
   }
   throw new Error("Stopped automatic profile lookup after 12 accepted cards; a card may not be resolving.");
+}
+
+async function applyAutomaticProfileEvidence(page, fixture, events) {
+  if (!fixture.oracle.auto_profile_lookup?.missing_experience) return;
+  const handled = new Set();
+
+  for (let pass = 0; pass < 12; pass += 1) {
+    const cards = page.locator("#changeCards [data-change-id]");
+    const count = await cards.count();
+    let applied = false;
+
+    for (let index = 0; index < count; index += 1) {
+      const card = cards.nth(index);
+      const cardText = await card.innerText();
+      const evidence = profileEvidenceForQuestion(fixture.profile, cardText);
+      if (!evidence) continue;
+      const key = `${normalized(cardText)}|${evidence.evidence}`;
+      if (handled.has(key)) continue;
+      handled.add(key);
+
+      const id = await card.getAttribute("data-change-id");
+      if (!id) continue;
+      await applyProfileEvidenceToExperience(page, id, evidence);
+      events.push({
+        type: "profile_evidence_applied",
+        matched_skills: evidence.matched_skills,
+        experience: `${evidence.entry.title} at ${evidence.entry.company}`
+      });
+      applied = true;
+      break;
+    }
+
+    if (!applied) break;
+  }
+
+  const remainingCards = page.locator("#changeCards [data-change-id]");
+  const remainingCount = await remainingCards.count();
+  for (let index = 0; index < remainingCount; index += 1) {
+    const card = remainingCards.nth(index);
+    events.push({ type: "question_unhandled", question: await card.innerText() });
+  }
 }
 
 async function waitForAnalysis(page, timeoutMs) {
@@ -403,6 +530,7 @@ export async function runLiveFixture(fixturePath, options = {}) {
         });
       }
     }
+    await applyAutomaticProfileEvidence(page, fixture, events);
 
     const resumeAfter = (await page.locator("#finalResume").inputValue()).trim()
       || await page.locator("#resumeInput").inputValue();
