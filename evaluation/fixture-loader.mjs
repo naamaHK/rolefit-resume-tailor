@@ -5,7 +5,17 @@ function mergeFixture(base, variant) {
   return {
     ...base,
     ...variant,
-    profile: variant.profile || base.profile,
+    profile: {
+      ...base.profile,
+      ...variant.profile,
+      basic_info: { ...base.profile?.basic_info, ...variant.profile?.basic_info },
+      skills: { ...base.profile?.skills, ...variant.profile?.skills },
+      other: { ...base.profile?.other, ...variant.profile?.other },
+      experience: variant.profile?.experience || base.profile?.experience,
+      education: variant.profile?.education || base.profile?.education,
+      certifications: variant.profile?.certifications || base.profile?.certifications,
+      languages: variant.profile?.languages || base.profile?.languages
+    },
     rolefit_input: { ...base.rolefit_input, ...variant.rolefit_input },
     oracle: {
       ...base.oracle,

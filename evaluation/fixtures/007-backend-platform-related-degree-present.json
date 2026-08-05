@@ -1,0 +1,34 @@
+{
+  "id": "007-backend-platform-related-degree-present",
+  "base_fixture": "shared/backend-platform-profile-and-job.json",
+  "purpose": "Positive semantic-recognition scenario: Maya's Computer Information Systems degree is visibly present and satisfies a Computer Science or closely related degree qualification.",
+  "test_metadata": {
+    "mode": "semantic_coverage_no_question",
+    "expected_model_behaviour": ["recognize the stated related degree and do not ask a redundant degree question"]
+  },
+  "rolefit_input": {
+    "resume_before": "Maya Cohen\n+972 52 555 0147 | maya.cohen@example.com | linkedin.com/in/maya-cohen\n\nPROFESSIONAL SUMMARY\nBackend engineer with four years of experience building Java services, cloud delivery workflows, and internal tools.\n\nEXPERIENCE\nBackend Engineer | CivicFlow | 2022–Present\n- Built Java and Spring Boot services for municipal workflow products.\n- Designed PostgreSQL schemas and REST APIs for case-management data.\n- Used AWS ECS, Amazon RDS, and CloudWatch for application delivery and monitoring.\n\nSoftware Engineer | Atlas Systems | 2020–2022\n- Built React and JavaScript interfaces for internal operations tools.\n\nEDUCATION\nB.Sc. Computer Information Systems | Northern Israel Institute of Technology | 2016–2020\n\nSKILLS\nJava, Spring Boot, PostgreSQL, REST APIs, Docker, GitHub Actions, AWS, AWS ECS, Amazon RDS, CloudWatch, React, JavaScript, API design, cross-functional collaboration, incident follow-up\n\nLANGUAGES\nHebrew — native | English — professional working proficiency",
+    "job_description": "Backend Platform Engineer\n\nBuild reliable platform services and developer tooling for product teams.\n\nBasic Qualifications\n- Bachelor’s degree in Computer Science or a closely related field.\n\nPreferred Qualifications\n- Experience with AWS cloud services."
+  },
+  "oracle": {
+    "requirements": [
+      { "id": "cs_degree", "label": "Computer Science or closely related degree", "coverage_match": "Computer Science or closely related degree", "category": "basic", "profile_supported": true, "resume_evidence_pattern": "B.Sc. Computer Information Systems" },
+      { "id": "aws_cloud_services", "label": "AWS cloud services", "category": "preferred", "profile_supported": true, "resume_evidence_pattern": "AWS ECS, Amazon RDS, and CloudWatch" }
+    ],
+    "interactions": [],
+    "question_expectations": {
+      "must_not_ask": ["cs_degree"]
+    },
+    "coverage_expectations": {
+      "must_be_covered": ["cs_degree"]
+    },
+    "expected": {
+      "requires_resume_change": false,
+      "profile_job_potential": { "basic": 100, "preferred": 100, "combined": 100 },
+      "resume_representation_before": { "basic": 100, "preferred": 100, "combined": 100 },
+      "resume_representation_after": { "basic": 100, "preferred": 100, "combined": 100, "delta": 0 },
+      "grounding_safety": "PASS",
+      "structure_preservation": "PASS"
+    }
+  }
+}

@@ -140,6 +140,52 @@ export function interactionMatchTerms(fixture, interaction) {
   ]);
 }
 
+export function unexpectedQuestionErrors(fixture, cardTexts = []) {
+  const expectedAbsent = fixture.oracle.question_expectations?.must_not_ask || [];
+  return expectedAbsent.flatMap((requirementId) => {
+    const requirement = fixture.oracle.requirements.find((item) => item.id === requirementId);
+    if (!requirement) throw new Error(`Unknown no-question requirement: ${requirementId}`);
+    const terms = matchTerms(requirement.label, requirementId.replaceAll("_", " "));
+    return cardTexts
+      .filter((cardText) => terms.some((term) => normalized(cardText).includes(term)))
+      .map((cardText) => ({ requirement_id: requirementId, question: cardText }));
+  });
+}
+
+export function coverageRecognitionErrors(fixture, coveredText = "") {
+  const expectedCovered = fixture.oracle.coverage_expectations?.must_be_covered || [];
+  const normalizedCovered = normalized(coveredText);
+  return expectedCovered.flatMap((requirementId) => {
+    const requirement = fixture.oracle.requirements.find((item) => item.id === requirementId);
+    if (!requirement) throw new Error(`Unknown covered requirement: ${requirementId}`);
+    const expectedText = requirement.coverage_match || requirement.label;
+    return normalizedCovered.includes(normalized(expectedText)) ? [] : [{
+      requirement_id: requirementId,
+      expected_coverage: expectedText
+    }];
+  });
+}
+
+async function recordExpectedCoverage(page, fixture, events) {
+  if (!(fixture.oracle.coverage_expectations?.must_be_covered || []).length) return [];
+  const covered = page.locator(".role-coverage-block.covered");
+  await requireExactlyOne(covered, "Expected one covered-requirements block.");
+  const errors = coverageRecognitionErrors(fixture, await covered.innerText());
+  errors.forEach((error) => events.push({ type: "expected_coverage_missing", ...error }));
+  return errors;
+}
+
+async function recordUnexpectedQuestions(page, fixture, events) {
+  if (!(fixture.oracle.question_expectations?.must_not_ask || []).length) return [];
+  const cards = page.locator("#changeCards [data-change-id]");
+  const count = await cards.count();
+  const cardTexts = [];
+  for (let index = 0; index < count; index += 1) cardTexts.push(await cards.nth(index).innerText());
+  const errors = unexpectedQuestionErrors(fixture, cardTexts);
+  errors.forEach((error) => events.push({ type: "unexpected_question", ...error }));
+  return errors;
+}
+
 async function findCardByTerms(page, terms, description) {
   const cards = page.locator("#changeCards [data-change-id]");
   const count = await cards.count();
@@ -484,6 +530,7 @@ export async function runLiveFixture(fixturePath, options = {}) {
     await page.locator("#analyzeAiBtn").click();
     const analysisStatus = await waitForAnalysis(page, timeoutMs);
     events.push({ type: "analysis_complete", status: analysisStatus });
+    const coverageRecognitionErrors = await recordExpectedCoverage(page, fixture, events);
 
     const cleanupPass = page.locator("#cleanupPassBtn");
     await requireExactlyOne(cleanupPass, "Expected one Resume Check tab.");
@@ -502,9 +549,19 @@ export async function runLiveFixture(fixturePath, options = {}) {
     const missingExperienceTab = page.locator("#missingExperiencePassBtn");
     await requireExactlyOne(missingExperienceTab, "Expected one Missing Experience tab.");
     await missingExperienceTab.click();
+    const questionRecognitionErrors = await recordUnexpectedQuestions(page, fixture, events);
+    const questionCoverageErrors = [];
 
     for (const interaction of fixture.oracle.interactions) {
-      const card = await findQuestionCard(page, fixture, interaction);
+      let card;
+      try {
+        card = await findQuestionCard(page, fixture, interaction);
+      } catch (error) {
+        const message = error.message || String(error);
+        questionCoverageErrors.push({ requirement_id: interaction.requirement_id, message });
+        events.push({ type: "expected_question_missing", requirement_id: interaction.requirement_id, message });
+        continue;
+      }
       events.push({
         type: "question_asked",
         requirement_id: interaction.requirement_id,
@@ -543,9 +600,18 @@ export async function runLiveFixture(fixturePath, options = {}) {
       events,
       resume_after: resumeAfter,
       ...scoring,
+      coverage_recognition: coverageRecognitionErrors.length ? "FAIL" : "PASS",
+      coverage_recognition_errors: coverageRecognitionErrors,
+      question_coverage: questionCoverageErrors.length ? "FAIL" : "PASS",
+      question_coverage_errors: questionCoverageErrors,
+      question_recognition: questionRecognitionErrors.length ? "FAIL" : "PASS",
+      question_recognition_errors: questionRecognitionErrors,
       result: scoring.grounding_safety === "PASS"
         && scoring.repair_integrity === "PASS"
-        && scoring.structure_preservation === "PASS" ? "PASS" : "REJECT"
+        && scoring.structure_preservation === "PASS"
+        && coverageRecognitionErrors.length === 0
+        && questionCoverageErrors.length === 0
+        && questionRecognitionErrors.length === 0 ? "PASS" : "REJECT"
     };
 
     if (options.outputPath) {
@@ -580,6 +646,9 @@ if (import.meta.url === pathToFileURL(process.argv[1]).href) {
     delta: result.resume_representation_after.delta,
     grounding_safety: result.grounding_safety,
     repair_integrity: result.repair_integrity,
+    coverage_recognition: result.coverage_recognition,
+    question_coverage: result.question_coverage,
+    question_recognition: result.question_recognition,
     structure_before: result.structure_before,
     structure_preservation: result.structure_preservation
   }, null, 2));

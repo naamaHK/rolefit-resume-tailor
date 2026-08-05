@@ -2,8 +2,10 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import {
   interactionMatchTerms,
+  coverageRecognitionErrors,
   profileEvidenceForQuestion,
-  profileLookupForResumeCheckCard
+  profileLookupForResumeCheckCard,
+  unexpectedQuestionErrors
 } from "../evaluation/live-flow-runner.mjs";
 import { loadEvaluationFixture } from "../evaluation/fixture-loader.mjs";
 
@@ -92,6 +94,28 @@ assert.equal(
   ),
   null,
   "the runner must not infer a job skill from the profile"
+);
+
+const degreeRecognitionFixture = await loadEvaluationFixture(
+  new URL("../evaluation/fixtures/007-backend-platform-related-degree-present.json", import.meta.url).pathname
+);
+assert.deepEqual(
+  coverageRecognitionErrors(degreeRecognitionFixture, "Requirements Covered in Current Resume\nAWS\n"),
+  [{
+    requirement_id: "cs_degree",
+    expected_coverage: "Computer Science or closely related degree"
+  }],
+  "the degree scenario must fail when the related degree is not marked covered"
+);
+assert.deepEqual(
+  unexpectedQuestionErrors(degreeRecognitionFixture, [
+    "Confirm Computer Science or closely related degree\nDo you have this degree?"
+  ]),
+  [{
+    requirement_id: "cs_degree",
+    question: "Confirm Computer Science or closely related degree\nDo you have this degree?"
+  }],
+  "a degree question must fail the positive related-degree recognition scenario"
 );
 
 console.log("Live flow runner tests passed.");

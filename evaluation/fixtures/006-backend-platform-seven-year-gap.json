@@ -1,0 +1,69 @@
+{
+  "id": "006-backend-platform-seven-year-gap",
+  "base_fixture": "shared/backend-platform-profile-and-job.json",
+  "purpose": "Simple experience-duration boundary: the job asks for seven years while the resume and hidden profile support only four. The same resume contains two differently worded, already-supported qualifications that must not trigger questions.",
+  "test_metadata": {
+    "mode": "experience_gap_and_semantic_coverage",
+    "expected_model_behaviour": [
+      "ask whether earlier relevant backend experience is omitted",
+      "do not ask about AWS cloud services when AWS ECS, RDS, and CloudWatch are described",
+      "do not ask about React internal-tool experience when React interfaces for internal operations tools are described"
+    ]
+  },
+  "profile": {
+    "experience": [
+      {
+        "title": "Backend Engineer",
+        "company": "CivicFlow",
+        "dates": "2023–Present",
+        "facts": [
+          "Built Java and Spring Boot services for municipal workflow products.",
+          "Designed PostgreSQL schemas and query improvements for case-management data.",
+          "Containerized services with Docker and maintained GitHub Actions delivery pipelines.",
+          "Collaborated with product, frontend, and platform engineers on API contracts and incident follow-up.",
+          "Used AWS ECS, RDS, and CloudWatch for application delivery and monitoring."
+        ]
+      },
+      {
+        "title": "Software Engineer",
+        "company": "Atlas Systems",
+        "dates": "2022–2023",
+        "facts": [
+          "Built React and JavaScript interfaces for internal operations tools.",
+          "Integrated REST APIs and wrote automated tests for workflow features."
+        ]
+      }
+    ],
+    "other": {
+      "relevant_backend_experience_years": 4
+    }
+  },
+  "rolefit_input": {
+    "resume_before": "Maya Cohen\n+972 52 555 0147 | maya.cohen@example.com | linkedin.com/in/maya-cohen\n\nPROFESSIONAL SUMMARY\nBackend engineer with four years of experience building Java services, cloud delivery workflows, and internal tools.\n\nEXPERIENCE\nBackend Engineer | CivicFlow | 2023–Present\n- Built Java and Spring Boot services for municipal workflow products.\n- Designed PostgreSQL schemas and REST APIs for case-management data.\n- Used AWS ECS, Amazon RDS, and CloudWatch for application delivery and monitoring.\n\nSoftware Engineer | Atlas Systems | 2022–2023\n- Built React and JavaScript interfaces for internal operations tools.\n\nEDUCATION\nB.Sc. Computer Information Systems | Northern Israel Institute of Technology | 2016–2020\n\nSKILLS\nJava, Spring Boot, PostgreSQL, REST APIs, Docker, GitHub Actions, AWS, AWS ECS, Amazon RDS, CloudWatch, React, JavaScript, API design, cross-functional collaboration, incident follow-up\n\nLANGUAGES\nHebrew — native | English — professional working proficiency",
+    "job_description": "Backend Platform Engineer\n\nBuild reliable platform services and developer tooling for product teams.\n\nBasic Qualifications\n- 7+ years of backend software-engineering experience.\n- Experience operating AWS cloud services.\n\nPreferred Qualifications\n- Experience building React internal tools."
+  },
+  "oracle": {
+    "requirements": [
+      { "id": "seven_years_backend", "label": "7+ years of backend software-engineering experience", "category": "basic", "profile_supported": false, "resume_evidence_pattern": "7+ years" },
+      { "id": "aws_cloud_services", "label": "AWS cloud services", "coverage_match": "AWS", "category": "basic", "profile_supported": true, "resume_evidence_pattern": "AWS ECS, Amazon RDS, and CloudWatch" },
+      { "id": "react_internal_tools", "label": "React internal tools", "coverage_match": "React", "category": "preferred", "profile_supported": true, "resume_evidence_pattern": "Built React and JavaScript interfaces for internal operations tools." }
+    ],
+    "interactions": [
+      { "requirement_id": "seven_years_backend", "simulated_user_answer": "No. I have four years of backend engineering experience and no earlier relevant role to add.", "confirmed": false, "released_profile_fact": "", "resume_change": "" }
+    ],
+    "question_expectations": {
+      "must_not_ask": ["aws_cloud_services", "react_internal_tools"]
+    },
+    "coverage_expectations": {
+      "must_be_covered": ["aws_cloud_services", "react_internal_tools"]
+    },
+    "expected": {
+      "requires_resume_change": false,
+      "profile_job_potential": { "basic": 50, "preferred": 100, "combined": 62.5 },
+      "resume_representation_before": { "basic": 100, "preferred": 100, "combined": 100 },
+      "resume_representation_after": { "basic": 100, "preferred": 100, "combined": 100, "delta": 0 },
+      "grounding_safety": "PASS",
+      "structure_preservation": "PASS"
+    }
+  }
+}

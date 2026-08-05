@@ -44,7 +44,9 @@ const relatedFixturePaths = [
   "002-backend-platform-repair-boundary.json",
   "003-backend-platform-implied-degree-and-similar-skill.json",
   "004-backend-platform-missing-contact-and-typos.json",
-  "005-backend-platform-minimal-resume.json"
+  "005-backend-platform-minimal-resume.json",
+  "006-backend-platform-seven-year-gap.json",
+  "007-backend-platform-related-degree-present.json"
 ];
 
 for (const fixtureName of relatedFixturePaths) {

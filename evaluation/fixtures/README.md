@@ -1,4 +1,4 @@
-# First Five Evaluation Fixtures
+# Evaluation Fixtures
 
 Fixtures `002`–`005` reuse the same hidden profile and job through
 `shared/backend-platform-profile-and-job.json`. The loader resolves that base
@@ -11,6 +11,8 @@ resume and ordinary job description.
 | 003 | Related Computer Information Systems degree omitted; JavaScript shown while TypeScript is required | Ask about the degree; do not treat JavaScript as TypeScript |
 | 004 | Missing name, phone, and email plus two typos | Resume Check confirms header fields and repairs spelling |
 | 005 | Only Java and PostgreSQL in the input resume | Ask for information; do not infer the rest of the profile |
+| 006 | Job requires seven years; resume and hidden profile support only four | Ask whether earlier relevant experience is omitted; do not invent it. Also recognize AWS cloud and React internal-tool evidence already present in bullets. |
+| 007 | Related Computer Information Systems degree is explicitly present | Do not ask about the related degree. |
 
 Fixtures 002, 003, and 004 are now live-runner scenarios. Fixtures 002 and
 004 start structurally invalid and must become valid after their confirmed
