@@ -175,6 +175,17 @@ async function recordExpectedCoverage(page, fixture, events) {
   return errors;
 }
 
+async function readRoleCoverage(page) {
+  const covered = page.locator(".role-coverage-block.covered");
+  const missing = page.locator(".role-coverage-block.missing");
+  await requireExactlyOne(covered, "Expected one covered-requirements block.");
+  await requireExactlyOne(missing, "Expected one missing-requirements block.");
+  return {
+    covered: await covered.innerText(),
+    missing: await missing.innerText()
+  };
+}
+
 async function recordUnexpectedQuestions(page, fixture, events) {
   if (!(fixture.oracle.question_expectations?.must_not_ask || []).length) return [];
   const cards = page.locator("#changeCards [data-change-id]");
@@ -530,6 +541,7 @@ export async function runLiveFixture(fixturePath, options = {}) {
     await page.locator("#analyzeAiBtn").click();
     const analysisStatus = await waitForAnalysis(page, timeoutMs);
     events.push({ type: "analysis_complete", status: analysisStatus });
+    const role_coverage = await readRoleCoverage(page);
     const coverageRecognitionErrors = await recordExpectedCoverage(page, fixture, events);
 
     const cleanupPass = page.locator("#cleanupPassBtn");
@@ -598,6 +610,7 @@ export async function runLiveFixture(fixturePath, options = {}) {
       app_url: appUrl,
       timestamp: new Date().toISOString(),
       events,
+      role_coverage,
       resume_after: resumeAfter,
       ...scoring,
       coverage_recognition: coverageRecognitionErrors.length ? "FAIL" : "PASS",

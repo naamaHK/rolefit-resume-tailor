@@ -2,11 +2,11 @@
   "fixture_id": "006-backend-platform-seven-year-gap",
   "runner": "live-web-flow",
   "app_url": "http://127.0.0.1:8765/index.html",
-  "timestamp": "2026-08-05T08:09:14.794Z",
+  "timestamp": "2026-08-05T08:26:26.349Z",
   "events": [
     {
       "type": "analysis_complete",
-      "status": "AI analysis complete using google/gemini-2.5-flash-lite in 8s. 5 comments ready."
+      "status": "AI analysis complete using google/gemini-2.5-flash-lite in 7s. 4 comments ready."
     },
     {
       "type": "expected_question_missing",
@@ -14,6 +14,10 @@
       "message": "RoleFit did not show the expected question for seven_years_backend. Looked for: 7+ years of backend software engineering experience, seven years backend. Available: none."
     }
   ],
+  "role_coverage": {
+    "covered": "REQUIREMENTS COVERED IN CURRENT RESUME\nAWS\nReact\ninternal tools",
+    "missing": "REQUIREMENTS STILL MISSING\nNone."
+  },
   "resume_after": "Maya Cohen\n+972 52 555 0147 | maya.cohen@example.com | linkedin.com/in/maya-cohen\n\nPROFESSIONAL SUMMARY\nBackend engineer with four years of experience building Java services, cloud delivery workflows, and internal tools.\n\nEXPERIENCE\nBackend Engineer | CivicFlow | 2023–Present\n- Built Java and Spring Boot services for municipal workflow products.\n- Designed PostgreSQL schemas and REST APIs for case-management data.\n- Used AWS ECS, Amazon RDS, and CloudWatch for application delivery and monitoring.\n\nSoftware Engineer | Atlas Systems | 2022–2023\n- Built React and JavaScript interfaces for internal operations tools.\n\nEDUCATION\nB.Sc. Computer Information Systems | Northern Israel Institute of Technology | 2016–2020\n\nSKILLS\nJava, Spring Boot, PostgreSQL, REST APIs, Docker, GitHub Actions, AWS, AWS ECS, Amazon RDS, CloudWatch, React, JavaScript, API design, cross-functional collaboration, incident follow-up\n\nLANGUAGES\nHebrew — native | English — professional working proficiency",
   "profile_job_potential": {
     "basic": 50,
