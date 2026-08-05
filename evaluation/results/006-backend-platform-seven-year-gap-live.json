@@ -2,23 +2,28 @@
   "fixture_id": "006-backend-platform-seven-year-gap",
   "runner": "live-web-flow",
   "app_url": "http://127.0.0.1:8765/index.html",
-  "timestamp": "2026-08-05T08:26:26.349Z",
+  "timestamp": "2026-08-05T08:33:33.285Z",
   "events": [
     {
       "type": "analysis_complete",
-      "status": "AI analysis complete using google/gemini-2.5-flash-lite in 7s. 4 comments ready."
+      "status": "AI analysis complete using google/gemini-2.5-flash-lite in 7s. 5 comments ready."
     },
     {
-      "type": "expected_question_missing",
+      "type": "question_asked",
       "requirement_id": "seven_years_backend",
-      "message": "RoleFit did not show the expected question for seven_years_backend. Looked for: 7+ years of backend software engineering experience, seven years backend. Available: none."
+      "question": "#1Confirm 7+ years of backend software-engineering experience\nJob Specific\nhigh risk\nUser Confirmation Needed\n\nConfirm Experience: 7+ years of backend software-engineering experience\n\nThis information is not currently in the resume. Add it only if it is true and you can discuss it in an interview.\nQUESTION / IMPORTANCE\n\nThis role requests at least 7 years of relevant experience, but the resume does not show that amount. Is earlier relevant experience missing from the resume?\n\nWHICH SECTION IS RELEVANT?\nSkills\nExperience\nProjects\nEducation\nCertifications\nOther\nDo not add\n\nChoose where this confirmed information may belong. The next questions will depend on that destination.\n\nChoose one or more relevant sections first. The next fields will appear only for the sections you choose.\nWhy this came up: The target role requests more relevant experience than the resume currently shows.\nResume evidence so far: 7+ years of backend software-engineering experience\n5 other open comments remain: 1 in Resume Check, 4 in Suggestions.\nReject"
+    },
+    {
+      "type": "declined",
+      "requirement_id": "seven_years_backend",
+      "answer": "No. I have four years of backend engineering experience and no earlier relevant role to add."
     }
   ],
   "role_coverage": {
     "covered": "REQUIREMENTS COVERED IN CURRENT RESUME\nAWS\nReact\ninternal tools",
-    "missing": "REQUIREMENTS STILL MISSING\nNone."
+    "missing": "REQUIREMENTS STILL MISSING\n7+ years of backend software-engineering experience"
   },
-  "resume_after": "Maya Cohen\n+972 52 555 0147 | maya.cohen@example.com | linkedin.com/in/maya-cohen\n\nPROFESSIONAL SUMMARY\nBackend engineer with four years of experience building Java services, cloud delivery workflows, and internal tools.\n\nEXPERIENCE\nBackend Engineer | CivicFlow | 2023–Present\n- Built Java and Spring Boot services for municipal workflow products.\n- Designed PostgreSQL schemas and REST APIs for case-management data.\n- Used AWS ECS, Amazon RDS, and CloudWatch for application delivery and monitoring.\n\nSoftware Engineer | Atlas Systems | 2022–2023\n- Built React and JavaScript interfaces for internal operations tools.\n\nEDUCATION\nB.Sc. Computer Information Systems | Northern Israel Institute of Technology | 2016–2020\n\nSKILLS\nJava, Spring Boot, PostgreSQL, REST APIs, Docker, GitHub Actions, AWS, AWS ECS, Amazon RDS, CloudWatch, React, JavaScript, API design, cross-functional collaboration, incident follow-up\n\nLANGUAGES\nHebrew — native | English — professional working proficiency",
+  "resume_after": "Maya Cohen\n+972 52 555 0147 | maya.cohen@example.com | linkedin.com/in/maya-cohen\n\nPROFESSIONAL SUMMARY\nBackend engineer with four years of experience building Java services, cloud delivery workflows, and internal tools.\n\nEXPERIENCE\nBackend Engineer | CivicFlow | 2023 - Present\n- Built Java and Spring Boot services for municipal workflow products.\n- Designed PostgreSQL schemas and REST APIs for case-management data.\n- Used AWS ECS, Amazon RDS, and CloudWatch for application delivery and monitoring.\nSoftware Engineer | Atlas Systems | 2022 - 2023\n- Built React and JavaScript interfaces for internal operations tools.\n\nEDUCATION\nB.Sc. Computer Information Systems | Northern Israel Institute of Technology | 2016 - 2020\n\nSKILLS\nSpring Boot • PostgreSQL • REST APIs • Docker • GitHub Actions • AWS • AWS ECS • Amazon RDS • CloudWatch • React • API design • cross-functional collaboration • incident follow-up\nProgramming Languages: Java • JavaScript\n\nLANGUAGES\nHebrew — native | English — professional working proficiency",
   "profile_job_potential": {
     "basic": 50,
     "preferred": 100,
@@ -44,14 +49,9 @@
   "structure_errors": [],
   "coverage_recognition": "PASS",
   "coverage_recognition_errors": [],
-  "question_coverage": "FAIL",
-  "question_coverage_errors": [
-    {
-      "requirement_id": "seven_years_backend",
-      "message": "RoleFit did not show the expected question for seven_years_backend. Looked for: 7+ years of backend software engineering experience, seven years backend. Available: none."
-    }
-  ],
+  "question_coverage": "PASS",
+  "question_coverage_errors": [],
   "question_recognition": "PASS",
   "question_recognition_errors": [],
-  "result": "REJECT"
+  "result": "PASS"
 }

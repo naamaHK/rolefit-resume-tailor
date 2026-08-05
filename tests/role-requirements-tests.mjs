@@ -132,4 +132,44 @@ assert.equal(
   "Computer Information Systems is a valid closely related degree"
 );
 
+const durationJob = `Backend Platform Engineer
+
+Basic Qualifications
+- 7+ years of backend software-engineering experience.
+
+Preferred Qualifications
+- Experience with AWS cloud services.`;
+
+assert.deepEqual(
+  JSON.parse(JSON.stringify(requirements.collect({
+    job_analysis: { required_skills: [], preferred_skills: [] }
+  }, durationJob))),
+  [{ key: "experience-years-7-backend-software-engineering-experience", display: "7+ years of backend software-engineering experience" }],
+  "a years-of-experience qualification must be extracted even when the model omits it"
+);
+assert.equal(
+  requirements.resumeCovers(`EXPERIENCE
+Backend Engineer | CivicFlow | 2023–Present
+Software Engineer | Atlas Systems | 2022–2023
+
+EDUCATION
+B.Sc. Computer Science | Example University | 2018–2022`, "experience-years-7-backend-software-engineering-experience"),
+  false,
+  "four visible experience years must not satisfy a seven-year requirement"
+);
+assert.equal(
+  requirements.resumeCovers(`EXPERIENCE
+Backend Engineer | CivicFlow | 2010–2020`, "experience-years-7-backend-software-engineering-experience"),
+  true,
+  "a sufficiently long visible experience range should satisfy the duration requirement"
+);
+assert.match(
+  missingExperienceFlow.buildQuestionSpecs([{
+    key: "experience-years-7-backend-software-engineering-experience",
+    display: "7+ years of backend software-engineering experience"
+  }])[0].promptText,
+  /requests at least 7 years.*earlier relevant experience/i,
+  "duration requirements should ask about omitted earlier experience without assuming it exists"
+);
+
 console.log("Role requirement tests passed");

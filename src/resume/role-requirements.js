@@ -88,9 +88,53 @@
       return preferred[key] || value;
     }
 
+    function durationRequirement(term) {
+      const value = cleanConfirmedText(String(term || "")).replace(/^[-*•]\s*/, "");
+      const match = value.match(/\b(\d+)\s*\+?\s*(?:years?|yrs?)(?:\s+of)?\s+(.{0,90}?\bexperience\b)/i);
+      if (!match) return null;
+      const minimumYears = Number(match[1]);
+      const description = cleanConfirmedText(match[2]).replace(/[.;:,]+$/, "");
+      if (!Number.isFinite(minimumYears) || minimumYears < 1 || !description) return null;
+      const keyDescription = normalize(description).replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+      return {
+        key: `experience-years-${minimumYears}-${keyDescription}`,
+        display: `${minimumYears}+ years of ${description}`,
+        minimumYears
+      };
+    }
+
+    function visibleExperienceYears(resumeText) {
+      const lines = splitLines(resumeText);
+      const start = lines.findIndex((line) => /^(?:professional\s+)?experience\s*:?$/i.test(line));
+      if (start === -1) return 0;
+      const experienceLines = [];
+      for (let index = start + 1; index < lines.length; index += 1) {
+        const line = lines[index];
+        if (/^[A-Z][A-Z &/]+$/.test(line)) break;
+        experienceLines.push(line);
+      }
+
+      const coveredYears = new Set();
+      const currentYear = new Date().getFullYear();
+      for (const line of experienceLines) {
+        const matches = String(line).matchAll(/\b((?:19|20)\d{2})\s*(?:-|–|—|to)\s*(Present|present|(?:19|20)\d{2})\b/g);
+        for (const match of matches) {
+          const startYear = Number(match[1]);
+          const endYear = /^present$/i.test(match[2]) ? currentYear : Number(match[2]);
+          if (!Number.isFinite(startYear) || !Number.isFinite(endYear) || endYear < startYear) continue;
+          for (let year = startYear; year <= endYear; year += 1) coveredYears.add(year);
+        }
+      }
+      return coveredYears.size;
+    }
+
     function groupForJob(term, jobText = "") {
       const key = normalizeKey(term);
       const job = normalize(String(jobText || "")).replace(/\s+/g, " ");
+      const duration = durationRequirement(term);
+      if (duration && qualificationLines(jobText).some((line) => durationRequirement(line)?.key === duration.key)) {
+        return duration;
+      }
 
       if (key === "tableau" && /\btableau\s+dashboards?\b/.test(job)) {
         return { key: "tableau", display: "Tableau dashboards" };
@@ -132,6 +176,7 @@
     function isGroundedInJob(term, grouped, jobText = "") {
       const job = String(jobText || "");
       if (!job.trim()) return true;
+      if (grouped.key.startsWith("experience-years-")) return true;
       if (["advanced-degree", "relevant-research-background", "patents-or-publications", "communication-and-collaboration"].includes(grouped.key)) {
         return true;
       }
@@ -148,6 +193,8 @@
 
     function resumeCovers(resumeText, requirement) {
       const key = normalizeKey(requirement);
+      const durationMatch = key.match(/^experience-years-(\d+)-/);
+      if (durationMatch) return visibleExperienceYears(resumeText) >= Number(durationMatch[1]);
       if (key === "advanced-degree") {
         return /\b(?:Ph\.?\s*D\.?|Doctorate|Doctoral degree|M\.?\s*Sc\.?|Master(?:'s)?(?:\s+degree)?)\b/i.test(resumeText);
       }
@@ -217,6 +264,9 @@
         ...(job.preferred_skills || [])
       ];
       const localTerms = qualificationLines(jobText).flatMap((line) => extractMissingExperienceTopics(line));
+      const localDurationTerms = qualificationLines(jobText)
+        .map((line) => durationRequirement(line)?.display || "")
+        .filter(Boolean);
       const fallbackTerms = [
         ...(finalChecks.keywords_covered || []),
         ...(finalChecks.keywords_missing || [])
@@ -227,7 +277,8 @@
       // grounded confirmation question.
       const rawTerms = [
         ...modeledRequirementTerms,
-        ...localTerms
+        ...localTerms,
+        ...localDurationTerms
       ];
       const termsToCollect = rawTerms.length ? rawTerms : fallbackTerms;
       const byKey = new Map();

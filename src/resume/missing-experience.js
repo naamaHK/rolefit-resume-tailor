@@ -17,7 +17,10 @@
         const dedupeKey = normalize(key || label);
         if (!dedupeKey || !label || seen.has(dedupeKey)) continue;
         seen.add(dedupeKey);
-        const promptText = key === "relevant-research-background"
+        const durationMatch = key.match(/^experience-years-(\d+)-/);
+        const promptText = durationMatch
+          ? `This role requests at least ${durationMatch[1]} years of relevant experience, but the resume does not show that amount. Is earlier relevant experience missing from the resume?`
+          : key === "relevant-research-background"
           ? "Do you have research experience in Computer Science, Computer Engineering, Machine Learning, or a closely related field? If yes, briefly name the field and project."
           : `Do you have real, resume-worthy experience with ${label}?`;
         specs.push({
@@ -25,7 +28,9 @@
           label,
           promptText,
           relatedRequirement: label,
-          whyItMatters: "This concrete requirement appears in the target job but is not currently supported by the resume."
+          whyItMatters: durationMatch
+            ? "The target role requests more relevant experience than the resume currently shows."
+            : "This concrete requirement appears in the target job but is not currently supported by the resume."
         });
       }
 

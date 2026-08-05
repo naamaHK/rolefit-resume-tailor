@@ -876,6 +876,8 @@ function missingExperienceDedupeTopic(change) {
   const normalizedTopic = normalize(topic);
   const topicText = normalize([topic, change.promptText, change.evidence].filter(Boolean).join(" "));
 
+  if (/^\d+\+?\s+years?\s+of\b/.test(normalizedTopic)) return normalizedTopic;
+
   // Providers sometimes describe the same missing area once as a sentence and
   // once as a short label. Only normalize the card's own label here: supporting
   // evidence often mentions broad research language shared by unrelated cards.
@@ -906,6 +908,7 @@ function isUnhelpfulMissingExperienceQuestion(change) {
   const fullText = [change.missingTerm, change.promptText, change.whyItHelps, change.evidence]
     .filter(Boolean)
     .join(" ");
+  const isExperienceDurationQuestion = /^\d+\+?\s+years?\s+of\b/i.test(change.missingTerm || "");
   const asksToExpandExistingRole = /\b(?:for your|from your time as|as a)\b[\s\S]{0,100}\b(role|position|job)\b/i.test(fullText)
     && /\b(details?|responsibilities|contributions|accomplishments)\b/i.test(fullText)
     && !extractQuestionTopicTerms(fullText).length;
@@ -919,7 +922,7 @@ function isUnhelpfulMissingExperienceQuestion(change) {
     || isOrganizationOnlyTopic(topic)
     || asksToExpandExistingRole
     || genericRoleDetail
-    || (!hasConcreteSemanticTopic && !isUsefulMissingExperienceLabel(change.missingTerm || ""));
+    || (!isExperienceDurationQuestion && !hasConcreteSemanticTopic && !isUsefulMissingExperienceLabel(change.missingTerm || ""));
 }
 
 function isOrganizationOnlyTopic(topic) {
