@@ -1,0 +1,64 @@
+{
+  "id": "008-backend-platform-eight-years-including-research",
+  "base_fixture": "shared/backend-platform-profile-and-job.json",
+  "purpose": "Combined-duration scenario: Maya has eight visible years across a research software-engineering role and a backend engineering role. Both are relevant dated Experience entries, so the seven-year qualification is already supported and must not trigger a question.",
+  "test_metadata": {
+    "mode": "combined_relevant_experience_duration",
+    "expected_model_behaviour": [
+      "combine the dated Research Software Engineer and Backend Engineer roles",
+      "mark seven years of backend software-engineering experience covered",
+      "do not ask a redundant duration question"
+    ]
+  },
+  "profile": {
+    "experience": [
+      {
+        "title": "Backend Engineer",
+        "company": "CivicFlow",
+        "dates": "2023–Present",
+        "facts": [
+          "Built Java and Spring Boot services for municipal workflow products.",
+          "Designed PostgreSQL schemas and query improvements for case-management data.",
+          "Used AWS ECS, RDS, and CloudWatch for application delivery and monitoring."
+        ]
+      },
+      {
+        "title": "Research Software Engineer",
+        "company": "Technion Applied Systems Lab",
+        "dates": "2019–2023",
+        "facts": [
+          "Built Java services and PostgreSQL-backed research data tools for applied-systems projects.",
+          "Designed REST APIs used by researchers and engineering collaborators."
+        ]
+      }
+    ],
+    "other": {
+      "relevant_backend_experience_years": 8
+    }
+  },
+  "rolefit_input": {
+    "resume_before": "Maya Cohen\n+972 52 555 0147 | maya.cohen@example.com | linkedin.com/in/maya-cohen\n\nPROFESSIONAL SUMMARY\nBackend engineer with eight years of experience building Java services, research data systems, and cloud delivery workflows.\n\nEXPERIENCE\nBackend Engineer | CivicFlow | 2023–Present\n- Built Java and Spring Boot services for municipal workflow products.\n- Used AWS ECS, Amazon RDS, and CloudWatch for application delivery and monitoring.\n\nResearch Software Engineer | Technion Applied Systems Lab | 2019–2023\n- Built Java services and PostgreSQL-backed research data tools for applied-systems projects.\n- Designed REST APIs used by researchers and engineering collaborators.\n\nEDUCATION\nB.Sc. Computer Information Systems | Northern Israel Institute of Technology | 2016–2020\n\nSKILLS\nJava, Spring Boot, PostgreSQL, REST APIs, AWS, AWS ECS, Amazon RDS, CloudWatch, API design, cross-functional collaboration\n\nLANGUAGES\nHebrew — native | English — professional working proficiency",
+    "job_description": "Backend Platform Engineer\n\nBuild reliable platform services and developer tooling for product teams.\n\nBasic Qualifications\n- 7+ years of backend software-engineering experience.\n\nPreferred Qualifications\n- Experience with AWS."
+  },
+  "oracle": {
+    "requirements": [
+      { "id": "seven_years_backend", "label": "7+ years of backend software-engineering experience", "coverage_match": "7+ years of backend software-engineering experience", "minimum_experience_years": 7, "category": "basic", "profile_supported": true, "resume_evidence_pattern": "2019–2023" },
+      { "id": "aws", "label": "AWS", "coverage_match": "AWS", "category": "preferred", "profile_supported": true, "resume_evidence_pattern": "AWS ECS, Amazon RDS, and CloudWatch" }
+    ],
+    "interactions": [],
+    "question_expectations": {
+      "must_not_ask": ["seven_years_backend"]
+    },
+    "coverage_expectations": {
+      "must_be_covered": ["seven_years_backend", "aws"]
+    },
+    "expected": {
+      "requires_resume_change": false,
+      "profile_job_potential": { "basic": 100, "preferred": 100, "combined": 100 },
+      "resume_representation_before": { "basic": 100, "preferred": 100, "combined": 100 },
+      "resume_representation_after": { "basic": 100, "preferred": 100, "combined": 100, "delta": 0 },
+      "grounding_safety": "PASS",
+      "structure_preservation": "PASS"
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "fixture_id": "008-backend-platform-eight-years-including-research",
+  "runner": "live-web-flow",
+  "app_url": "http://127.0.0.1:8765/index.html",
+  "timestamp": "2026-08-05T10:07:30.084Z",
+  "events": [
+    {
+      "type": "analysis_complete",
+      "status": "AI analysis complete using google/gemini-2.5-flash-lite in 5s. 5 comments ready."
+    }
+  ],
+  "role_coverage": {
+    "covered": "REQUIREMENTS COVERED IN CURRENT RESUME\nAWS\n7+ years of backend software-engineering experience",
+    "missing": "REQUIREMENTS STILL MISSING\nplatform services\ndeveloper tooling"
+  },
+  "resume_after": "Maya Cohen\n+972 52 555 0147 | maya.cohen@example.com | linkedin.com/in/maya-cohen\n\nPROFESSIONAL SUMMARY\nBackend engineer with eight years of experience building Java services, research data systems, and cloud delivery workflows.\n\nEXPERIENCE\nBackend Engineer | CivicFlow | 2023–Present\n- Built Java and Spring Boot services for municipal workflow products.\n- Used AWS ECS, Amazon RDS, and CloudWatch for application delivery and monitoring.\n\nResearch Software Engineer | Technion Applied Systems Lab | 2019–2023\n- Built Java services and PostgreSQL-backed research data tools for applied-systems projects.\n- Designed REST APIs used by researchers and engineering collaborators.\n\nEDUCATION\nB.Sc. Computer Information Systems | Northern Israel Institute of Technology | 2016–2020\n\nSKILLS\nJava, Spring Boot, PostgreSQL, REST APIs, AWS, AWS ECS, Amazon RDS, CloudWatch, API design, cross-functional collaboration\n\nLANGUAGES\nHebrew — native | English — professional working proficiency",
+  "profile_job_potential": {
+    "basic": 100,
+    "preferred": 100,
+    "combined": 100
+  },
+  "resume_representation_before": {
+    "basic": 100,
+    "preferred": 100,
+    "combined": 100
+  },
+  "resume_representation_after": {
+    "basic": 100,
+    "preferred": 100,
+    "combined": 100,
+    "delta": 0
+  },
+  "grounding_safety": "PASS",
+  "grounding_errors": [],
+  "repair_integrity": "PASS",
+  "repair_errors": [],
+  "structure_before": "PASS",
+  "structure_preservation": "PASS",
+  "structure_errors": [],
+  "coverage_recognition": "PASS",
+  "coverage_recognition_errors": [],
+  "question_coverage": "PASS",
+  "question_coverage_errors": [],
+  "question_recognition": "PASS",
+  "question_recognition_errors": [],
+  "result": "PASS"
+}

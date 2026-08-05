@@ -17,6 +17,31 @@ function normalizedResumeText(value) {
     .trim();
 }
 
+function visibleExperienceYears(resume) {
+  const lines = String(resume || "").split(/\n+/).map((line) => line.trim()).filter(Boolean);
+  const start = lines.findIndex((line) => /^(?:professional\s+)?experience\s*:?$/i.test(line));
+  if (start === -1) return 0;
+  const coveredYears = new Set();
+  const currentYear = new Date().getFullYear();
+  for (let index = start + 1; index < lines.length; index += 1) {
+    const line = lines[index];
+    if (/^[A-Z][A-Z &/]+$/.test(line)) break;
+    for (const match of line.matchAll(/\b((?:19|20)\d{2})\s*(?:-|–|—|to)\s*(Present|present|(?:19|20)\d{2})\b/g)) {
+      const startYear = Number(match[1]);
+      const endYear = /^present$/i.test(match[2]) ? currentYear : Number(match[2]);
+      for (let year = startYear; year <= endYear; year += 1) coveredYears.add(year);
+    }
+  }
+  return coveredYears.size;
+}
+
+function requirementEvidencePresent(requirement, resume) {
+  if (Number.isFinite(requirement.minimum_experience_years)) {
+    return visibleExperienceYears(resume) >= requirement.minimum_experience_years;
+  }
+  return String(resume || "").includes(requirement.resume_evidence_pattern);
+}
+
 export function validateFixtureInput(fixture) {
   const { rolefit_input: rolefitInput, oracle } = fixture || {};
   if (!rolefitInput?.resume_before || !rolefitInput?.job_description) {
@@ -151,7 +176,7 @@ function categoryCoverage(requirements, resume, category, profileOnly) {
   const scoped = requirements.filter((requirement) => requirement.category === category
     && (!profileOnly || requirement.profile_supported));
   return percentage(
-    scoped.filter((requirement) => String(resume || "").includes(requirement.resume_evidence_pattern)).length,
+    scoped.filter((requirement) => requirementEvidencePresent(requirement, resume)).length,
     scoped.length
   );
 }
@@ -193,7 +218,7 @@ export function safetyErrors(fixture, resumeAfter) {
   }
 
   for (const requirement of oracle.requirements) {
-    if (!requirement.profile_supported && String(resumeAfter || "").includes(requirement.resume_evidence_pattern)) {
+    if (!requirement.profile_supported && requirementEvidencePresent(requirement, resumeAfter)) {
       errors.push(`Unsupported requirement in final resume: ${requirement.label}`);
     }
   }
