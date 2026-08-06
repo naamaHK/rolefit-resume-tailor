@@ -2,5 +2,10 @@
   "job_id": "dalia-research-analyst-v1",
   "profile_id": "dalia-rahamim-research-insights-v1",
   "title": "Research Analyst",
+  "semantic_coverage_check": {
+    "requirement": "Ability to write clear research reports for non-academic stakeholders.",
+    "profile_fact": "Wrote research reports and presented actionable recommendations in stakeholder workshops.",
+    "expected": "Recognize the research-communication requirement as supported without a follow-up question."
+  },
   "job_description": "Research Analyst\n\nJoin an independent policy-research team studying how public programs affect communities. You will design rigorous studies, analyze evidence, and communicate findings clearly to decision-makers.\n\nBasic Qualifications\n- Master’s degree in public policy, social science, economics, or a related field.\n- 2+ years of applied research or policy-analysis experience.\n- Experience designing surveys, interviews, or mixed-methods studies.\n- Experience analyzing data in R, Python, or a comparable statistical tool.\n- Ability to write clear research reports for non-academic stakeholders.\n- Professional Python experience for reproducible analysis.\n\nPreferred Qualifications\n- Experience facilitating stakeholder workshops.\n- Experience building Tableau dashboards.\n- Experience with causal-inference methods."
 }

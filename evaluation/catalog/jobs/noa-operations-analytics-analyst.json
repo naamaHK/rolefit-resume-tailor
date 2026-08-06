@@ -2,5 +2,10 @@
   "job_id": "noa-operations-analytics-analyst-v1",
   "profile_id": "noa-ben-ami-product-data-v1",
   "title": "Operations Analytics Analyst",
+  "semantic_coverage_check": {
+    "requirement": "Experience presenting findings to non-technical stakeholders.",
+    "profile_fact": "Analyzed customer cohorts and presented findings to stakeholders.",
+    "expected": "Recognize the communication requirement as supported without a follow-up question."
+  },
   "job_description": "Operations Analytics Analyst\n\nJoin the Business Operations team to make service performance easier to understand and improve. You will define operational metrics, investigate data-quality issues, and give leaders practical reporting for weekly decisions.\n\nBasic Qualifications\n- 3+ years of analytics or business-operations experience.\n- Advanced SQL and experience building recurring business reporting.\n- Experience defining operational metrics and investigating data-quality issues.\n- Experience presenting findings to non-technical stakeholders.\n- Experience building dashboards in Looker.\n\nPreferred Qualifications\n- Python for analysis and automation.\n- Experience with Tableau.\n- Experience with Snowflake."
 }

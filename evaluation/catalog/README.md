@@ -21,6 +21,11 @@ qualification are deliberately unsupported. The hidden profile records known
 unsupported items only to let the evaluation check for invented claims; that
 field is never passed to RoleFit.
 
+Each job also has one `semantic_coverage_check`. It identifies a requirement
+and a non-identical experience bullet that already supports it. This metadata
+is evaluation-only: it is not sent to RoleFit. A valid RoleFit result must
+recognize that evidence and must not ask the user to confirm it again.
+
 The next step is to create roughly five carefully chosen resume variants per
 profile (ten across its two jobs), for a first suite of 50 tests. Variants will
 cover omitted supported evidence, unsupported requirements, related degrees,

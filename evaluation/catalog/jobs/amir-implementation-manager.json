@@ -2,5 +2,10 @@
   "job_id": "amir-implementation-manager-v1",
   "profile_id": "amir-levi-customer-success-v1",
   "title": "Implementation Manager",
+  "semantic_coverage_check": {
+    "requirement": "Experience managing project plans, issue logs, training, and go-live readiness.",
+    "profile_fact": "Coordinated SaaS implementations, customer data migrations, training sessions, and go-live readiness.",
+    "expected": "Recognize the implementation-delivery requirement as supported without a follow-up question."
+  },
   "job_description": "Implementation Manager\n\nJoin our professional-services team to deliver successful SaaS launches for new customers. You will own implementation plans, coordinate technical and business stakeholders, and make each go-live transition smooth.\n\nBasic Qualifications\n- 3+ years coordinating SaaS implementations, customer onboarding, or deployment projects.\n- Experience managing project plans, issue logs, training, and go-live readiness.\n- Experience coordinating customer data migrations with technical contacts.\n- Strong customer stakeholder-management and post-launch handoff skills.\n- Experience integrating customer systems through REST APIs.\n\nPreferred Qualifications\n- Experience coordinating CSV or SFTP data imports.\n- Experience using SQL to validate migrated data.\n- Healthcare compliance certification."
 }

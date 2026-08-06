@@ -2,5 +2,10 @@
   "job_id": "amir-customer-success-manager-v1",
   "profile_id": "amir-levi-customer-success-v1",
   "title": "Customer Success Manager",
+  "semantic_coverage_check": {
+    "requirement": "Experience leading customer onboarding, adoption planning, and quarterly business reviews.",
+    "profile_fact": "Owns onboarding, adoption planning, and quarterly business reviews for a portfolio of mid-market software customers.",
+    "expected": "Recognize the customer-lifecycle requirement as supported without a follow-up question."
+  },
   "job_description": "Customer Success Manager\n\nJoin our customer organization to help mid-market customers realize value from a workflow SaaS platform. You will guide onboarding and adoption, identify renewal risks, and bring customer feedback into product decisions.\n\nBasic Qualifications\n- 3+ years in customer success, account management, or a comparable customer-facing SaaS role.\n- Experience leading customer onboarding, adoption planning, and quarterly business reviews.\n- Experience managing customer health and renewal risk in Salesforce or a comparable CRM.\n- Strong cross-functional communication with product and support teams.\n- Hands-on experience with HubSpot.\n\nPreferred Qualifications\n- Experience improving customer enablement or training programs.\n- Experience using product-usage analytics to guide adoption.\n- Professional French-language customer communication."
 }

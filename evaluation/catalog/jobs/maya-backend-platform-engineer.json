@@ -2,5 +2,10 @@
   "job_id": "maya-backend-platform-engineer-v1",
   "profile_id": "maya-cohen-backend-platform-v2",
   "title": "Backend Platform Engineer",
+  "semantic_coverage_check": {
+    "requirement": "Experience with PostgreSQL and REST API design.",
+    "profile_fact": "Designed PostgreSQL schemas and query improvements for case-management data.",
+    "expected": "Recognize the PostgreSQL requirement as supported without a follow-up question."
+  },
   "job_description": "Backend Platform Engineer\n\nJoin our Platform Engineering group to build reliable services and developer tooling for product teams. You will design APIs, improve data access, operate cloud services, and partner across engineering.\n\nBasic Qualifications\n- 3+ years of backend software-engineering experience.\n- Strong Java and Spring Boot experience.\n- Experience with PostgreSQL and REST API design.\n- Experience building and deploying Dockerized services.\n- Bachelor’s degree in Computer Science or a closely related field.\n- Working knowledge of TypeScript for service-adjacent tooling.\n- Experience operating Kubernetes workloads.\n\nPreferred Qualifications\n- Experience with AWS cloud services.\n- Experience building React internal tools.\n- Experience with GraphQL APIs."
 }

@@ -2,5 +2,10 @@
   "job_id": "noa-product-data-analyst-v2",
   "profile_id": "noa-ben-ami-product-data-v1",
   "title": "Product Data Analyst",
+  "semantic_coverage_check": {
+    "requirement": "Clear communication and collaboration with product and engineering teams.",
+    "profile_fact": "Partners with product managers and engineers to define metrics and prioritize improvements.",
+    "expected": "Recognize the collaboration requirement as supported without a follow-up question."
+  },
   "job_description": "Product Data Analyst\n\nJoin the Growth Analytics team to turn product and customer data into clear decisions. You will partner with product managers and engineers, design experiments, and build trusted reporting for the product organization.\n\nBasic Qualifications\n- 3+ years of product or business data-analysis experience.\n- Advanced SQL and working knowledge of Python for analysis.\n- Experience designing and analyzing A/B tests.\n- Experience building and maintaining Tableau dashboards.\n- Clear communication and collaboration with product and engineering teams.\n- Experience using Amplitude or a comparable event-analytics platform.\n\nPreferred Qualifications\n- Experience with Apache Airflow.\n- Experience with dbt.\n- Experience with Google Analytics 4."
 }

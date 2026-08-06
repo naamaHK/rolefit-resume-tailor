@@ -2,5 +2,10 @@
   "job_id": "maya-research-software-engineer-v1",
   "profile_id": "maya-cohen-backend-platform-v2",
   "title": "Research Software Engineer",
+  "semantic_coverage_check": {
+    "requirement": "Ability to work with researchers to turn data needs into maintainable software.",
+    "profile_fact": "Partnered with researchers to translate data-quality needs into maintainable tools.",
+    "expected": "Recognize the collaboration requirement as supported without a follow-up question."
+  },
   "job_description": "Research Software Engineer\n\nJoin a multidisciplinary climate-data group building dependable tools that help researchers collect, review, and use environmental data. You will work closely with scientists while contributing production-quality software.\n\nBasic Qualifications\n- Bachelor’s degree in Computer Science, Computer Engineering, or a related field.\n- 3+ years of professional software-engineering experience.\n- Experience building tested services or APIs in Java, Python, or a comparable language.\n- Ability to work with researchers to turn data needs into maintainable software.\n- Professional Python experience for data-processing workflows.\n\nPreferred Qualifications\n- Experience operating applications on AWS.\n- Experience with scientific Python libraries such as pandas or NumPy.\n- Experience maintaining an open-source project."
 }
