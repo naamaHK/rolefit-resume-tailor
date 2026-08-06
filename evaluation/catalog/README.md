@@ -30,3 +30,16 @@ The next step is to create roughly five carefully chosen resume variants per
 profile (ten across its two jobs), for a first suite of 50 tests. Variants will
 cover omitted supported evidence, unsupported requirements, related degrees,
 semantic coverage, experience-duration gaps, and repair/structure boundaries.
+
+## Benchmark cards
+
+[`test-cards.json`](test-cards.json) now defines the 50 distinct planned
+fixtures: exactly 10 per profile and 5 per job. A card is not a runnable test
+yet; it specifies the job, one unique primary boundary, the resume mutation,
+and the expected behavior before a concrete resume is written.
+
+The assignment is fixed rather than random. Random selection would make a
+result depend on which job happened to be chosen; every card instead has one
+immutable `profile_id` + `job_id` pair. High-level checks such as safety recur
+where useful, but no card duplicates the same target requirement, mutation,
+and expected behavior.

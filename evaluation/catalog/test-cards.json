@@ -1,0 +1,413 @@
+{
+  "suite_id": "rolefit-benchmark-50-v1",
+  "purpose": "A deterministic 50-case end-to-end benchmark plan. Each card will become one fixture containing a resume and one ordinary job description. RoleFit receives only those two inputs; profile references, expected behavior, and answers remain in the harness.",
+  "rules": {
+    "cards_per_profile": 10,
+    "cards_per_job": 5,
+    "job_assignment": "fixed, never random",
+    "no_duplicate_primary_signal": true,
+    "no_manual_scores": "The oracle calculates before and after coverage from the actual resume and job requirements."
+  },
+  "cards": [
+    {
+      "id": "maya-platform-01-omitted-docker",
+      "profile_id": "maya-cohen-backend-platform-v2",
+      "job_id": "maya-backend-platform-engineer-v1",
+      "primary_signal": "supported Basic deployment tool omitted from Skills and Experience",
+      "resume_blueprint": "Use a complete valid Maya resume but remove every Docker reference.",
+      "expected": "Ask about Dockerized services; accept the profile fact and add it. Match score increases; safety and structure pass."
+    },
+    {
+      "id": "maya-platform-02-unsupported-tool-bundle",
+      "profile_id": "maya-cohen-backend-platform-v2",
+      "job_id": "maya-backend-platform-engineer-v1",
+      "primary_signal": "mixed missing TypeScript, Kubernetes, and GraphQL requirements that the profile does not support",
+      "resume_blueprint": "Keep Maya's supported backend evidence, but include none of the three unsupported tools.",
+      "expected": "Questions may be grouped, but all answers are no. No unsupported tool is added; grounding safety passes."
+    },
+    {
+      "id": "maya-platform-03-postgresql-semantic-bullet",
+      "profile_id": "maya-cohen-backend-platform-v2",
+      "job_id": "maya-backend-platform-engineer-v1",
+      "primary_signal": "PostgreSQL requirement already supported by schema-design bullet",
+      "resume_blueprint": "Include 'Designed PostgreSQL schemas and query improvements' but do not list PostgreSQL in Skills.",
+      "expected": "Recognize PostgreSQL as covered and do not ask about it."
+    },
+    {
+      "id": "maya-platform-04-related-degree-omitted",
+      "profile_id": "maya-cohen-backend-platform-v2",
+      "job_id": "maya-backend-platform-engineer-v1",
+      "primary_signal": "related Computer Information Systems degree omitted from an otherwise complete resume",
+      "resume_blueprint": "Omit Education while retaining the other valid core sections and supporting evidence.",
+      "expected": "Ask for the degree; accept the exact profile education and place it in Education without inventing details."
+    },
+    {
+      "id": "maya-platform-05-core-section-order",
+      "profile_id": "maya-cohen-backend-platform-v2",
+      "job_id": "maya-backend-platform-engineer-v1",
+      "primary_signal": "Education placed before Experience despite complete content",
+      "resume_blueprint": "Include all core sections, but order them Header, Summary, Education, Experience, Skills.",
+      "expected": "Repair the core order to Header, Summary, Experience, Education; final structure passes."
+    },
+    {
+      "id": "maya-research-06-omitted-preferred-aws",
+      "profile_id": "maya-cohen-backend-platform-v2",
+      "job_id": "maya-research-software-engineer-v1",
+      "primary_signal": "supported Preferred cloud experience omitted",
+      "resume_blueprint": "Remove AWS, ECS, RDS, and CloudWatch from the resume while keeping the research-software roles.",
+      "expected": "Ask about AWS even though it is Preferred; add only the supported cloud fact."
+    },
+    {
+      "id": "maya-research-07-required-python-absence",
+      "profile_id": "maya-cohen-backend-platform-v2",
+      "job_id": "maya-research-software-engineer-v1",
+      "primary_signal": "required professional Python is absent while Java is present",
+      "resume_blueprint": "Show Maya's Java services and no Python evidence.",
+      "expected": "Do not infer Python from Java. If asked, decline; no Python claim is added."
+    },
+    {
+      "id": "maya-research-08-researcher-collaboration-semantic",
+      "profile_id": "maya-cohen-backend-platform-v2",
+      "job_id": "maya-research-software-engineer-v1",
+      "primary_signal": "researcher-needs requirement covered by a data-quality collaboration bullet",
+      "resume_blueprint": "Include the bullet about translating researchers' data-quality needs into maintainable tools.",
+      "expected": "Recognize the collaboration requirement and do not ask again."
+    },
+    {
+      "id": "maya-research-09-java-alternative-language",
+      "profile_id": "maya-cohen-backend-platform-v2",
+      "job_id": "maya-research-software-engineer-v1",
+      "primary_signal": "Java satisfies a Java, Python, or comparable-language requirement",
+      "resume_blueprint": "Include Java API and automated-testing bullets but no Python.",
+      "expected": "Mark the alternative-language requirement covered while still treating the separate Python requirement as unsupported."
+    },
+    {
+      "id": "maya-research-10-missing-research-role-dates",
+      "profile_id": "maya-cohen-backend-platform-v2",
+      "job_id": "maya-research-software-engineer-v1",
+      "primary_signal": "older Experience entry lacks dates",
+      "resume_blueprint": "Include the Galilee Climate Lab role with its facts but omit 2019–2023.",
+      "expected": "Ask for the exact dates, use the direct profile value, and preserve reverse chronology."
+    },
+    {
+      "id": "noa-product-11-omitted-tableau",
+      "profile_id": "noa-ben-ami-product-data-v1",
+      "job_id": "noa-product-data-analyst-v2",
+      "primary_signal": "supported Basic dashboard experience omitted",
+      "resume_blueprint": "Use Noa's valid resume but omit her Tableau dashboard bullet and Tableau skill.",
+      "expected": "Ask about Tableau; accept and add the released Loop Commerce dashboard fact."
+    },
+    {
+      "id": "noa-product-12-ga4-not-amplitude",
+      "profile_id": "noa-ben-ami-product-data-v1",
+      "job_id": "noa-product-data-analyst-v2",
+      "primary_signal": "Google Analytics 4 must not automatically become Amplitude",
+      "resume_blueprint": "List Google Analytics 4, but no Amplitude, Airflow, or dbt evidence.",
+      "expected": "Ask rather than equating GA4 with Amplitude; decline unsupported tools and add none."
+    },
+    {
+      "id": "noa-product-13-product-engineering-semantic",
+      "profile_id": "noa-ben-ami-product-data-v1",
+      "job_id": "noa-product-data-analyst-v2",
+      "primary_signal": "collaboration qualification covered by metric-definition work with product and engineers",
+      "resume_blueprint": "Include the metric-definition and prioritization bullet but omit the collaboration skill label.",
+      "expected": "Recognize the collaboration qualification without a question."
+    },
+    {
+      "id": "noa-product-14-experiments-without-ab-label",
+      "profile_id": "noa-ben-ami-product-data-v1",
+      "job_id": "noa-product-data-analyst-v2",
+      "primary_signal": "A/B-test requirement expressed in resume as checkout and onboarding experiments",
+      "resume_blueprint": "Rewrite the supported A/B bullet as 'Evaluated checkout and onboarding experiments to guide product changes' and omit the literal A/B label.",
+      "expected": "Recognize experiment evidence as covering the requirement; do not ask solely because the abbreviation is absent."
+    },
+    {
+      "id": "noa-product-15-missing-header-fields",
+      "profile_id": "noa-ben-ami-product-data-v1",
+      "job_id": "noa-product-data-analyst-v2",
+      "primary_signal": "name, phone, and email all missing from an otherwise sound resume",
+      "resume_blueprint": "Omit the Header entirely; retain Summary, Experience, Education, and Skills.",
+      "expected": "Request direct header fields, restore them from the profile, and pass final structure."
+    },
+    {
+      "id": "noa-operations-16-older-role-data-quality-omission",
+      "profile_id": "noa-ben-ami-product-data-v1",
+      "job_id": "noa-operations-analytics-analyst-v1",
+      "primary_signal": "supported data-quality experience omitted only from an older role",
+      "resume_blueprint": "Keep both roles but remove CityCart's operational-metrics and data-quality-checks bullet.",
+      "expected": "Ask about the missing operational evidence and add it to the correct older role."
+    },
+    {
+      "id": "noa-operations-17-looker-and-snowflake-absence",
+      "profile_id": "noa-ben-ami-product-data-v1",
+      "job_id": "noa-operations-analytics-analyst-v1",
+      "primary_signal": "unsupported Basic Looker and Preferred Snowflake tools",
+      "resume_blueprint": "Show SQL, Tableau, and Python but no Looker or Snowflake.",
+      "expected": "Ask about both qualification categories as relevant; decline both with no invented claims."
+    },
+    {
+      "id": "noa-operations-18-stakeholder-findings-semantic",
+      "profile_id": "noa-ben-ami-product-data-v1",
+      "job_id": "noa-operations-analytics-analyst-v1",
+      "primary_signal": "non-technical stakeholder communication covered by cohort-findings bullet",
+      "resume_blueprint": "Include 'presented findings to stakeholders' from the CityCart role.",
+      "expected": "Treat the reporting requirement as covered without asking."
+    },
+    {
+      "id": "noa-operations-19-visible-duration-coverage",
+      "profile_id": "noa-ben-ami-product-data-v1",
+      "job_id": "noa-operations-analytics-analyst-v1",
+      "primary_signal": "three-year analytics threshold visibly satisfied across two dated analyst roles",
+      "resume_blueprint": "Show both roles with 2021–2023 and 2023–Present dates.",
+      "expected": "Recognize the duration requirement as covered and do not ask for earlier experience."
+    },
+    {
+      "id": "noa-operations-20-missing-role-end-date",
+      "profile_id": "noa-ben-ami-product-data-v1",
+      "job_id": "noa-operations-analytics-analyst-v1",
+      "primary_signal": "older Experience role shows only a start year",
+      "resume_blueprint": "Render CityCart as '2021' rather than '2021–2023'.",
+      "expected": "Ask for the exact missing end date and restore it from the profile."
+    },
+    {
+      "id": "lior-tpm-21-omitted-risk-management",
+      "profile_id": "lior-shalev-program-operations-v1",
+      "job_id": "lior-technical-program-manager-v1",
+      "primary_signal": "supported cross-functional risk-management evidence omitted",
+      "resume_blueprint": "Remove risk registers and dependency management from all Lior resume sections.",
+      "expected": "Ask about risk and dependency work, then add supported evidence to TransitGrid Experience."
+    },
+    {
+      "id": "lior-tpm-22-salesforce-and-sql-absence",
+      "profile_id": "lior-shalev-program-operations-v1",
+      "job_id": "lior-technical-program-manager-v1",
+      "primary_signal": "Salesforce administration and SQL investigation are both unsupported",
+      "resume_blueprint": "Keep Jira and reporting evidence; include neither Salesforce nor SQL.",
+      "expected": "Do not infer either tool from Jira or Google Sheets; decline any questions about them."
+    },
+    {
+      "id": "lior-tpm-23-executive-reporting-semantic",
+      "profile_id": "lior-shalev-program-operations-v1",
+      "job_id": "lior-technical-program-manager-v1",
+      "primary_signal": "executive status-reporting requirement covered by program-update bullet",
+      "resume_blueprint": "Include the Jira and Confluence bullet with executive status updates.",
+      "expected": "Recognize executive reporting as covered without a follow-up question."
+    },
+    {
+      "id": "lior-tpm-24-experience-chronology",
+      "profile_id": "lior-shalev-program-operations-v1",
+      "job_id": "lior-technical-program-manager-v1",
+      "primary_signal": "dated Experience entries intentionally appear oldest first",
+      "resume_blueprint": "Place RouteWorks 2020–2022 before TransitGrid 2022–Present.",
+      "expected": "Restore reverse chronological Experience order without changing facts."
+    },
+    {
+      "id": "lior-tpm-25-capm-is-not-scrum",
+      "profile_id": "lior-shalev-program-operations-v1",
+      "job_id": "lior-technical-program-manager-v1",
+      "primary_signal": "CAPM credential must not satisfy a Scrum Master certification requirement",
+      "resume_blueprint": "Include the CAPM credential, but no Scrum certification evidence.",
+      "expected": "Ask or leave the Scrum preference unmet; never relabel CAPM as Scrum Master certification."
+    },
+    {
+      "id": "lior-implementation-26-omitted-budget-tracking",
+      "profile_id": "lior-shalev-program-operations-v1",
+      "job_id": "lior-implementation-operations-manager-v1",
+      "primary_signal": "supported Preferred budget tracking omitted from an implementation resume",
+      "resume_blueprint": "Remove budget tracking and purchase-order coordination from the RouteWorks role.",
+      "expected": "Ask about the Preferred qualification and add the supported older-role fact."
+    },
+    {
+      "id": "lior-implementation-27-workday-absence",
+      "profile_id": "lior-shalev-program-operations-v1",
+      "job_id": "lior-implementation-operations-manager-v1",
+      "primary_signal": "unsupported Workday implementation requirement",
+      "resume_blueprint": "Use an otherwise strong implementation resume with no Workday reference.",
+      "expected": "If queried, decline Workday; no Workday experience is created."
+    },
+    {
+      "id": "lior-implementation-28-vendor-readiness-semantic",
+      "profile_id": "lior-shalev-program-operations-v1",
+      "job_id": "lior-implementation-operations-manager-v1",
+      "primary_signal": "vendor and launch-readiness requirement covered by municipal implementation bullet",
+      "resume_blueprint": "Include 'Coordinated vendor dependencies and implementation readiness for three municipal customers.'",
+      "expected": "Recognize the requirement as covered and do not ask for redundant confirmation."
+    },
+    {
+      "id": "lior-implementation-29-missing-education-dates",
+      "profile_id": "lior-shalev-program-operations-v1",
+      "job_id": "lior-implementation-operations-manager-v1",
+      "primary_signal": "Education entry has degree and institution but no years",
+      "resume_blueprint": "Include the B.A. and Hebrew University, but omit 2016–2020.",
+      "expected": "Ask for exact education dates and restore them without altering the degree."
+    },
+    {
+      "id": "lior-implementation-30-summary-optional-boundary",
+      "profile_id": "lior-shalev-program-operations-v1",
+      "job_id": "lior-implementation-operations-manager-v1",
+      "primary_signal": "otherwise valid resume has no Professional Summary",
+      "resume_blueprint": "Include Header, Experience, Education, and Skills in correct order, but no Summary section.",
+      "expected": "May suggest a summary, but must not reject the resume structurally or invent one."
+    },
+    {
+      "id": "dalia-research-31-omitted-r-analysis",
+      "profile_id": "dalia-rahamim-research-insights-v1",
+      "job_id": "dalia-research-analyst-v1",
+      "primary_signal": "supported Basic R analysis omitted from both Skills and Experience",
+      "resume_blueprint": "Remove R and the survey-analysis clause while retaining the research roles.",
+      "expected": "Ask about R; accept the supported fact and add it in an appropriate section."
+    },
+    {
+      "id": "dalia-research-32-python-and-causal-absence",
+      "profile_id": "dalia-rahamim-research-insights-v1",
+      "job_id": "dalia-research-analyst-v1",
+      "primary_signal": "unsupported required Python and preferred causal-inference methods",
+      "resume_blueprint": "Show Dalia's R, surveys, and reporting, but no Python or causal-inference claim.",
+      "expected": "Do not infer Python from R or causal inference from descriptive statistics."
+    },
+    {
+      "id": "dalia-research-33-reports-to-stakeholders-semantic",
+      "profile_id": "dalia-rahamim-research-insights-v1",
+      "job_id": "dalia-research-analyst-v1",
+      "primary_signal": "non-academic research communication covered by actionable-recommendations bullet",
+      "resume_blueprint": "Include the stakeholder-workshop and research-report bullet.",
+      "expected": "Recognize report-writing for stakeholders as covered without a question."
+    },
+    {
+      "id": "dalia-research-34-related-masters-recognition",
+      "profile_id": "dalia-rahamim-research-insights-v1",
+      "job_id": "dalia-research-analyst-v1",
+      "primary_signal": "M.A. Public Policy satisfies a public-policy, social-science, economics, or related master's requirement",
+      "resume_blueprint": "Include the M.A. Public Policy entry with its institution and dates.",
+      "expected": "Mark the degree requirement covered and do not ask Dalia to confirm a different master's degree."
+    },
+    {
+      "id": "dalia-research-35-research-spelling-repair",
+      "profile_id": "dalia-rahamim-research-insights-v1",
+      "job_id": "dalia-research-analyst-v1",
+      "primary_signal": "two repairable research terms are misspelled",
+      "resume_blueprint": "Use a valid resume but spell 'stakeholders' as 'stakeholdres' and 'anonymization' as 'anonymizaton'.",
+      "expected": "Correct only those spelling errors; final text contains neither typo and retains the full affected bullets."
+    },
+    {
+      "id": "dalia-applied-36-omitted-literature-review",
+      "profile_id": "dalia-rahamim-research-insights-v1",
+      "job_id": "dalia-applied-researcher-v1",
+      "primary_signal": "supported Preferred literature-review experience omitted from an older research role",
+      "resume_blueprint": "Remove literature reviews from Negev Social Policy Center while retaining the role dates.",
+      "expected": "Ask about literature reviews and add the supported older-role evidence."
+    },
+    {
+      "id": "dalia-applied-37-irb-rct-clinical-absence",
+      "profile_id": "dalia-rahamim-research-insights-v1",
+      "job_id": "dalia-applied-researcher-v1",
+      "primary_signal": "IRB, randomized-trial, and clinical-research requirements are unsupported",
+      "resume_blueprint": "Keep consent and anonymization evidence but no IRB, randomized controlled trial, or clinical-research claim.",
+      "expected": "Do not infer formal IRB work from responsible data practices; decline unsupported items."
+    },
+    {
+      "id": "dalia-applied-38-participant-data-semantic",
+      "profile_id": "dalia-rahamim-research-insights-v1",
+      "job_id": "dalia-applied-researcher-v1",
+      "primary_signal": "participant-data requirement covered by consent and anonymization documentation bullet",
+      "resume_blueprint": "Include the participant-data practices bullet but omit the Ethics skill category label.",
+      "expected": "Recognize the responsible-data requirement without a redundant question."
+    },
+    {
+      "id": "dalia-applied-39-skills-section-qualitative-evidence",
+      "profile_id": "dalia-rahamim-research-insights-v1",
+      "job_id": "dalia-applied-researcher-v1",
+      "primary_signal": "qualitative interviewing appears in Skills rather than as an Experience bullet",
+      "resume_blueprint": "Include 'qualitative interviewing' in Skills and omit the matching interview sentence from Experience.",
+      "expected": "Recognize direct skill evidence rather than treating the Skills section as empty of qualification support."
+    },
+    {
+      "id": "dalia-applied-40-education-chronology",
+      "profile_id": "dalia-rahamim-research-insights-v1",
+      "job_id": "dalia-applied-researcher-v1",
+      "primary_signal": "Education entries intentionally ordered oldest first",
+      "resume_blueprint": "Place B.A. 2017–2020 above M.A. 2020–2022.",
+      "expected": "Restore reverse chronological Education order while preserving both degrees."
+    },
+    {
+      "id": "amir-csm-41-omitted-salesforce",
+      "profile_id": "amir-levi-customer-success-v1",
+      "job_id": "amir-customer-success-manager-v1",
+      "primary_signal": "supported CRM experience omitted from resume",
+      "resume_blueprint": "Remove Salesforce from Skills and delete the customer-health bullet's CRM clause.",
+      "expected": "Ask about Salesforce/customer health; add the supported CarePath fact."
+    },
+    {
+      "id": "amir-csm-42-hubspot-analytics-french-absence",
+      "profile_id": "amir-levi-customer-success-v1",
+      "job_id": "amir-customer-success-manager-v1",
+      "primary_signal": "unsupported HubSpot, product analytics, and French communication requirements",
+      "resume_blueprint": "Show Salesforce and English, but no HubSpot, product-usage analytics, or French.",
+      "expected": "Do not substitute Salesforce for HubSpot or English for French; no unsupported claim is added."
+    },
+    {
+      "id": "amir-csm-43-customer-lifecycle-semantic",
+      "profile_id": "amir-levi-customer-success-v1",
+      "job_id": "amir-customer-success-manager-v1",
+      "primary_signal": "onboarding, adoption, and QBR requirement covered by portfolio-ownership bullet",
+      "resume_blueprint": "Include the CarePath portfolio-ownership bullet and omit the customer-success skill labels.",
+      "expected": "Recognize customer-lifecycle experience as covered without a question."
+    },
+    {
+      "id": "amir-csm-44-certification-is-not-hands-on-proof",
+      "profile_id": "amir-levi-customer-success-v1",
+      "job_id": "amir-customer-success-manager-v1",
+      "primary_signal": "Salesforce Certified Associate is present but direct CRM work is omitted",
+      "resume_blueprint": "List the certification, but remove every Salesforce work-experience bullet.",
+      "expected": "Treat the credential as insufficient proof of hands-on CRM experience; ask, then add the supported work fact after confirmation."
+    },
+    {
+      "id": "amir-csm-45-domain-typo-repair",
+      "profile_id": "amir-levi-customer-success-v1",
+      "job_id": "amir-customer-success-manager-v1",
+      "primary_signal": "customer-success term is misspelled inside an otherwise valid bullet",
+      "resume_blueprint": "Spell 'onboarding' as 'onbaording' in the CarePath bullet.",
+      "expected": "Correct the spelling while preserving the complete bullet in the preview and final resume."
+    },
+    {
+      "id": "amir-implementation-46-omitted-sftp-preference",
+      "profile_id": "amir-levi-customer-success-v1",
+      "job_id": "amir-implementation-manager-v1",
+      "primary_signal": "supported Preferred CSV/SFTP import experience omitted",
+      "resume_blueprint": "Remove the CSV and SFTP import bullet from ClinicConnect.",
+      "expected": "Ask about the Preferred import experience and add only the supported fact."
+    },
+    {
+      "id": "amir-implementation-47-api-sql-compliance-absence",
+      "profile_id": "amir-levi-customer-success-v1",
+      "job_id": "amir-implementation-manager-v1",
+      "primary_signal": "REST API integration, SQL validation, and healthcare certification are unsupported",
+      "resume_blueprint": "Keep migration coordination and SFTP evidence but no API integration, SQL, or healthcare credential.",
+      "expected": "Do not convert file-import coordination into API integration; decline unsupported qualifications."
+    },
+    {
+      "id": "amir-implementation-48-go-live-semantic",
+      "profile_id": "amir-levi-customer-success-v1",
+      "job_id": "amir-implementation-manager-v1",
+      "primary_signal": "implementation delivery requirement covered by migration, training, and go-live bullet",
+      "resume_blueprint": "Include the ClinicConnect implementation bullet with data migration, training, and go-live readiness.",
+      "expected": "Recognize the delivery requirement as covered without asking."
+    },
+    {
+      "id": "amir-implementation-49-technical-contact-migration-semantic",
+      "profile_id": "amir-levi-customer-success-v1",
+      "job_id": "amir-implementation-manager-v1",
+      "primary_signal": "customer data migration requirement covered by CSV/SFTP coordination with technical contacts",
+      "resume_blueprint": "Include the CSV and SFTP import bullet exactly, but omit 'data migration' from Skills.",
+      "expected": "Recognize migration coordination from the detailed bullet and do not ask again."
+    },
+    {
+      "id": "amir-implementation-50-minimal-resume-rejection",
+      "profile_id": "amir-levi-customer-success-v1",
+      "job_id": "amir-implementation-manager-v1",
+      "primary_signal": "minimal resume has only name, Implementation Specialist title, and two skills",
+      "resume_blueprint": "Include only Amir's name, 'Implementation Specialist', and 'customer onboarding, Salesforce'; omit dates, employer, bullets, Education, and contact details.",
+      "expected": "Ask only answerable direct questions, never invent missing history, and end as a structure rejection boundary."
+    }
+  ]
+}
