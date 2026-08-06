@@ -1,0 +1,53 @@
+{
+  "fixture_id": "benchmark-005-maya-platform-core-order",
+  "runner": "live-web-flow",
+  "app_url": "http://127.0.0.1:8765/index.html",
+  "timestamp": "2026-08-06T09:42:29.156Z",
+  "events": [
+    {
+      "type": "analysis_complete",
+      "status": "AI analysis complete using google/gemini-2.5-flash-lite in 6s. 9 comments ready."
+    },
+    {
+      "type": "resume_check_applied",
+      "card_match": "Move Education",
+      "card": "#1Reorder Section in Education\nResume Improvement\nlow risk\nResume Supported\n\nReorder Section: Education\n\nBEFORE\nEDUCATION\nAFTER\nWhy: Education must follow Experience in the core resume order.\nEvidence: Education appears before Experience.\n11 other open comments remain: 2 more in Resume Check, 5 in Suggestions, 4 in Missing Experience.\nPreview on Resume\nAccept Change\nReject",
+      "answer": ""
+    }
+  ],
+  "role_coverage": {
+    "covered": "REQUIREMENTS COVERED IN CURRENT RESUME\nJava\nSpring Boot\nPostgreSQL\nAWS\nReact\n3+ years of backend software-engineering experience",
+    "missing": "REQUIREMENTS STILL MISSING\nREST API design\nTypeScript\nKubernetes\nGraphQL APIs"
+  },
+  "resume_after": "Maya Cohen\n+972 52 555 0147 | maya.cohen@example.com | linkedin.com/in/maya-cohen\n\nPROFESSIONAL SUMMARY\nBackend engineer with seven years of experience building Java services and cloud delivery workflows.\n\nEXPERIENCE\nBackend Engineer | CivicFlow | 2023 - Present\n- Built Java and Spring Boot services for municipal workflow products.\n- Designed PostgreSQL schemas and query improvements for case-management data.\n- Containerized services with Docker and maintained GitHub Actions delivery pipelines.\n- Used AWS ECS, Amazon RDS, and CloudWatch for application delivery and monitoring.\nResearch Software Engineer | Galilee Climate Lab | 2019 - 2023\n- Developed Java services that ingested environmental sensor data for research teams.\n- Built REST APIs and automated tests for internal data-review workflows.\n\nEDUCATION\nB.Sc. Computer Information Systems | Northern Israel Institute of Technology | 2015 - 2019\n\nSKILLS\nSpring Boot • PostgreSQL • REST APIs • Docker • automated testing • AWS • AWS ECS • Amazon RDS • CloudWatch • GitHub Actions • React • API design • cross-functional collaboration • incident follow-up\nProgramming Languages: Java • JavaScript\n\nLANGUAGES\nHebrew — native | English — professional working proficiency",
+  "profile_job_potential": {
+    "basic": 71.43,
+    "preferred": 66.67,
+    "combined": 70.24
+  },
+  "resume_representation_before": {
+    "basic": 100,
+    "preferred": 100,
+    "combined": 100
+  },
+  "resume_representation_after": {
+    "basic": 100,
+    "preferred": 100,
+    "combined": 100,
+    "delta": 0
+  },
+  "grounding_safety": "PASS",
+  "grounding_errors": [],
+  "repair_integrity": "PASS",
+  "repair_errors": [],
+  "structure_before": "FAIL",
+  "structure_preservation": "PASS",
+  "structure_errors": [],
+  "coverage_recognition": "PASS",
+  "coverage_recognition_errors": [],
+  "question_coverage": "PASS",
+  "question_coverage_errors": [],
+  "question_recognition": "PASS",
+  "question_recognition_errors": [],
+  "result": "PASS"
+}
