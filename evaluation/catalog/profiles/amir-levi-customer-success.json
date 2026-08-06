@@ -1,0 +1,57 @@
+{
+  "profile_id": "amir-levi-customer-success-v1",
+  "basic_info": {
+    "name": "Amir Levi",
+    "location": "Rishon LeZion, Israel",
+    "phone": "+972 55 555 0173",
+    "email": "amir.levi@example.com",
+    "linkedin": "linkedin.com/in/amir-levi"
+  },
+  "experience": [
+    {
+      "title": "Customer Success Manager",
+      "company": "CarePath SaaS",
+      "dates": "2022–Present",
+      "facts": [
+        "Owns onboarding, adoption planning, and quarterly business reviews for a portfolio of mid-market software customers.",
+        "Uses Salesforce to track account health, renewal risks, product feedback, and customer action plans.",
+        "Partners with support and product teams to resolve escalations and communicate product-release changes.",
+        "Improved onboarding completion by standardizing training checklists and customer enablement sessions."
+      ]
+    },
+    {
+      "title": "Implementation Specialist",
+      "company": "ClinicConnect",
+      "dates": "2020–2022",
+      "facts": [
+        "Coordinated SaaS implementations, customer data migrations, training sessions, and go-live readiness.",
+        "Managed project plans, customer stakeholders, issue logs, and post-launch handoffs to support.",
+        "Configured CSV and SFTP-based data imports with customer technical contacts."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "B.A. Business Administration",
+      "institution": "College of Management Academic Studies",
+      "dates": "2016–2020"
+    }
+  ],
+  "skills": {
+    "customer_success": ["customer onboarding", "customer health", "renewal risk", "quarterly business reviews", "customer enablement"],
+    "implementation": ["implementation planning", "data migration coordination", "go-live readiness", "training delivery", "issue management"],
+    "tools": ["Salesforce", "Jira", "Google Workspace"],
+    "collaboration": ["stakeholder management", "product feedback", "support escalation", "cross-functional communication"]
+  },
+  "languages": ["Hebrew — native", "English — fluent"],
+  "certifications": [
+    {
+      "name": "Salesforce Certified Associate",
+      "issuer": "Salesforce",
+      "year": "2023"
+    }
+  ],
+  "other": {
+    "explicit_absences": ["HubSpot", "SQL", "French", "REST API integration", "healthcare compliance certification", "product analytics"]
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "profile_id": "noa-ben-ami-product-data-v1",
+  "basic_info": {
+    "name": "Noa Ben-Ami",
+    "location": "Tel Aviv, Israel",
+    "phone": "+972 50 555 0184",
+    "email": "noa.benami@example.com",
+    "linkedin": "linkedin.com/in/noa-ben-ami"
+  },
+  "experience": [
+    {
+      "title": "Product Data Analyst",
+      "company": "Loop Commerce",
+      "dates": "2023–Present",
+      "facts": [
+        "Uses SQL and Python to analyze conversion, retention, and acquisition funnels.",
+        "Designs and analyzes A/B tests for checkout and onboarding changes.",
+        "Built and maintained Tableau dashboards for weekly conversion, retention, and experiment reporting.",
+        "Partners with product managers and engineers to define metrics and prioritize improvements."
+      ]
+    },
+    {
+      "title": "Data Analyst",
+      "company": "CityCart",
+      "dates": "2021–2023",
+      "facts": [
+        "Created recurring SQL reports for marketing and operations teams.",
+        "Analyzed customer cohorts and presented findings to stakeholders.",
+        "Defined operational metrics and data-quality checks for weekly business reviews."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "B.Sc. Industrial Engineering and Management",
+      "institution": "Tel Aviv Academic College",
+      "dates": "2017–2021"
+    }
+  ],
+  "skills": {
+    "technical": ["SQL", "Python", "Tableau", "Google Analytics 4"],
+    "analytical": ["A/B testing", "product analytics", "cohort analysis", "funnel analysis", "data quality"],
+    "collaboration": ["cross-functional collaboration", "stakeholder communication", "metric definition"]
+  },
+  "languages": ["Hebrew — native", "English — professional working proficiency"],
+  "certifications": [
+    {
+      "name": "Google Data Analytics Certificate",
+      "issuer": "Google",
+      "year": "2021"
+    }
+  ],
+  "other": {
+    "volunteer_work": "Mentors first-year industrial-engineering students through a university alumni program.",
+    "explicit_absences": ["dbt", "Apache Airflow", "Amplitude", "Looker", "Snowflake", "marketing attribution modeling"]
+  }
+}

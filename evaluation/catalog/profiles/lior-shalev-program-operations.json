@@ -1,0 +1,57 @@
+{
+  "profile_id": "lior-shalev-program-operations-v1",
+  "basic_info": {
+    "name": "Lior Shalev",
+    "location": "Jerusalem, Israel",
+    "phone": "+972 54 555 0129",
+    "email": "lior.shalev@example.com",
+    "linkedin": "linkedin.com/in/lior-shalev"
+  },
+  "experience": [
+    {
+      "title": "Technical Program Manager",
+      "company": "TransitGrid",
+      "dates": "2022–Present",
+      "facts": [
+        "Led cross-functional delivery plans for transit-operations software releases across product, engineering, and customer teams.",
+        "Maintained program roadmaps, risk registers, milestones, and executive status updates in Jira and Confluence.",
+        "Coordinated vendor dependencies and implementation readiness for three municipal customers.",
+        "Facilitated retrospectives and process improvements that reduced overdue launch dependencies."
+      ]
+    },
+    {
+      "title": "Operations Project Coordinator",
+      "company": "RouteWorks",
+      "dates": "2020–2022",
+      "facts": [
+        "Coordinated customer onboarding schedules, training plans, and issue escalation for a logistics SaaS product.",
+        "Prepared weekly operational reports and tracked actions across internal and external stakeholders.",
+        "Supported budget tracking and purchase-order coordination for deployment projects."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "B.A. Economics and Management",
+      "institution": "Hebrew University of Jerusalem",
+      "dates": "2016–2020"
+    }
+  ],
+  "skills": {
+    "program_management": ["program roadmaps", "risk management", "milestone planning", "dependency management", "process improvement"],
+    "tools": ["Jira", "Confluence", "Google Sheets"],
+    "operations": ["customer onboarding", "vendor coordination", "budget tracking", "executive status reporting"],
+    "collaboration": ["cross-functional facilitation", "stakeholder management", "issue escalation"]
+  },
+  "languages": ["Hebrew — native", "English — fluent"],
+  "certifications": [
+    {
+      "name": "Certified Associate in Project Management (CAPM)",
+      "issuer": "Project Management Institute",
+      "year": "2022"
+    }
+  ],
+  "other": {
+    "explicit_absences": ["Salesforce administration", "SQL", "Scrum Master certification", "Workday", "enterprise change-management certification"]
+  }
+}

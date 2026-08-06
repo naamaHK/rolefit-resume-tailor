@@ -1,0 +1,55 @@
+{
+  "profile_id": "dalia-rahamim-research-insights-v1",
+  "basic_info": {
+    "name": "Dalia Rahamim",
+    "location": "Beer Sheva, Israel",
+    "phone": "+972 53 555 0161",
+    "email": "dalia.rahamim@example.com",
+    "linkedin": "linkedin.com/in/dalia-rahamim"
+  },
+  "experience": [
+    {
+      "title": "Research Analyst",
+      "company": "Civic Insight Lab",
+      "dates": "2022–Present",
+      "facts": [
+        "Designed mixed-methods studies on public-service access and synthesized findings for policy and nonprofit stakeholders.",
+        "Conducted interviews, coded qualitative themes, and analyzed survey results in R.",
+        "Wrote research reports and presented actionable recommendations in stakeholder workshops.",
+        "Maintained consent, anonymization, and research-documentation practices for participant data."
+      ]
+    },
+    {
+      "title": "Research Assistant",
+      "company": "Negev Social Policy Center",
+      "dates": "2020–2022",
+      "facts": [
+        "Supported literature reviews, survey administration, and descriptive statistical analysis for community research projects.",
+        "Prepared tables, charts, and briefing materials for academic and public-sector audiences."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "M.A. Public Policy",
+      "institution": "Ben-Gurion University of the Negev",
+      "dates": "2020–2022"
+    },
+    {
+      "degree": "B.A. Sociology and Anthropology",
+      "institution": "Ben-Gurion University of the Negev",
+      "dates": "2017–2020"
+    }
+  ],
+  "skills": {
+    "research": ["mixed-methods research", "qualitative interviewing", "survey design", "literature reviews", "thematic analysis"],
+    "analysis": ["R", "descriptive statistics", "data visualization", "research synthesis"],
+    "communication": ["research reports", "stakeholder workshops", "policy briefs"],
+    "ethics": ["consent practices", "data anonymization", "research documentation"]
+  },
+  "languages": ["Hebrew — native", "English — fluent", "Arabic — conversational"],
+  "certifications": [],
+  "other": {
+    "explicit_absences": ["Python", "Tableau", "causal inference", "randomized controlled trials", "IRB administration", "clinical research"]
+  }
+}
