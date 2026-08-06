@@ -1,0 +1,6 @@
+{
+  "id": "benchmark-009-maya-research-java-alternative",
+  "base_fixture": "maya-research-base.json",
+  "purpose": "Card maya-research-09-java-alternative-language.",
+  "oracle": { "question_expectations": { "must_not_ask": ["tested_services"] }, "coverage_expectations": { "must_be_covered": ["tested_services"] } }
+}

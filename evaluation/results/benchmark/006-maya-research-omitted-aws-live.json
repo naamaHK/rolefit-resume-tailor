@@ -1,0 +1,59 @@
+{
+  "fixture_id": "benchmark-006-maya-research-omitted-aws",
+  "runner": "live-web-flow",
+  "app_url": "http://127.0.0.1:8765/index.html",
+  "timestamp": "2026-08-06T09:45:58.211Z",
+  "events": [
+    {
+      "type": "analysis_complete",
+      "status": "AI analysis complete using google/gemini-2.5-flash-lite in 5s. 7 comments ready."
+    },
+    {
+      "type": "expected_question_missing",
+      "requirement_id": "aws",
+      "message": "RoleFit did not show the expected question for aws. Looked for: aws. Available: #1confirm python job specific high risk user confirmation needed confirm experience python this information is not currently in the resume add it only if it is true and you can discuss it in an interview question importance do you have professional python experience for data processing workflows which section is relevant skills experience projects education certifications other do not add choose where this confirmed information may belong the next questions will depend on that destination choose one or more relevant sections first the next fields will appear only for the sections you choose why this came up the target job description specifically requires professional python experience for data processing workflows resume evidence so far professional python experience for data processing workflows 8 other open comments remain 3 more in missing experience 2 in resume check 3 in suggestions reject || #2confirm tested services or apis job specific high risk user confirmation needed confirm experience tested services or apis this information is not currently in the resume add it only if it is true and you can discuss it in an interview question importance do you have real resume worthy experience with tested services or apis which section is relevant skills experience projects education certifications other do not add choose where this confirmed information may belong the next questions will depend on that destination choose one or more relevant sections first the next fields will appear only for the sections you choose why this came up this concrete requirement appears in the target job but is not currently supported by the resume resume evidence so far tested services or apis 8 other open comments remain 3 more in missing experience 2 in resume check 3 in suggestions reject || #3confirm pandas job specific high risk user confirmation needed confirm experience pandas this information is not currently in the resume add it only if it is true and you can discuss it in an interview question importance do you have real resume worthy experience with pandas which section is relevant skills experience projects education certifications other do not add choose where this confirmed information may belong the next questions will depend on that destination choose one or more relevant sections first the next fields will appear only for the sections you choose why this came up this concrete requirement appears in the target job but is not currently supported by the resume resume evidence so far pandas 8 other open comments remain 3 more in missing experience 2 in resume check 3 in suggestions reject || #4confirm numpy job specific high risk user confirmation needed confirm experience numpy this information is not currently in the resume add it only if it is true and you can discuss it in an interview question importance do you have real resume worthy experience with numpy which section is relevant skills experience projects education certifications other do not add choose where this confirmed information may belong the next questions will depend on that destination choose one or more relevant sections first the next fields will appear only for the sections you choose why this came up this concrete requirement appears in the target job but is not currently supported by the resume resume evidence so far numpy 8 other open comments remain 3 more in missing experience 2 in resume check 3 in suggestions reject."
+    }
+  ],
+  "role_coverage": {
+    "covered": "REQUIREMENTS COVERED IN CURRENT RESUME\nJava\n3+ years of professional software-engineering experience",
+    "missing": "REQUIREMENTS STILL MISSING\nPython\ntested services or APIs\nwork with researchers to turn data needs into maintainable software\nAWS\npandas\nNumPy"
+  },
+  "resume_after": "Maya Cohen\n+972 52 555 0147 | maya.cohen@example.com\n\nPROFESSIONAL SUMMARY\nSoftware engineer building Java services and research tools.\n\nEXPERIENCE\nBackend Engineer | CivicFlow | 2023–Present\n- Built Java and Spring Boot services for municipal workflow products.\n- Designed PostgreSQL schemas and query improvements for case-management data.\n\nResearch Software Engineer | Galilee Climate Lab | 2019–2023\n- Developed Java services that ingested environmental sensor data for research teams.\n- Built REST APIs and automated tests for internal data-review workflows.\n- Partnered with researchers to translate data-quality needs into maintainable tools.\n\nEDUCATION\nB.Sc. Computer Information Systems | Northern Israel Institute of Technology | 2015–2019\n\nSKILLS\nJava, Spring Boot, PostgreSQL, REST APIs, automated testing, GitHub Actions\n\nLANGUAGES\nHebrew — native | English — professional working proficiency",
+  "profile_job_potential": {
+    "basic": 80,
+    "preferred": 33.33,
+    "combined": 68.33
+  },
+  "resume_representation_before": {
+    "basic": 100,
+    "preferred": 0,
+    "combined": 75
+  },
+  "resume_representation_after": {
+    "basic": 100,
+    "preferred": 0,
+    "combined": 75,
+    "delta": 0
+  },
+  "grounding_safety": "FAIL",
+  "grounding_errors": [
+    "Confirmed change is not grounded: aws"
+  ],
+  "repair_integrity": "PASS",
+  "repair_errors": [],
+  "structure_before": "PASS",
+  "structure_preservation": "PASS",
+  "structure_errors": [],
+  "coverage_recognition": "PASS",
+  "coverage_recognition_errors": [],
+  "question_coverage": "FAIL",
+  "question_coverage_errors": [
+    {
+      "requirement_id": "aws",
+      "message": "RoleFit did not show the expected question for aws. Looked for: aws. Available: #1confirm python job specific high risk user confirmation needed confirm experience python this information is not currently in the resume add it only if it is true and you can discuss it in an interview question importance do you have professional python experience for data processing workflows which section is relevant skills experience projects education certifications other do not add choose where this confirmed information may belong the next questions will depend on that destination choose one or more relevant sections first the next fields will appear only for the sections you choose why this came up the target job description specifically requires professional python experience for data processing workflows resume evidence so far professional python experience for data processing workflows 8 other open comments remain 3 more in missing experience 2 in resume check 3 in suggestions reject || #2confirm tested services or apis job specific high risk user confirmation needed confirm experience tested services or apis this information is not currently in the resume add it only if it is true and you can discuss it in an interview question importance do you have real resume worthy experience with tested services or apis which section is relevant skills experience projects education certifications other do not add choose where this confirmed information may belong the next questions will depend on that destination choose one or more relevant sections first the next fields will appear only for the sections you choose why this came up this concrete requirement appears in the target job but is not currently supported by the resume resume evidence so far tested services or apis 8 other open comments remain 3 more in missing experience 2 in resume check 3 in suggestions reject || #3confirm pandas job specific high risk user confirmation needed confirm experience pandas this information is not currently in the resume add it only if it is true and you can discuss it in an interview question importance do you have real resume worthy experience with pandas which section is relevant skills experience projects education certifications other do not add choose where this confirmed information may belong the next questions will depend on that destination choose one or more relevant sections first the next fields will appear only for the sections you choose why this came up this concrete requirement appears in the target job but is not currently supported by the resume resume evidence so far pandas 8 other open comments remain 3 more in missing experience 2 in resume check 3 in suggestions reject || #4confirm numpy job specific high risk user confirmation needed confirm experience numpy this information is not currently in the resume add it only if it is true and you can discuss it in an interview question importance do you have real resume worthy experience with numpy which section is relevant skills experience projects education certifications other do not add choose where this confirmed information may belong the next questions will depend on that destination choose one or more relevant sections first the next fields will appear only for the sections you choose why this came up this concrete requirement appears in the target job but is not currently supported by the resume resume evidence so far numpy 8 other open comments remain 3 more in missing experience 2 in resume check 3 in suggestions reject."
+    }
+  ],
+  "question_recognition": "PASS",
+  "question_recognition_errors": [],
+  "result": "REJECT"
+}

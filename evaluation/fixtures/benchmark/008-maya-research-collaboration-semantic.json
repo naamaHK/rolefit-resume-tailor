@@ -1,0 +1,6 @@
+{
+  "id": "benchmark-008-maya-research-collaboration-semantic",
+  "base_fixture": "maya-research-base.json",
+  "purpose": "Card maya-research-08-researcher-collaboration-semantic.",
+  "oracle": { "question_expectations": { "must_not_ask": ["research_collaboration"] }, "coverage_expectations": { "must_be_covered": ["research_collaboration"] } }
+}

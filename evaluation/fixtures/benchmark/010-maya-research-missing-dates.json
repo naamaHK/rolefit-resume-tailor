@@ -1,0 +1,7 @@
+{
+  "id": "benchmark-010-maya-research-missing-dates",
+  "base_fixture": "maya-research-base.json",
+  "purpose": "Card maya-research-10-missing-research-role-dates.",
+  "rolefit_input": { "resume_before": "Maya Cohen\n+972 52 555 0147 | maya.cohen@example.com\n\nPROFESSIONAL SUMMARY\nSoftware engineer building Java services and research tools.\n\nEXPERIENCE\nBackend Engineer | CivicFlow | 2023–Present\n- Built Java and Spring Boot services for municipal workflow products.\n- Used AWS ECS, Amazon RDS, and CloudWatch for application delivery and monitoring.\n\nResearch Software Engineer\nGalilee Climate Lab\n- Developed Java services that ingested environmental sensor data for research teams.\n- Built REST APIs and automated tests for internal data-review workflows.\n- Partnered with researchers to translate data-quality needs into maintainable tools.\n\nEDUCATION\nB.Sc. Computer Information Systems | Northern Israel Institute of Technology | 2015–2019\n\nSKILLS\nJava, Spring Boot, PostgreSQL, REST APIs, automated testing, AWS, AWS ECS, Amazon RDS, CloudWatch\n\nLANGUAGES\nHebrew — native | English — professional working proficiency" },
+  "oracle": { "resume_check_interactions": [{ "type": "date", "card_match": "Research Software Engineer", "before": "Research Software Engineer", "answer": "2019–2023", "separator": " ", "expect_pattern": "Research Software Engineer 2019\\s*[-–]\\s*2023" }] }
+}

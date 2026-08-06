@@ -548,14 +548,21 @@ export async function runLiveFixture(fixturePath, options = {}) {
     await requireExactlyOne(cleanupPass, "Expected one Resume Check tab.");
     await cleanupPass.click();
     await applyAutomaticProfileLookups(page, fixture, events);
+    const resumeCheckCoverageErrors = [];
     for (const interaction of fixture.oracle.resume_check_interactions || []) {
-      const cardText = await applyResumeCheckInteraction(page, interaction);
-      events.push({
-        type: "resume_check_applied",
-        card_match: interaction.card_match || interaction.type,
-        card: cardText,
-        answer: interaction.answer || ""
-      });
+      try {
+        const cardText = await applyResumeCheckInteraction(page, interaction);
+        events.push({
+          type: "resume_check_applied",
+          card_match: interaction.card_match || interaction.type,
+          card: cardText,
+          answer: interaction.answer || ""
+        });
+      } catch (error) {
+        const message = error.message || String(error);
+        resumeCheckCoverageErrors.push({ card_match: interaction.card_match || interaction.type, message });
+        events.push({ type: "expected_resume_check_missing", card_match: interaction.card_match || interaction.type, message });
+      }
     }
 
     const missingExperienceTab = page.locator("#missingExperiencePassBtn");
@@ -615,6 +622,8 @@ export async function runLiveFixture(fixturePath, options = {}) {
       ...scoring,
       coverage_recognition: coverageRecognitionErrors.length ? "FAIL" : "PASS",
       coverage_recognition_errors: coverageRecognitionErrors,
+      resume_check_coverage: resumeCheckCoverageErrors.length ? "FAIL" : "PASS",
+      resume_check_coverage_errors: resumeCheckCoverageErrors,
       question_coverage: questionCoverageErrors.length ? "FAIL" : "PASS",
       question_coverage_errors: questionCoverageErrors,
       question_recognition: questionRecognitionErrors.length ? "FAIL" : "PASS",
@@ -623,6 +632,7 @@ export async function runLiveFixture(fixturePath, options = {}) {
         && scoring.repair_integrity === "PASS"
         && scoring.structure_preservation === "PASS"
         && coverageRecognitionErrors.length === 0
+        && resumeCheckCoverageErrors.length === 0
         && questionCoverageErrors.length === 0
         && questionRecognitionErrors.length === 0 ? "PASS" : "REJECT"
     };

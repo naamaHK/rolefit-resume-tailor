@@ -1,0 +1,19 @@
+{
+  "base_fixture": "maya-platform-base.json",
+  "rolefit_input": {
+    "job_description": "Research Software Engineer\n\nJoin a multidisciplinary climate-data group building dependable tools that help researchers collect, review, and use environmental data. You will work closely with scientists while contributing production-quality software.\n\nBasic Qualifications\n- Bachelor’s degree in Computer Science, Computer Engineering, or a related field.\n- 3+ years of professional software-engineering experience.\n- Experience building tested services or APIs in Java, Python, or a comparable language.\n- Ability to work with researchers to turn data needs into maintainable software.\n- Professional Python experience for data-processing workflows.\n\nPreferred Qualifications\n- Experience operating applications on AWS.\n- Experience with scientific Python libraries such as pandas or NumPy.\n- Experience maintaining an open-source project."
+  },
+  "oracle": {
+    "requirements": [
+      { "id": "related_degree", "label": "Computer Science, Computer Engineering, or a related degree", "category": "basic", "profile_supported": true, "resume_evidence_pattern": "B.Sc. Computer Information Systems" },
+      { "id": "software_years", "label": "3+ years of professional software-engineering experience", "category": "basic", "profile_supported": true, "resume_evidence_pattern": "Research Software Engineer" },
+      { "id": "tested_services", "label": "tested services or APIs in Java, Python, or a comparable language", "coverage_match": "Java", "category": "basic", "profile_supported": true, "resume_evidence_pattern": "Built REST APIs and automated tests" },
+      { "id": "research_collaboration", "label": "work with researchers to turn data needs into maintainable software", "coverage_match": "researchers", "category": "basic", "profile_supported": true, "resume_evidence_pattern": "Partnered with researchers" },
+      { "id": "professional_python", "label": "Professional Python experience", "category": "basic", "profile_supported": false, "resume_evidence_pattern": "Python" },
+      { "id": "aws", "label": "AWS", "category": "preferred", "profile_supported": true, "resume_evidence_pattern": "AWS ECS" },
+      { "id": "scientific_python", "label": "scientific Python libraries", "category": "preferred", "profile_supported": false, "resume_evidence_pattern": "pandas" },
+      { "id": "open_source", "label": "open-source project", "category": "preferred", "profile_supported": false, "resume_evidence_pattern": "open-source" }
+    ],
+    "interactions": []
+  }
+}

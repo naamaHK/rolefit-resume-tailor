@@ -1,0 +1,57 @@
+{
+  "fixture_id": "benchmark-009-maya-research-java-alternative",
+  "runner": "live-web-flow",
+  "app_url": "http://127.0.0.1:8765/index.html",
+  "timestamp": "2026-08-06T09:46:19.777Z",
+  "events": [
+    {
+      "type": "analysis_complete",
+      "status": "AI analysis complete using google/gemini-2.5-flash-lite in 5s. 9 comments ready."
+    },
+    {
+      "type": "unexpected_question",
+      "requirement_id": "tested_services",
+      "question": "#2Confirm tested services or APIs\nJob Specific\nhigh risk\nUser Confirmation Needed\n\nConfirm Experience: tested services or APIs\n\nThis information is not currently in the resume. Add it only if it is true and you can discuss it in an interview.\nQUESTION / IMPORTANCE\n\nDo you have real, resume-worthy experience with tested services or APIs?\n\nWHICH SECTION IS RELEVANT?\nSkills\nExperience\nProjects\nEducation\nCertifications\nOther\nDo not add\n\nChoose where this confirmed information may belong. The next questions will depend on that destination.\n\nChoose one or more relevant sections first. The next fields will appear only for the sections you choose.\nWhy this came up: This concrete requirement appears in the target job but is not currently supported by the resume.\nResume evidence so far: tested services or APIs\n10 other open comments remain: 5 more in Missing Experience, 2 in Resume Check, 3 in Suggestions.\nReject"
+    }
+  ],
+  "role_coverage": {
+    "covered": "REQUIREMENTS COVERED IN CURRENT RESUME\nJava\nAWS\n3+ years of professional software-engineering experience",
+    "missing": "REQUIREMENTS STILL MISSING\nPython\ntested services or APIs\ndata needs into maintainable software\nProfessional Python experience for data-processing workflows\npandas\nNumPy"
+  },
+  "resume_after": "Maya Cohen\n+972 52 555 0147 | maya.cohen@example.com | linkedin.com/in/maya-cohen\n\nPROFESSIONAL SUMMARY\nBackend engineer with seven years of experience building Java services, cloud delivery workflows, research software, and internal tools.\n\nEXPERIENCE\nBackend Engineer | CivicFlow | 2023–Present\n- Built Java and Spring Boot services for municipal workflow products.\n- Designed PostgreSQL schemas and query improvements for case-management data.\n- Containerized services with Docker and maintained GitHub Actions delivery pipelines.\n- Used AWS ECS, Amazon RDS, and CloudWatch for application delivery and monitoring.\n- Collaborated with product, frontend, and platform engineers on API contracts and incident follow-up.\n\nResearch Software Engineer | Galilee Climate Lab | 2019–2023\n- Developed Java services that ingested environmental sensor data for research teams.\n- Built REST APIs and automated tests for internal data-review workflows.\n- Partnered with researchers to translate data-quality needs into maintainable tools.\n\nEDUCATION\nB.Sc. Computer Information Systems | Northern Israel Institute of Technology | 2015–2019\n\nSKILLS\nJava, Spring Boot, PostgreSQL, REST APIs, Docker, automated testing, AWS, AWS ECS, Amazon RDS, CloudWatch, GitHub Actions, React, JavaScript, API design, cross-functional collaboration, incident follow-up\n\nLANGUAGES\nHebrew — native | English — professional working proficiency",
+  "profile_job_potential": {
+    "basic": 80,
+    "preferred": 33.33,
+    "combined": 68.33
+  },
+  "resume_representation_before": {
+    "basic": 100,
+    "preferred": 100,
+    "combined": 100
+  },
+  "resume_representation_after": {
+    "basic": 100,
+    "preferred": 100,
+    "combined": 100,
+    "delta": 0
+  },
+  "grounding_safety": "PASS",
+  "grounding_errors": [],
+  "repair_integrity": "PASS",
+  "repair_errors": [],
+  "structure_before": "PASS",
+  "structure_preservation": "PASS",
+  "structure_errors": [],
+  "coverage_recognition": "PASS",
+  "coverage_recognition_errors": [],
+  "question_coverage": "PASS",
+  "question_coverage_errors": [],
+  "question_recognition": "FAIL",
+  "question_recognition_errors": [
+    {
+      "requirement_id": "tested_services",
+      "question": "#2Confirm tested services or APIs\nJob Specific\nhigh risk\nUser Confirmation Needed\n\nConfirm Experience: tested services or APIs\n\nThis information is not currently in the resume. Add it only if it is true and you can discuss it in an interview.\nQUESTION / IMPORTANCE\n\nDo you have real, resume-worthy experience with tested services or APIs?\n\nWHICH SECTION IS RELEVANT?\nSkills\nExperience\nProjects\nEducation\nCertifications\nOther\nDo not add\n\nChoose where this confirmed information may belong. The next questions will depend on that destination.\n\nChoose one or more relevant sections first. The next fields will appear only for the sections you choose.\nWhy this came up: This concrete requirement appears in the target job but is not currently supported by the resume.\nResume evidence so far: tested services or APIs\n10 other open comments remain: 5 more in Missing Experience, 2 in Resume Check, 3 in Suggestions.\nReject"
+    }
+  ],
+  "result": "REJECT"
+}

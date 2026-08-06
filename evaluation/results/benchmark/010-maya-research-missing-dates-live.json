@@ -1,0 +1,63 @@
+{
+  "fixture_id": "benchmark-010-maya-research-missing-dates",
+  "runner": "live-web-flow",
+  "app_url": "http://127.0.0.1:8765/index.html",
+  "timestamp": "2026-08-06T09:47:53.591Z",
+  "events": [
+    {
+      "type": "analysis_complete",
+      "status": "AI analysis complete using google/gemini-2.5-flash-lite in 5s. 8 comments ready."
+    },
+    {
+      "type": "expected_resume_check_missing",
+      "card_match": "Research Software Engineer",
+      "message": "RoleFit did not show the expected Resume Check card. Looked for: research software engineer, date. Available: #1spelling check in experience resume improvement low risk resume supported spelling check experience before sensor after why fixes spelling mistakes evidence developed java services that ingested environmental sensor data for research teams 9 other open comments remain 1 more in resume check 4 in suggestions 4 in missing experience preview on resume accept change reject || #2fill missing institution resume improvement high risk user confirmation needed missing required field institution this mandatory resume field is missing add the correct value only do not guess question importance this education entry is missing a mandatory field institution enter the correct institution for b sc computer information systems northern israel institute of technology before b sc computer information systems northern israel institute of technology 2015 2019 after entry b sc computer information systems northern israel institute of technology 2015 2019 9 other open comments remain 1 more in resume check 4 in suggestions 4 in missing experience preview on resume save field reject."
+    }
+  ],
+  "role_coverage": {
+    "covered": "REQUIREMENTS COVERED IN CURRENT RESUME\nJava\nAWS\n3+ years of professional software-engineering experience",
+    "missing": "REQUIREMENTS STILL MISSING\nPython\ntested services or APIs\nwork with researchers to turn data needs into maintainable software\npandas\nNumPy"
+  },
+  "resume_after": "Maya Cohen\n+972 52 555 0147 | maya.cohen@example.com\n\nPROFESSIONAL SUMMARY\nSoftware engineer building Java services and research tools.\n\nEXPERIENCE\nBackend Engineer | CivicFlow | 2023–Present\n- Built Java and Spring Boot services for municipal workflow products.\n- Used AWS ECS, Amazon RDS, and CloudWatch for application delivery and monitoring.\n\nResearch Software Engineer\nGalilee Climate Lab\n- Developed Java services that ingested environmental sensor data for research teams.\n- Built REST APIs and automated tests for internal data-review workflows.\n- Partnered with researchers to translate data-quality needs into maintainable tools.\n\nEDUCATION\nB.Sc. Computer Information Systems | Northern Israel Institute of Technology | 2015–2019\n\nSKILLS\nJava, Spring Boot, PostgreSQL, REST APIs, automated testing, AWS, AWS ECS, Amazon RDS, CloudWatch\n\nLANGUAGES\nHebrew — native | English — professional working proficiency",
+  "profile_job_potential": {
+    "basic": 80,
+    "preferred": 33.33,
+    "combined": 68.33
+  },
+  "resume_representation_before": {
+    "basic": 100,
+    "preferred": 100,
+    "combined": 100
+  },
+  "resume_representation_after": {
+    "basic": 100,
+    "preferred": 100,
+    "combined": 100,
+    "delta": 0
+  },
+  "grounding_safety": "PASS",
+  "grounding_errors": [],
+  "repair_integrity": "FAIL",
+  "repair_errors": [
+    "Resume Check repair does not match: Research Software Engineer 2019\\s*[-–]\\s*2023"
+  ],
+  "structure_before": "FAIL",
+  "structure_preservation": "FAIL",
+  "structure_errors": [
+    "Experience entry is missing years: Research Software Engineer"
+  ],
+  "coverage_recognition": "PASS",
+  "coverage_recognition_errors": [],
+  "resume_check_coverage": "FAIL",
+  "resume_check_coverage_errors": [
+    {
+      "card_match": "Research Software Engineer",
+      "message": "RoleFit did not show the expected Resume Check card. Looked for: research software engineer, date. Available: #1spelling check in experience resume improvement low risk resume supported spelling check experience before sensor after why fixes spelling mistakes evidence developed java services that ingested environmental sensor data for research teams 9 other open comments remain 1 more in resume check 4 in suggestions 4 in missing experience preview on resume accept change reject || #2fill missing institution resume improvement high risk user confirmation needed missing required field institution this mandatory resume field is missing add the correct value only do not guess question importance this education entry is missing a mandatory field institution enter the correct institution for b sc computer information systems northern israel institute of technology before b sc computer information systems northern israel institute of technology 2015 2019 after entry b sc computer information systems northern israel institute of technology 2015 2019 9 other open comments remain 1 more in resume check 4 in suggestions 4 in missing experience preview on resume save field reject."
+    }
+  ],
+  "question_coverage": "PASS",
+  "question_coverage_errors": [],
+  "question_recognition": "PASS",
+  "question_recognition_errors": [],
+  "result": "REJECT"
+}
