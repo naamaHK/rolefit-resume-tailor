@@ -648,7 +648,7 @@ function parseArguments(argv) {
   };
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const { fixturePath, outputPath, headless } = parseArguments(process.argv.slice(2));
   const result = await runLiveFixture(fixturePath, { outputPath, headless });
   console.log(JSON.stringify({

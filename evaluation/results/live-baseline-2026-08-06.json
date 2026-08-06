@@ -1,0 +1,575 @@
+{
+  "runner": "live-web-suite",
+  "timestamp": "2026-08-06T09:32:33.271Z",
+  "total": 8,
+  "passed": 7,
+  "rejected": 1,
+  "errors": 0,
+  "results": [
+    {
+      "fixture_id": "001-product-data-analyst-simulation",
+      "runner": "live-web-flow",
+      "app_url": "http://127.0.0.1:8765/index.html",
+      "timestamp": "2026-08-06T09:31:35.118Z",
+      "events": [
+        {
+          "type": "analysis_complete",
+          "status": "AI analysis complete using google/gemini-2.5-flash-lite in 3s. 3 comments ready."
+        },
+        {
+          "type": "question_asked",
+          "requirement_id": "tableau",
+          "question": "#1Confirm Tableau dashboards\nJob Specific\nhigh risk\nUser Confirmation Needed\n\nConfirm Experience: Tableau dashboards\n\nThis information is not currently in the resume. Add it only if it is true and you can discuss it in an interview.\nQUESTION / IMPORTANCE\n\nDo you have real, resume-worthy experience with Tableau dashboards?\n\nWHICH SECTION IS RELEVANT?\nSkills\nExperience\nProjects\nEducation\nCertifications\nOther\nDo not add\n\nChoose where this confirmed information may belong. The next questions will depend on that destination.\n\nChoose one or more relevant sections first. The next fields will appear only for the sections you choose.\nWhy this came up: This concrete requirement appears in the target job but is not currently supported by the resume.\nResume evidence so far: Tableau dashboards\n2 other open comments remain: 2 more in Missing Experience.\nReject"
+        },
+        {
+          "type": "confirmed_and_added",
+          "requirement_id": "tableau",
+          "answer": "Yes. At Loop Commerce, I built and maintained Tableau dashboards for weekly conversion, retention, and experiment reporting.",
+          "resume_change": "- Built and maintained Tableau dashboards for weekly conversion, retention, and experiment reporting."
+        },
+        {
+          "type": "question_asked",
+          "requirement_id": "airflow",
+          "question": "#1Confirm Apache Airflow\nJob Specific\nhigh risk\nUser Confirmation Needed\n\nConfirm Experience: Apache Airflow\n\nThis information is not currently in the resume. Add it only if it is true and you can discuss it in an interview.\nQUESTION / IMPORTANCE\n\nDo you have real, resume-worthy experience with Apache Airflow?\n\nWHICH SECTION IS RELEVANT?\nSkills\nExperience\nProjects\nEducation\nCertifications\nOther\nDo not add\n\nChoose where this confirmed information may belong. The next questions will depend on that destination.\n\nChoose one or more relevant sections first. The next fields will appear only for the sections you choose.\nWhy this came up: This concrete requirement appears in the target job but is not currently supported by the resume.\nResume evidence so far: Apache Airflow\n1 other open comment remains: 1 more in Missing Experience.\nReject"
+        },
+        {
+          "type": "declined",
+          "requirement_id": "airflow",
+          "answer": "No. I have not used Apache Airflow."
+        },
+        {
+          "type": "question_asked",
+          "requirement_id": "dbt",
+          "question": "#1Confirm dbt\nJob Specific\nhigh risk\nUser Confirmation Needed\n\nConfirm Experience: dbt\n\nThis information is not currently in the resume. Add it only if it is true and you can discuss it in an interview.\nQUESTION / IMPORTANCE\n\nDo you have real, resume-worthy experience with dbt?\n\nWHICH SECTION IS RELEVANT?\nSkills\nExperience\nProjects\nEducation\nCertifications\nOther\nDo not add\n\nChoose where this confirmed information may belong. The next questions will depend on that destination.\n\nChoose one or more relevant sections first. The next fields will appear only for the sections you choose.\nWhy this came up: This concrete requirement appears in the target job but is not currently supported by the resume.\nResume evidence so far: dbt\nReject"
+        },
+        {
+          "type": "declined",
+          "requirement_id": "dbt",
+          "answer": "No. I have not used dbt."
+        }
+      ],
+      "role_coverage": {
+        "covered": "REQUIREMENTS COVERED IN CURRENT RESUME\nSQL\nPython\nproduct\n3+ years of product or business data-analysis experience",
+        "missing": "REQUIREMENTS STILL MISSING\nTableau dashboards\nApache Airflow\ndbt"
+      },
+      "resume_after": "Noa Ben-Ami\n+972 50 555 0184 | noa.benami@example.com | linkedin.com/in/noa-ben-ami\n\nPROFESSIONAL SUMMARY\nProduct data analyst with four years of experience using SQL and Python to improve customer journeys, evaluate experiments, and partner with product teams.\n\nEXPERIENCE\nProduct Data Analyst | Loop Commerce | 2023 - Present\n- Used SQL and Python to analyze conversion, retention, and acquisition funnels.\n- Designed and analyzed A/B tests for checkout and onboarding changes.\n- Partnered with product managers and engineers to define metrics and prioritize improvements.\n- Built and maintained Tableau dashboards for weekly conversion, retention, and experiment reporting.\nData Analyst | CityCart | 2021 - 2023\n- Created recurring SQL reports for marketing and operations teams.\n- Analyzed customer cohorts and presented findings to stakeholders.\n\nEDUCATION\nB.Sc. Industrial Engineering and Management | Example University | 2017 - 2021\n\nSKILLS\nA/B Testing • product analytics • cohort analysis • cross-functional collaboration • stakeholder communication • Google Analytics 4\nProgramming Languages: SQL • Python\n\nLANGUAGES\nHebrew — native | English — professional working proficiency",
+      "profile_job_potential": {
+        "basic": 100,
+        "preferred": 0,
+        "combined": 75
+      },
+      "resume_representation_before": {
+        "basic": 80,
+        "preferred": null,
+        "combined": 80
+      },
+      "resume_representation_after": {
+        "basic": 100,
+        "preferred": null,
+        "combined": 100,
+        "delta": 20
+      },
+      "grounding_safety": "PASS",
+      "grounding_errors": [],
+      "repair_integrity": "PASS",
+      "repair_errors": [],
+      "structure_before": "PASS",
+      "structure_preservation": "PASS",
+      "structure_errors": [],
+      "coverage_recognition": "PASS",
+      "coverage_recognition_errors": [],
+      "question_coverage": "PASS",
+      "question_coverage_errors": [],
+      "question_recognition": "PASS",
+      "question_recognition_errors": [],
+      "result": "PASS"
+    },
+    {
+      "fixture_id": "002-backend-platform-repair-boundary",
+      "runner": "live-web-flow",
+      "app_url": "http://127.0.0.1:8765/index.html",
+      "timestamp": "2026-08-06T09:31:43.629Z",
+      "events": [
+        {
+          "type": "analysis_complete",
+          "status": "AI analysis complete using google/gemini-2.5-flash-lite in 6s. 6 comments ready."
+        },
+        {
+          "type": "resume_check_applied",
+          "card_match": "Move Education",
+          "card": "#1Reorder Section in Education\nResume Improvement\nlow risk\nResume Supported\n\nReorder Section: Education\n\nBEFORE\nEDUCATION\nAFTER\nWhy: Education must follow Experience in the core resume order.\nEvidence: Education appears before Experience.\n9 other open comments remain: 3 more in Resume Check, 2 in Suggestions, 4 in Missing Experience.\nPreview on Resume\nAccept Change\nReject",
+          "answer": ""
+        },
+        {
+          "type": "resume_check_applied",
+          "card_match": "maintaned",
+          "card": "#1Spelling Check in Experience\nResume Improvement\nlow risk\nResume Supported\n\nSpelling Check: Experience\n\nBEFORE\nmaintaned\nAFTER\nWhy: Fixes spelling mistakes.\nEvidence: - Built Java and Spring Boot services and maintaned PostgreSQL schemas for municipal workflow products.\n8 other open comments remain: 2 more in Resume Check, 2 in Suggestions, 4 in Missing Experience.\nPreview on Resume\nAccept Change\nReject",
+          "answer": "maintained"
+        },
+        {
+          "type": "resume_check_applied",
+          "card_match": "collaberated",
+          "card": "#1Spelling Check in Experience\nResume Improvement\nlow risk\nResume Supported\n\nSpelling Check: Experience\n\nBEFORE\ncollaberated\nAFTER\nWhy: Fixes spelling mistakes.\nEvidence: - Containerized Docker services, built GitHub Actions pipelines, and collaberated on REST API contracts.\n7 other open comments remain: 1 more in Resume Check, 2 in Suggestions, 4 in Missing Experience.\nPreview on Resume\nAccept Change\nReject",
+          "answer": "collaborated"
+        },
+        {
+          "type": "resume_check_applied",
+          "card_match": "Software Engineer",
+          "card": "#1Add years for Software Engineer\nResume Improvement\nmedium risk\nUser Confirmation Needed\n\nConfirm Years: Software Engineer\n\nThis entry is missing years/dates. Add exact years only. Do not guess.\nQUESTION / IMPORTANCE\n\nThis experience entry is missing years/dates: Software Engineer. Enter the exact years to keep this section consistent.\n\nBEFORE\nSoftware Engineer\nAFTER\nEntry: Software Engineer\n6 other open comments remain: 2 in Suggestions, 4 in Missing Experience.\nPreview on Resume\nSave Years\nReject",
+          "answer": "2020–2022"
+        }
+      ],
+      "role_coverage": {
+        "covered": "REQUIREMENTS COVERED IN CURRENT RESUME\nJava\nSpring Boot\nPostgreSQL\nAWS\nReact\n3+ years of backend software-engineering experience",
+        "missing": "REQUIREMENTS STILL MISSING\nREST API design\nTypeScript\nKubernetes\nGraphQL"
+      },
+      "resume_after": "Maya Cohen\n+972 52 555 0147 | maya.cohen@example.com | linkedin.com/in/maya-cohen\n\nPROFESSIONAL SUMMARY\nBackend engineer with four years of experience building Java services, internal tools, and cloud delivery workflows.\n\nEXPERIENCE\nBackend Engineer 2022 - Present\nCivicFlow\n- Built Java and Spring Boot services and maintained PostgreSQL schemas for municipal workflow products.\n- Containerized Docker services, built GitHub Actions pipelines, and collaborated on REST API contracts.\n- Used AWS ECS, Amazon RDS, and CloudWatch for delivery and incident follow-up.\nSoftware Engineer 2020 - 2022\nAtlas Systems\n- Built React and JavaScript interfaces for internal operations tools.\n- Designed REST APIs and automated tests for workflow features.\n\nEDUCATION\nB.Sc. Computer Information Systems 2016 - 2020\nNorthern Israel Institute of Technology\n\nSKILLS\nSpring Boot • PostgreSQL • REST APIs • Docker • GitHub Actions • AWS • AWS ECS • Amazon RDS • CloudWatch • React • API design • cross-functional collaboration • incident follow-up\nProgramming Languages: Java • JavaScript\n\nLANGUAGES\nHebrew — native | English — professional working proficiency",
+      "profile_job_potential": {
+        "basic": 71.43,
+        "preferred": 66.67,
+        "combined": 70.24
+      },
+      "resume_representation_before": {
+        "basic": 100,
+        "preferred": 100,
+        "combined": 100
+      },
+      "resume_representation_after": {
+        "basic": 100,
+        "preferred": 100,
+        "combined": 100,
+        "delta": 0
+      },
+      "grounding_safety": "PASS",
+      "grounding_errors": [],
+      "repair_integrity": "PASS",
+      "repair_errors": [],
+      "structure_before": "FAIL",
+      "structure_preservation": "PASS",
+      "structure_errors": [],
+      "coverage_recognition": "PASS",
+      "coverage_recognition_errors": [],
+      "question_coverage": "PASS",
+      "question_coverage_errors": [],
+      "question_recognition": "PASS",
+      "question_recognition_errors": [],
+      "result": "PASS"
+    },
+    {
+      "fixture_id": "003-backend-platform-implied-degree-and-similar-skill",
+      "runner": "live-web-flow",
+      "app_url": "http://127.0.0.1:8765/index.html",
+      "timestamp": "2026-08-06T09:31:52.144Z",
+      "events": [
+        {
+          "type": "analysis_complete",
+          "status": "AI analysis complete using google/gemini-2.5-flash-lite in 6s. 9 comments ready."
+        },
+        {
+          "type": "question_asked",
+          "requirement_id": "cs_degree",
+          "question": "#4Confirm Computer Science or closely related degree\nJob Specific\nhigh risk\nUser Confirmation Needed\n\nConfirm Experience: Computer Science or closely related degree\n\nThis information is not currently in the resume. Add it only if it is true and you can discuss it in an interview.\nQUESTION / IMPORTANCE\n\nDo you have real, resume-worthy experience with Computer Science or closely related degree?\n\nWHICH SECTION IS RELEVANT?\nSkills\nExperience\nProjects\nEducation\nCertifications\nOther\nDo not add\n\nChoose where this confirmed information may belong. The next questions will depend on that destination.\n\nChoose one or more relevant sections first. The next fields will appear only for the sections you choose.\nWhy this came up: This concrete requirement appears in the target job but is not currently supported by the resume.\nResume evidence so far: Computer Science or closely related degree\n8 other open comments remain: 4 more in Missing Experience, 4 in Suggestions.\nReject"
+        },
+        {
+          "type": "confirmed_and_added",
+          "requirement_id": "cs_degree",
+          "answer": "Yes. I earned a B.Sc. in Computer Information Systems from Northern Israel Institute of Technology in 2016–2020.",
+          "resume_change": "B.Sc. Computer Information Systems 2016–2020\nNorthern Israel Institute of Technology"
+        },
+        {
+          "type": "question_asked",
+          "requirement_id": "typescript",
+          "question": "#1Confirm TypeScript\nJob Specific\nhigh risk\nUser Confirmation Needed\n\nConfirm Experience: TypeScript\n\nThis information is not currently in the resume. Add it only if it is true and you can discuss it in an interview.\nQUESTION / IMPORTANCE\n\nDo you have working knowledge of TypeScript for service-adjacent tooling?\n\nWHICH SECTION IS RELEVANT?\nSkills\nExperience\nProjects\nEducation\nCertifications\nOther\nDo not add\n\nChoose where this confirmed information may belong. The next questions will depend on that destination.\n\nChoose one or more relevant sections first. The next fields will appear only for the sections you choose.\nWhy this came up: TypeScript is a required skill for this Backend Platform Engineer role, and your resume does not currently mention it.\nResume evidence so far: Working knowledge of TypeScript for service-adjacent tooling\n7 other open comments remain: 3 more in Missing Experience, 4 in Suggestions.\nReject"
+        },
+        {
+          "type": "declined",
+          "requirement_id": "typescript",
+          "answer": "No. I have used JavaScript, but not TypeScript."
+        },
+        {
+          "type": "question_asked",
+          "requirement_id": "kubernetes",
+          "question": "#2Confirm Kubernetes\nJob Specific\nhigh risk\nUser Confirmation Needed\n\nConfirm Experience: Kubernetes\n\nThis information is not currently in the resume. Add it only if it is true and you can discuss it in an interview.\nQUESTION / IMPORTANCE\n\nDo you have real, resume-worthy experience with Kubernetes?\n\nWHICH SECTION IS RELEVANT?\nSkills\nExperience\nProjects\nEducation\nCertifications\nOther\nDo not add\n\nChoose where this confirmed information may belong. The next questions will depend on that destination.\n\nChoose one or more relevant sections first. The next fields will appear only for the sections you choose.\nWhy this came up: This concrete requirement appears in the target job but is not currently supported by the resume.\nResume evidence so far: Kubernetes\n6 other open comments remain: 2 more in Missing Experience, 4 in Suggestions.\nReject"
+        },
+        {
+          "type": "declined",
+          "requirement_id": "kubernetes",
+          "answer": "No. I have not operated Kubernetes workloads."
+        },
+        {
+          "type": "question_asked",
+          "requirement_id": "graphql",
+          "question": "#2Confirm GraphQL APIs\nJob Specific\nhigh risk\nUser Confirmation Needed\n\nConfirm Experience: GraphQL APIs\n\nThis information is not currently in the resume. Add it only if it is true and you can discuss it in an interview.\nQUESTION / IMPORTANCE\n\nDo you have real, resume-worthy experience with GraphQL APIs?\n\nWHICH SECTION IS RELEVANT?\nSkills\nExperience\nProjects\nEducation\nCertifications\nOther\nDo not add\n\nChoose where this confirmed information may belong. The next questions will depend on that destination.\n\nChoose one or more relevant sections first. The next fields will appear only for the sections you choose.\nWhy this came up: This concrete requirement appears in the target job but is not currently supported by the resume.\nResume evidence so far: GraphQL APIs\n5 other open comments remain: 1 more in Missing Experience, 4 in Suggestions.\nReject"
+        },
+        {
+          "type": "declined",
+          "requirement_id": "graphql",
+          "answer": "No. I have not built GraphQL APIs."
+        }
+      ],
+      "role_coverage": {
+        "covered": "REQUIREMENTS COVERED IN CURRENT RESUME\nJava\nSpring Boot\nPostgreSQL\nAWS\nReact\n3+ years of backend software-engineering experience",
+        "missing": "REQUIREMENTS STILL MISSING\nREST API design\nTypeScript\nKubernetes\nComputer Science or closely related degree\nGraphQL APIs"
+      },
+      "resume_after": "Maya Cohen\n+972 52 555 0147 | maya.cohen@example.com | linkedin.com/in/maya-cohen\n\nPROFESSIONAL SUMMARY\nBackend engineer with four years of experience building Java services, cloud delivery workflows, and internal tools.\n\nEXPERIENCE\nBackend Engineer 2022 - Present\nCivicFlow\n- Built Java and Spring Boot services for municipal workflow products.\n- Designed PostgreSQL schemas, REST APIs, Docker delivery workflows, and GitHub Actions pipelines.\n- Used AWS ECS, Amazon RDS, and CloudWatch for application delivery and monitoring.\nSoftware Engineer 2020 - 2022\nAtlas Systems\n- Built React and JavaScript interfaces for internal operations tools.\n\nEDUCATION\nAWS Certified Cloud Practitioner 2021\nAmazon Web Services\nB.Sc. Computer Information Systems 2016 - 2020\nNorthern Israel Institute of Technology\n\nSKILLS\nSpring Boot • PostgreSQL • REST APIs • Docker • GitHub Actions • AWS • AWS ECS • Amazon RDS • CloudWatch • React • API design • cross-functional collaboration\nProgramming Languages: Java • JavaScript\n\nLANGUAGES\nHebrew — native | English — professional working proficiency",
+      "profile_job_potential": {
+        "basic": 71.43,
+        "preferred": 66.67,
+        "combined": 70.24
+      },
+      "resume_representation_before": {
+        "basic": 80,
+        "preferred": 100,
+        "combined": 85
+      },
+      "resume_representation_after": {
+        "basic": 100,
+        "preferred": 100,
+        "combined": 100,
+        "delta": 15
+      },
+      "grounding_safety": "PASS",
+      "grounding_errors": [],
+      "repair_integrity": "PASS",
+      "repair_errors": [],
+      "structure_before": "PASS",
+      "structure_preservation": "PASS",
+      "structure_errors": [],
+      "coverage_recognition": "PASS",
+      "coverage_recognition_errors": [],
+      "question_coverage": "PASS",
+      "question_coverage_errors": [],
+      "question_recognition": "PASS",
+      "question_recognition_errors": [],
+      "result": "PASS"
+    },
+    {
+      "fixture_id": "004-backend-platform-missing-contact-and-typos",
+      "runner": "live-web-flow",
+      "app_url": "http://127.0.0.1:8765/index.html",
+      "timestamp": "2026-08-06T09:32:02.327Z",
+      "events": [
+        {
+          "type": "analysis_complete",
+          "status": "AI analysis complete using google/gemini-2.5-flash-lite in 8s. 7 comments ready."
+        },
+        {
+          "type": "resume_check_applied",
+          "card_match": "full name",
+          "card": "#1Fill missing full name\nResume Improvement\nhigh risk\nUser Confirmation Needed\n\nMissing Header: Full Name\n\nThis resume is missing an essential header field. Add it exactly as it should appear.\nQUESTION / IMPORTANCE\n\nThe resume header is missing the full name. Enter it exactly as it should appear on the resume.\n\nBEFORE\nNot currently in resume.\nAFTER\n11 other open comments remain: 4 more in Resume Check, 3 in Suggestions, 4 in Missing Experience.\nPreview on Resume\nSave Header Field\nReject",
+          "answer": "Maya Cohen"
+        },
+        {
+          "type": "resume_check_applied",
+          "card_match": "phone number",
+          "card": "#1Fill missing phone number\nResume Improvement\nhigh risk\nUser Confirmation Needed\n\nMissing Header: Phone Number\n\nThis resume is missing an essential header field. Add it exactly as it should appear.\nQUESTION / IMPORTANCE\n\nThe resume header is missing the phone number. Enter it exactly as it should appear on the resume.\n\nBEFORE\nNot currently in resume.\nAFTER\n10 other open comments remain: 3 more in Resume Check, 3 in Suggestions, 4 in Missing Experience.\nPreview on Resume\nSave Header Field\nReject",
+          "answer": "+972 52 555 0147"
+        },
+        {
+          "type": "resume_check_applied",
+          "card_match": "email address",
+          "card": "#1Fill missing email address\nResume Improvement\nhigh risk\nUser Confirmation Needed\n\nMissing Header: Email Address\n\nThis resume is missing an essential header field. Add it exactly as it should appear.\nQUESTION / IMPORTANCE\n\nThe resume header is missing the email address. Enter it exactly as it should appear on the resume.\n\nBEFORE\nNot currently in resume.\nAFTER\n9 other open comments remain: 2 more in Resume Check, 3 in Suggestions, 4 in Missing Experience.\nPreview on Resume\nSave Header Field\nReject",
+          "answer": "maya.cohen@example.com"
+        },
+        {
+          "type": "resume_check_applied",
+          "card_match": "architechture",
+          "card": "#1Spelling Check in Experience\nResume Improvement\nlow risk\nResume Supported\n\nSpelling Check: Experience\n\nBEFORE\narchitechture\nAFTER\nWhy: Fixes spelling mistakes.\nEvidence: - Built Java and Spring Boot services and PostgreSQL architechture for municipal workflow products.\n8 other open comments remain: 1 more in Resume Check, 3 in Suggestions, 4 in Missing Experience.\nPreview on Resume\nAccept Change\nReject",
+          "answer": "architecture"
+        },
+        {
+          "type": "resume_check_applied",
+          "card_match": "monitering",
+          "card": "#1Spelling Check in Experience\nResume Improvement\nlow risk\nResume Supported\n\nSpelling Check: Experience\n\nBEFORE\nmonitering\nAFTER\nWhy: Fixes spelling mistakes.\nEvidence: - Used Docker, GitHub Actions, AWS ECS, Amazon RDS, and CloudWatch monitering for delivery.\n7 other open comments remain: 3 in Suggestions, 4 in Missing Experience.\nPreview on Resume\nAccept Change\nReject",
+          "answer": "monitoring"
+        }
+      ],
+      "role_coverage": {
+        "covered": "REQUIREMENTS COVERED IN CURRENT RESUME\nJava\nSpring Boot\nPostgreSQL\nAWS\nReact\n3+ years of backend software-engineering experience",
+        "missing": "REQUIREMENTS STILL MISSING\nREST API design\nTypeScript\nKubernetes\nGraphQL APIs"
+      },
+      "resume_after": "Maya Cohen\n+972 52 555 0147\nmaya.cohen@example.com\n\nPROFESSIONAL SUMMARY\nBackend engineer who builds reliable services and internal tools.\n\nEXPERIENCE\nBackend Engineer 2022 - Present\nCivicFlow\n- Built Java and Spring Boot services and PostgreSQL architecture for municipal workflow products.\n- Used Docker, GitHub Actions, AWS ECS, Amazon RDS, and CloudWatch monitoring for delivery.\nSoftware Engineer 2020 - 2022\nAtlas Systems\n- Built React and JavaScript interfaces and REST APIs for internal operations tools.\n\nEDUCATION\nB.Sc. Computer Information Systems 2016 - 2020\nNorthern Israel Institute of Technology\n\nSKILLS\nSpring Boot • PostgreSQL • REST APIs • Docker • GitHub Actions • AWS • AWS ECS • Amazon RDS • CloudWatch • React • API design • cross-functional collaboration • incident follow-up\nProgramming Languages: Java • JavaScript",
+      "profile_job_potential": {
+        "basic": 71.43,
+        "preferred": 66.67,
+        "combined": 70.24
+      },
+      "resume_representation_before": {
+        "basic": 100,
+        "preferred": 100,
+        "combined": 100
+      },
+      "resume_representation_after": {
+        "basic": 100,
+        "preferred": 100,
+        "combined": 100,
+        "delta": 0
+      },
+      "grounding_safety": "PASS",
+      "grounding_errors": [],
+      "repair_integrity": "PASS",
+      "repair_errors": [],
+      "structure_before": "FAIL",
+      "structure_preservation": "PASS",
+      "structure_errors": [],
+      "coverage_recognition": "PASS",
+      "coverage_recognition_errors": [],
+      "question_coverage": "PASS",
+      "question_coverage_errors": [],
+      "question_recognition": "PASS",
+      "question_recognition_errors": [],
+      "result": "PASS"
+    },
+    {
+      "fixture_id": "005-backend-platform-minimal-resume",
+      "runner": "live-web-flow",
+      "app_url": "http://127.0.0.1:8765/index.html",
+      "timestamp": "2026-08-06T09:32:09.172Z",
+      "events": [
+        {
+          "type": "analysis_complete",
+          "status": "AI analysis complete using google/gemini-2.5-flash-lite in 4s. 7 comments ready."
+        },
+        {
+          "type": "profile_lookup_applied",
+          "field": "name",
+          "source": "profile.basic_info.name"
+        },
+        {
+          "type": "profile_lookup_applied",
+          "field": "phone",
+          "source": "profile.basic_info.phone"
+        },
+        {
+          "type": "profile_lookup_applied",
+          "field": "email",
+          "source": "profile.basic_info.email"
+        },
+        {
+          "type": "profile_evidence_applied",
+          "matched_skills": [
+            "Spring Boot"
+          ],
+          "experience": "Backend Engineer at CivicFlow"
+        },
+        {
+          "type": "profile_evidence_applied",
+          "matched_skills": [
+            "React"
+          ],
+          "experience": "Software Engineer at Atlas Systems"
+        },
+        {
+          "type": "question_unhandled",
+          "question": "#1Confirm REST API design\nJob Specific\nhigh risk\nUser Confirmation Needed\n\nConfirm Experience: REST API design\n\nThis information is not currently in the resume. Add it only if it is true and you can discuss it in an interview.\nQUESTION / IMPORTANCE\n\nDo you have real, resume-worthy experience with REST API design?\n\nWHICH SECTION IS RELEVANT?\nSkills\nExperience\nProjects\nEducation\nCertifications\nOther\nDo not add\n\nChoose where this confirmed information may belong. The next questions will depend on that destination.\n\nChoose one or more relevant sections first. The next fields will appear only for the sections you choose.\nWhy this came up: This concrete requirement appears in the target job but is not currently supported by the resume.\nResume evidence so far: REST API design\n4 other open comments remain: 4 more in Missing Experience.\nReject"
+        },
+        {
+          "type": "question_unhandled",
+          "question": "#2Confirm TypeScript\nJob Specific\nhigh risk\nUser Confirmation Needed\n\nConfirm Experience: TypeScript\n\nThis information is not currently in the resume. Add it only if it is true and you can discuss it in an interview.\nQUESTION / IMPORTANCE\n\nDo you have real, resume-worthy experience with TypeScript?\n\nWHICH SECTION IS RELEVANT?\nSkills\nExperience\nProjects\nEducation\nCertifications\nOther\nDo not add\n\nChoose where this confirmed information may belong. The next questions will depend on that destination.\n\nChoose one or more relevant sections first. The next fields will appear only for the sections you choose.\nWhy this came up: This concrete requirement appears in the target job but is not currently supported by the resume.\nResume evidence so far: TypeScript\n4 other open comments remain: 4 more in Missing Experience.\nReject"
+        },
+        {
+          "type": "question_unhandled",
+          "question": "#3Confirm Kubernetes\nJob Specific\nhigh risk\nUser Confirmation Needed\n\nConfirm Experience: Kubernetes\n\nThis information is not currently in the resume. Add it only if it is true and you can discuss it in an interview.\nQUESTION / IMPORTANCE\n\nDo you have real, resume-worthy experience with Kubernetes?\n\nWHICH SECTION IS RELEVANT?\nSkills\nExperience\nProjects\nEducation\nCertifications\nOther\nDo not add\n\nChoose where this confirmed information may belong. The next questions will depend on that destination.\n\nChoose one or more relevant sections first. The next fields will appear only for the sections you choose.\nWhy this came up: This concrete requirement appears in the target job but is not currently supported by the resume.\nResume evidence so far: Kubernetes\n4 other open comments remain: 4 more in Missing Experience.\nReject"
+        },
+        {
+          "type": "question_unhandled",
+          "question": "#4Confirm GraphQL\nJob Specific\nhigh risk\nUser Confirmation Needed\n\nConfirm Experience: GraphQL\n\nThis information is not currently in the resume. Add it only if it is true and you can discuss it in an interview.\nQUESTION / IMPORTANCE\n\nDo you have real, resume-worthy experience with GraphQL?\n\nWHICH SECTION IS RELEVANT?\nSkills\nExperience\nProjects\nEducation\nCertifications\nOther\nDo not add\n\nChoose where this confirmed information may belong. The next questions will depend on that destination.\n\nChoose one or more relevant sections first. The next fields will appear only for the sections you choose.\nWhy this came up: This concrete requirement appears in the target job but is not currently supported by the resume.\nResume evidence so far: GraphQL\n4 other open comments remain: 4 more in Missing Experience.\nReject"
+        },
+        {
+          "type": "question_unhandled",
+          "question": "#5Confirm 3+ years of backend software-engineering experience\nJob Specific\nhigh risk\nUser Confirmation Needed\n\nConfirm Experience: 3+ years of backend software-engineering experience\n\nThis information is not currently in the resume. Add it only if it is true and you can discuss it in an interview.\nQUESTION / IMPORTANCE\n\nThis role requests at least 3 years of relevant experience, but the resume does not show that amount. Is earlier relevant experience missing from the resume?\n\nWHICH SECTION IS RELEVANT?\nSkills\nExperience\nProjects\nEducation\nCertifications\nOther\nDo not add\n\nChoose where this confirmed information may belong. The next questions will depend on that destination.\n\nChoose one or more relevant sections first. The next fields will appear only for the sections you choose.\nWhy this came up: The target role requests more relevant experience than the resume currently shows.\nResume evidence so far: 3+ years of backend software-engineering experience\n4 other open comments remain: 4 more in Missing Experience.\nReject"
+        }
+      ],
+      "role_coverage": {
+        "covered": "REQUIREMENTS COVERED IN CURRENT RESUME\nJava\nPostgreSQL",
+        "missing": "REQUIREMENTS STILL MISSING\nSpring Boot\nREST API design\nTypeScript\nKubernetes\nAWS\nReact\nGraphQL\n3+ years of backend software-engineering experience"
+      },
+      "resume_after": "Maya Cohen\n+972 52 555 0147\nmaya.cohen@example.com\n\nEXPERIENCE\nBackend Engineer 2022 - Present\nCivicFlow\n- Built Java and Spring Boot services for municipal workflow products.\nSoftware Engineer 2020 - 2022\nAtlas Systems\n- Built React and JavaScript interfaces for internal operations tools.\n\nSKILLS\nJava • PostgreSQL",
+      "profile_job_potential": {
+        "basic": 71.43,
+        "preferred": 66.67,
+        "combined": 70.24
+      },
+      "resume_representation_before": {
+        "basic": 20,
+        "preferred": 0,
+        "combined": 15
+      },
+      "resume_representation_after": {
+        "basic": 60,
+        "preferred": 50,
+        "combined": 57.5,
+        "delta": 42.5
+      },
+      "grounding_safety": "PASS",
+      "grounding_errors": [],
+      "repair_integrity": "PASS",
+      "repair_errors": [],
+      "structure_before": "FAIL",
+      "structure_preservation": "FAIL",
+      "structure_errors": [
+        "Summary, Experience, and Education must appear in that order.",
+        "PROFESSIONAL SUMMARY must not be empty.",
+        "EDUCATION must not be empty."
+      ],
+      "coverage_recognition": "PASS",
+      "coverage_recognition_errors": [],
+      "question_coverage": "PASS",
+      "question_coverage_errors": [],
+      "question_recognition": "PASS",
+      "question_recognition_errors": [],
+      "result": "REJECT"
+    },
+    {
+      "fixture_id": "006-backend-platform-seven-year-gap",
+      "runner": "live-web-flow",
+      "app_url": "http://127.0.0.1:8765/index.html",
+      "timestamp": "2026-08-06T09:32:16.854Z",
+      "events": [
+        {
+          "type": "analysis_complete",
+          "status": "AI analysis complete using google/gemini-2.5-flash-lite in 6s. 4 comments ready."
+        },
+        {
+          "type": "question_asked",
+          "requirement_id": "seven_years_backend",
+          "question": "#1Confirm 7+ years of backend software-engineering experience\nJob Specific\nhigh risk\nUser Confirmation Needed\n\nConfirm Experience: 7+ years of backend software-engineering experience\n\nThis information is not currently in the resume. Add it only if it is true and you can discuss it in an interview.\nQUESTION / IMPORTANCE\n\nThis role requests at least 7 years of relevant experience, but the resume does not show that amount. Is earlier relevant experience missing from the resume?\n\nWHICH SECTION IS RELEVANT?\nSkills\nExperience\nProjects\nEducation\nCertifications\nOther\nDo not add\n\nChoose where this confirmed information may belong. The next questions will depend on that destination.\n\nChoose one or more relevant sections first. The next fields will appear only for the sections you choose.\nWhy this came up: The target role requests more relevant experience than the resume currently shows.\nResume evidence so far: 7+ years of backend software-engineering experience\n4 other open comments remain: 1 in Resume Check, 3 in Suggestions.\nReject"
+        },
+        {
+          "type": "declined",
+          "requirement_id": "seven_years_backend",
+          "answer": "No. I have four years of backend engineering experience and no earlier relevant role to add."
+        }
+      ],
+      "role_coverage": {
+        "covered": "REQUIREMENTS COVERED IN CURRENT RESUME\nAWS\nReact\ninternal tools",
+        "missing": "REQUIREMENTS STILL MISSING\n7+ years of backend software-engineering experience"
+      },
+      "resume_after": "Maya Cohen\n+972 52 555 0147 | maya.cohen@example.com | linkedin.com/in/maya-cohen\n\nPROFESSIONAL SUMMARY\nBackend engineer with four years of experience building Java services, cloud delivery workflows, and internal tools.\n\nEXPERIENCE\nBackend Engineer | CivicFlow | 2023 - Present\n- Built Java and Spring Boot services for municipal workflow products.\n- Designed PostgreSQL schemas and REST APIs for case-management data.\n- Used AWS ECS, Amazon RDS, and CloudWatch for application delivery and monitoring.\nSoftware Engineer | Atlas Systems | 2022 - 2023\n- Built React and JavaScript interfaces for internal operations tools.\n\nEDUCATION\nB.Sc. Computer Information Systems | Northern Israel Institute of Technology | 2016 - 2020\n\nSKILLS\nSpring Boot • PostgreSQL • REST APIs • Docker • GitHub Actions • AWS • AWS ECS • Amazon RDS • CloudWatch • React • API design • cross-functional collaboration • incident follow-up\nProgramming Languages: Java • JavaScript\n\nLANGUAGES\nHebrew — native | English — professional working proficiency",
+      "profile_job_potential": {
+        "basic": 50,
+        "preferred": 100,
+        "combined": 62.5
+      },
+      "resume_representation_before": {
+        "basic": 100,
+        "preferred": 100,
+        "combined": 100
+      },
+      "resume_representation_after": {
+        "basic": 100,
+        "preferred": 100,
+        "combined": 100,
+        "delta": 0
+      },
+      "grounding_safety": "PASS",
+      "grounding_errors": [],
+      "repair_integrity": "PASS",
+      "repair_errors": [],
+      "structure_before": "PASS",
+      "structure_preservation": "PASS",
+      "structure_errors": [],
+      "coverage_recognition": "PASS",
+      "coverage_recognition_errors": [],
+      "question_coverage": "PASS",
+      "question_coverage_errors": [],
+      "question_recognition": "PASS",
+      "question_recognition_errors": [],
+      "result": "PASS"
+    },
+    {
+      "fixture_id": "007-backend-platform-related-degree-present",
+      "runner": "live-web-flow",
+      "app_url": "http://127.0.0.1:8765/index.html",
+      "timestamp": "2026-08-06T09:32:26.499Z",
+      "events": [
+        {
+          "type": "analysis_complete",
+          "status": "AI analysis complete using google/gemini-2.5-flash-lite in 8s. 5 comments ready."
+        }
+      ],
+      "role_coverage": {
+        "covered": "REQUIREMENTS COVERED IN CURRENT RESUME\nComputer Science or closely related degree\nAWS",
+        "missing": "REQUIREMENTS STILL MISSING\nAWS cloud services"
+      },
+      "resume_after": "Maya Cohen\n+972 52 555 0147 | maya.cohen@example.com | linkedin.com/in/maya-cohen\n\nPROFESSIONAL SUMMARY\nBackend engineer with four years of experience building Java services, cloud delivery workflows, and internal tools.\n\nEXPERIENCE\nBackend Engineer | CivicFlow | 2022–Present\n- Built Java and Spring Boot services for municipal workflow products.\n- Designed PostgreSQL schemas and REST APIs for case-management data.\n- Used AWS ECS, Amazon RDS, and CloudWatch for application delivery and monitoring.\n\nSoftware Engineer | Atlas Systems | 2020–2022\n- Built React and JavaScript interfaces for internal operations tools.\n\nEDUCATION\nB.Sc. Computer Information Systems | Northern Israel Institute of Technology | 2016–2020\n\nSKILLS\nJava, Spring Boot, PostgreSQL, REST APIs, Docker, GitHub Actions, AWS, AWS ECS, Amazon RDS, CloudWatch, React, JavaScript, API design, cross-functional collaboration, incident follow-up\n\nLANGUAGES\nHebrew — native | English — professional working proficiency",
+      "profile_job_potential": {
+        "basic": 100,
+        "preferred": 100,
+        "combined": 100
+      },
+      "resume_representation_before": {
+        "basic": 100,
+        "preferred": 100,
+        "combined": 100
+      },
+      "resume_representation_after": {
+        "basic": 100,
+        "preferred": 100,
+        "combined": 100,
+        "delta": 0
+      },
+      "grounding_safety": "PASS",
+      "grounding_errors": [],
+      "repair_integrity": "PASS",
+      "repair_errors": [],
+      "structure_before": "PASS",
+      "structure_preservation": "PASS",
+      "structure_errors": [],
+      "coverage_recognition": "PASS",
+      "coverage_recognition_errors": [],
+      "question_coverage": "PASS",
+      "question_coverage_errors": [],
+      "question_recognition": "PASS",
+      "question_recognition_errors": [],
+      "result": "PASS"
+    },
+    {
+      "fixture_id": "008-backend-platform-eight-years-including-research",
+      "runner": "live-web-flow",
+      "app_url": "http://127.0.0.1:8765/index.html",
+      "timestamp": "2026-08-06T09:32:33.177Z",
+      "events": [
+        {
+          "type": "analysis_complete",
+          "status": "AI analysis complete using google/gemini-2.5-flash-lite in 5s. 5 comments ready."
+        }
+      ],
+      "role_coverage": {
+        "covered": "REQUIREMENTS COVERED IN CURRENT RESUME\nAWS\n7+ years of backend software-engineering experience",
+        "missing": "REQUIREMENTS STILL MISSING\nplatform services\ndeveloper tooling"
+      },
+      "resume_after": "Maya Cohen\n+972 52 555 0147 | maya.cohen@example.com | linkedin.com/in/maya-cohen\n\nPROFESSIONAL SUMMARY\nBackend engineer with eight years of experience building Java services, research data systems, and cloud delivery workflows.\n\nEXPERIENCE\nBackend Engineer | CivicFlow | 2023–Present\n- Built Java and Spring Boot services for municipal workflow products.\n- Used AWS ECS, Amazon RDS, and CloudWatch for application delivery and monitoring.\n\nResearch Software Engineer | Technion Applied Systems Lab | 2019–2023\n- Built Java services and PostgreSQL-backed research data tools for applied-systems projects.\n- Designed REST APIs used by researchers and engineering collaborators.\n\nEDUCATION\nB.Sc. Computer Information Systems | Northern Israel Institute of Technology | 2016–2020\n\nSKILLS\nJava, Spring Boot, PostgreSQL, REST APIs, AWS, AWS ECS, Amazon RDS, CloudWatch, API design, cross-functional collaboration\n\nLANGUAGES\nHebrew — native | English — professional working proficiency",
+      "profile_job_potential": {
+        "basic": 100,
+        "preferred": 100,
+        "combined": 100
+      },
+      "resume_representation_before": {
+        "basic": 100,
+        "preferred": 100,
+        "combined": 100
+      },
+      "resume_representation_after": {
+        "basic": 100,
+        "preferred": 100,
+        "combined": 100,
+        "delta": 0
+      },
+      "grounding_safety": "PASS",
+      "grounding_errors": [],
+      "repair_integrity": "PASS",
+      "repair_errors": [],
+      "structure_before": "PASS",
+      "structure_preservation": "PASS",
+      "structure_errors": [],
+      "coverage_recognition": "PASS",
+      "coverage_recognition_errors": [],
+      "question_coverage": "PASS",
+      "question_coverage_errors": [],
+      "question_recognition": "PASS",
+      "question_recognition_errors": [],
+      "result": "PASS"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "id": "benchmark-003-maya-platform-postgresql-semantic",
+  "base_fixture": "maya-platform-base.json",
+  "purpose": "Card maya-platform-03-postgresql-semantic-bullet: schema-design evidence should satisfy PostgreSQL.",
+  "oracle": { "question_expectations": { "must_not_ask": ["postgresql"] }, "coverage_expectations": { "must_be_covered": ["postgresql"] } }
+}

@@ -1,0 +1,10 @@
+{
+  "id": "benchmark-002-maya-platform-unsupported-tools",
+  "base_fixture": "maya-platform-base.json",
+  "purpose": "Card maya-platform-02-unsupported-tool-bundle: TypeScript, Kubernetes, and GraphQL are not in the profile.",
+  "oracle": { "interactions": [
+    { "requirement_id": "typescript", "confirmed": false, "simulated_user_answer": "No. I have used JavaScript, but not TypeScript.", "released_profile_fact": "", "resume_change": "" },
+    { "requirement_id": "kubernetes", "confirmed": false, "simulated_user_answer": "No. I have not operated Kubernetes workloads.", "released_profile_fact": "", "resume_change": "" },
+    { "requirement_id": "graphql", "confirmed": false, "simulated_user_answer": "No. I have not built GraphQL APIs.", "released_profile_fact": "", "resume_change": "" }
+  ] }
+}
