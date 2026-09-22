@@ -2050,6 +2050,42 @@ assert.doesNotMatch(
   "Skills preview should not nest a short skill highlight inside a longer skill highlight"
 );
 
+const groupedSkillsResume = `ALEX MORGAN
+
+SKILLS & TECHNOLOGIES
+Programming & Tools: Python, Java, SQL
+Machine Learning & Statistics: Recommender Systems, A/B Testing, Statistical Analysis
+Big Data & Systems: Hadoop, MapReduce, Hive
+Applied AI: LLM APIs, Prompt Engineering, Structured Outputs`;
+const groupedSkillPlacement = {
+  ...intelQuestionChange,
+  id: "grouped-skill-placement",
+  placements: ["skills"],
+  placement: "skills",
+  skillDraftText: "Model Evaluation",
+  skillSubsection: "Machine Learning & Statistics",
+  status: "pending"
+};
+const groupedSkillsWithModelEvaluation = context.applySingleChange(groupedSkillsResume, groupedSkillPlacement);
+assert.match(groupedSkillsWithModelEvaluation, /Machine Learning & Statistics: Recommender Systems, A\/B Testing, Statistical Analysis, Model Evaluation/);
+assert.match(groupedSkillsWithModelEvaluation, /Programming & Tools: Python, Java, SQL/, "adding to one Skills subsection must preserve Programming & Tools");
+assert.match(groupedSkillsWithModelEvaluation, /Big Data & Systems: Hadoop, MapReduce, Hive/, "adding to one Skills subsection must preserve Big Data & Systems");
+assert.match(groupedSkillsWithModelEvaluation, /Applied AI: LLM APIs, Prompt Engineering, Structured Outputs/, "adding to one Skills subsection must preserve Applied AI");
+
+const flattenedSkillRewrite = context.applySingleChange(groupedSkillsResume, {
+  id: "flattened-skills-rewrite",
+  type: "rewrite",
+  section: "Skills & Technologies",
+  originalText: groupedSkillsResume.split("SKILLS & TECHNOLOGIES\n")[1],
+  suggestedText: "Programming & Tools: Python, SQL, Java, C, Git Machine Learning & Statistics: Statistical Analysis, Predictive Modeling, Feature Engineering, Recommender Systems, A/B Testing Big Data & Systems: Hadoop, MapReduce, Hive Applied AI: LLM APIs, Prompt Engineering, Structured Outputs, Evaluation Frameworks",
+  mode: "replace"
+});
+assert.match(
+  flattenedSkillRewrite,
+  /Programming & Tools: Python, SQL, Java, C, Git\nMachine Learning & Statistics: Statistical Analysis, Predictive Modeling, Feature Engineering, Recommender Systems, A\/B Testing\nBig Data & Systems: Hadoop, MapReduce, Hive\nApplied AI: LLM APIs, Prompt Engineering, Structured Outputs, Evaluation Frameworks/,
+  "rewriting grouped Skills must preserve one line per existing subsection"
+);
+
 const multiLanguageSkillsResume = context.applySingleChange(skillEducationExperienceResume, {
   ...intelQuestionChange,
   placements: ["skills"],
@@ -5006,6 +5042,33 @@ assert.equal(
   JSON.stringify(updatedRoleCoverage.covered.map((item) => item.key)),
   JSON.stringify(["python", "java", "machine learning"]),
   "accepted skills must move into the covered requirements list"
+);
+
+const semanticRequirementAnalysis = {
+  job_analysis: {
+    required_skills: ["Developing AI agents", "AI Agents", "Predictive Models"]
+  }
+};
+const semanticRequirementBaseline = `ALEX MORGAN
+
+SKILLS & TECHNOLOGIES
+Machine Learning & Statistics: Statistical Analysis`;
+const semanticRequirementUpdated = `${semanticRequirementBaseline}, Predictive Modeling`;
+const semanticRequirementCoverage = context.buildRoleCoverageState(
+  semanticRequirementAnalysis,
+  semanticRequirementUpdated,
+  semanticRequirementBaseline,
+  "The role requires developing AI agents and predictive models."
+);
+assert.equal(
+  JSON.stringify(semanticRequirementCoverage.covered.map((item) => [item.key, item.newlyCovered])),
+  JSON.stringify([["predictive modeling", true]]),
+  "Predictive Modeling should cover the Predictive Models requirement"
+);
+assert.equal(
+  JSON.stringify(semanticRequirementCoverage.missing.map((item) => item.key)),
+  JSON.stringify(["ai agents"]),
+  "Developing AI agents and AI Agents must remain one missing requirement"
 );
 assert.equal(
   JSON.stringify(updatedRoleCoverage.covered.filter((item) => item.newlyCovered).map((item) => item.key)),

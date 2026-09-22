@@ -444,7 +444,7 @@ function clearJobRole() {
 
 function analyze() {
   const resumeText = getWorkingResumeText();
-  const jobText = jobInput.value.trim();
+  const jobText = sanitizeJobDescriptionForAnalysis(jobInput.value);
 
   if (!resumeText) {
     analysisOutput.innerHTML = `<p class="empty-state">Please paste or upload a resume.</p>`;
@@ -540,6 +540,8 @@ if (window.__ROLEFIT_TEST__) {
     renderAiAnalysis,
     refreshAiAnalysisForCurrentResume,
     retainOnlyCanonicalMissingExperienceCards,
+    reconcileOpenMissingExperienceChanges,
+    sanitizeJobDescriptionForAnalysis,
     isGeneralResumeSuggestionAllowed,
     passes: {
       cleanup: PASS_CLEANUP,

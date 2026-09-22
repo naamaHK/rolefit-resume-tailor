@@ -39,11 +39,15 @@
         .replace(/\s+/g, " ")
         .trim();
       if (/^(?:c\s*\/\s*c\+\+|c and c\+\+|c\+\+ and c)$/.test(value)) return "c/c++";
+      if (/^(?:llms?|large language models?(?:\s*\(\s*llms?\s*\))?)$/.test(value)) return "llm";
+      if (/^(?:(?:developing|building|development of)\s+)?(?:ai|artificial intelligence)\s+agents?$/.test(value)) return "ai agents";
+      if (/^(?:predictive\s+(?:models?|modeling)|prediction\s+models?)$/.test(value)) return "predictive modeling";
       if (/\bcommunication\b/.test(value) && /\bcollaboration\b/.test(value)) return "communication-and-collaboration";
       if (/^communication(?:\s+skills?)?$/.test(value)) return "communication";
       if (/^collaboration(?:\s+skills?)?$/.test(value)) return "collaboration";
       if (/\btop-tier\b.*\bpeer-reviewed\b|\bpeer-reviewed\b.*\b(?:conferences?|journals?)\b/.test(value)) return "peer-reviewed-research-output";
       if (value === "ml") return "machine learning";
+      if (/^(?:statistics|statistical (?:analysis|methods?|modeling))$/.test(value)) return "statistics";
       if (value === "cs") return "computer science";
       if (value === "ce") return "computer engineering";
       if (/^tableau(?:\s+dashboards?)?$/.test(value)) return "tableau";
@@ -60,7 +64,15 @@
         || /^(?:dashboard(?:s)?|reporting|decision(?:s)?|customer data)$/.test(key)
         || /^(?:related|relevant)\s+(?:(?:field\s+)?research|field|background)(?:\s+(?:experience|work))?$/.test(key)
         || /\bjob\s+description\b/.test(key)
-        || /^(?:description|details?|requirements?)$/.test(key);
+        || /^(?:description|details?|requirements?)$/.test(key)
+        || /^(?:experience|what you(?:'|’)?ll do|what you will do|what you bring|technical skills|core attributes|responsibilities)\s*:?$/.test(key)
+        || /^about(?:\s+the)?\s+(?:job|role|team|company|us|[a-z0-9&.+-]{2,30})\s*:?$/.test(key)
+        || /^(?:benefits|perks)(?:\s+(?:at|of|with)\s+.{2,50}|\s+(?:and|&)\s+(?:benefits|perks))?\s*:?$/.test(key)
+        || /^(?:(?:hybrid|remote|on-site|onsite)\s+work(?:ing)?(?:\s+(?:model|policy|arrangement))?|dog-friendly office|on-site gym(?: and pilates classes)?|fully funded supplemental health(?: insurance)?|free (?:meals?|lunch|snacks?)|employee discounts?)\s*\.?$/.test(key)
+        || /^(?:view profile|clear|search by (?:keyword|location|postal code)|show more options|privacy|terms(?:\s*(?:&|and)\s*)conditions|modern slavery act|gender pay gap report)$/.test(key)
+        || /^select how often\b/.test(key)
+        || /^(?:date|posted|publication date)\s*:/.test(key)
+        || /^(?:(?:senior|lead|principal|staff|junior)\s+)?(?:data scientist|research engineer|software engineer|machine learning engineer|data engineer|product manager)$/.test(key);
     }
 
     function display(term) {
@@ -73,8 +85,22 @@
         collaboration: "Collaboration",
         "peer-reviewed-research-output": "Peer-reviewed research output",
         "machine learning": "Machine Learning",
+        statistics: "Statistics",
         "computer science": "Computer Science",
         "computer engineering": "Computer Engineering",
+        "computer vision": "Computer Vision",
+        "ai agents": "AI Agents",
+        "predictive modeling": "Predictive Modeling",
+        llm: "LLM",
+        "model evaluation": "Model Evaluation",
+        classification: "Classification",
+        "anomaly detection": "Anomaly Detection",
+        pytorch: "PyTorch",
+        tensorflow: "TensorFlow",
+        "scikit-learn": "Scikit-learn",
+        mlops: "MLOps",
+        scalability: "Scalability",
+        nlp: "NLP",
         tableau: "Tableau",
         "apache-airflow": "Apache Airflow",
         dbt: "dbt",
@@ -136,6 +162,14 @@
         return duration;
       }
 
+      if (/\brag\b/.test(key)) {
+        return { key: "rag", display: /\bpipelines?\b/.test(key) ? "RAG pipelines" : "RAG" };
+      }
+
+      if (/\b(?:generative ai|genai)\b/.test(key)) {
+        return { key: "generative ai", display: "Generative AI" };
+      }
+
       if (key === "tableau" && /\btableau\s+dashboards?\b/.test(job)) {
         return { key: "tableau", display: "Tableau dashboards" };
       }
@@ -184,6 +218,10 @@
       if (textContainsTopicTerm(job, term) || textContainsTopicTerm(job, grouped.display)) return true;
       const key = normalizeKey(term);
       if (key === "machine learning") return /\b(?:ML|machine learning)\b/i.test(job);
+      if (key === "llm") return /\bLLMs?\b/i.test(job);
+      if (key === "computer vision") return /\b(?:computer vision|vision)\b/i.test(job);
+      if (key === "ai agents") return /\b(?:developing|building|development of)?\s*(?:AI|artificial intelligence)\s+agents?\b/i.test(job);
+      if (key === "predictive modeling") return /\b(?:predictive\s+(?:models?|modeling)|prediction\s+models?)\b/i.test(job);
       if (key === "llm") return /\bLLMs?\b/i.test(job);
       if (key === "computer science") return /\b(?:CS|computer science)\b/i.test(job);
       if (key === "computer engineering") return /\b(?:CE|computer engineering)\b/i.test(job);
@@ -284,16 +322,21 @@
       const byKey = new Map();
 
       for (const item of termsToCollect) {
-        const label = display(item);
-        const grouped = groupForJob(label, jobText);
-        if (
-          !grouped.key
-          || grouped.key.length > 90
-          || isAbstract(label)
-          || !isGroundedInJob(label, grouped, jobText)
-          || byKey.has(grouped.key)
-        ) continue;
-        byKey.set(grouped.key, grouped.display);
+        const initialLabel = display(item);
+        const concreteTerms = extractMissingExperienceTopics(initialLabel, { allowFallback: false });
+        const labels = concreteTerms.length > 1 ? concreteTerms : [initialLabel];
+
+        for (const label of labels) {
+          const grouped = groupForJob(label, jobText);
+          if (
+            !grouped.key
+            || grouped.key.length > 90
+            || isAbstract(label)
+            || !isGroundedInJob(label, grouped, jobText)
+            || byKey.has(grouped.key)
+          ) continue;
+          byKey.set(grouped.key, grouped.display);
+        }
       }
 
       return Array.from(byKey, ([key, display]) => ({ key, display }));

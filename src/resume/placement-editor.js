@@ -35,8 +35,10 @@ function getResumeSectionAliases(section) {
     summary: ["professional summary", "summary", "profile", "statement"],
     statement: ["statement", "professional summary", "summary", "profile"],
     profile: ["profile", "professional summary", "summary", "statement"],
-    skills: ["skills", "technical skills"],
-    "technical skills": ["technical skills", "skills"],
+    skills: ["skills", "technical skills", "skills & technologies", "skills and technologies"],
+    "technical skills": ["technical skills", "skills", "skills & technologies", "skills and technologies"],
+    "skills & technologies": ["skills & technologies", "skills and technologies", "skills", "technical skills"],
+    "skills and technologies": ["skills and technologies", "skills & technologies", "skills", "technical skills"],
     experience: ["experience", "professional experience"],
     education: ["education"],
     publications: ["publications", "publication"],
@@ -339,6 +341,7 @@ function getPreviewRequirementKey(change) {
     cleanConfirmedText(change.suggestedText),
     cleanConfirmedText(change.skillDraftText),
     cleanConfirmedText(change.skillLevelText),
+    cleanConfirmedText(change.skillSubsection),
     cleanConfirmedText(change.experienceDraftText),
     cleanConfirmedText(change.projectAction),
     cleanConfirmedText(change.projectEntryKey),
@@ -435,6 +438,14 @@ function validateConfirmedPlacement(change, resumeText) {
 
   if (placements.includes("skills") && !getSkillDraft(change).length) {
     return { error: "List at least one concrete skill to add to Skills." };
+  }
+
+  if (placements.includes("skills") && change.skillSubsection) {
+    const skillSubsections = getSkillSubsectionTargets(resumeText);
+    const selectedKey = normalizeSectionLabel(change.skillSubsection);
+    if (skillSubsections.length && !skillSubsections.some((target) => target.key === selectedKey)) {
+      return { error: "Choose an existing Skills subsection before previewing or accepting." };
+    }
   }
 
   if (placements.includes("experience")) {
@@ -568,6 +579,9 @@ function resumeCoversSkillTerm(resumeText, term) {
     "experimentation": ["experimentation", "a/b testing", "ab testing"],
     "genai": ["genai", "generative ai"],
     "generative ai": ["generative ai", "genai"],
+    "statistics": ["statistics", "statistical analysis", "statistical methods", "statistical modeling"],
+    "statistical analysis": ["statistical analysis", "statistics", "statistical methods", "statistical modeling"],
+    "predictive modeling": ["predictive modeling", "predictive model", "predictive models", "prediction model", "prediction models"],
     "llm": ["llm", "large language model"],
     "rag": ["rag", "retrieval augmented generation", "retrieval-augmented generation"]
   };
@@ -735,6 +749,7 @@ function formatSkillTerm(term) {
 function getSkillSeparator(line) {
   if (line.includes("•")) return " • ";
   if (line.includes(";")) return "; ";
+  if (line.includes(",")) return ", ";
   return " • ";
 }
 
@@ -746,15 +761,143 @@ function stripSkillCategoryPrefix(line) {
   return String(line || "").replace(/^\s*(Programming\s+(?:Languages|&\s*Tools)|Tools|Languages)\s*:\s*/i, "");
 }
 
-function addSkillsToResume(text, skills) {
+function parseSkillSubsectionLine(line, lineIndex = -1) {
+  const original = String(line || "");
+  const clean = stripLeadingBullet(original);
+  const match = clean.match(/^([^:]{2,48}):\s*(.+)$/);
+  if (!match) return null;
+
+  const label = match[1].trim();
+  const content = match[2].trim();
+  const skills = splitSkillItems(content);
+  if (!label || !skills.length || /https?|@/i.test(label)) return null;
+
+  return {
+    key: normalizeSectionLabel(label),
+    value: label,
+    label,
+    kind: "named",
+    content,
+    skills,
+    lineIndex,
+    prefix: original.match(/^\s*[-*•]\s*/)?.[0] || "",
+    separator: getSkillSeparator(content)
+  };
+}
+
+function getSkillSubsectionTargets(resumeText = getResumeForPlacementTargets()) {
+  const lines = String(resumeText || "").split("\n");
+  const range = findSectionRange(lines, ["skills", "technical skills", "skills & technologies", "skills and technologies"]);
+  if (!range) return [];
+
+  const targets = lines.slice(range.start + 1, range.end)
+    .map((line, offset) => {
+      const lineIndex = range.start + 1 + offset;
+      const named = parseSkillSubsectionLine(line, lineIndex);
+      if (named) return named;
+      const skills = splitSkillItems(stripLeadingBullet(line));
+      if (!skills.length) return null;
+      return {
+        key: "__general__",
+        value: "__general__",
+        label: "General Skills",
+        kind: "general",
+        content: stripLeadingBullet(line),
+        skills,
+        lineIndex,
+        prefix: String(line || "").match(/^\s*[-*•]\s*/)?.[0] || "",
+        separator: getSkillSeparator(line)
+      };
+    })
+    .filter(Boolean);
+  const seen = new Set();
+  return targets.filter((target) => {
+    if (seen.has(target.key)) return false;
+    seen.add(target.key);
+    return true;
+  });
+}
+
+function inferSkillSubsection(change, targets) {
+  if (!targets.length) return "";
+  const topic = normalize([
+    change?.missingTerm,
+    change?.skillDraftText,
+    change?.promptText
+  ].filter(Boolean).join(" "));
+  const preferences = [
+    [/\b(model evaluation|evaluation|classification|anomaly detection|nlp|deep learning|pytorch|tensorflow|scikit|recommender|feature engineering|a\/b testing|statistical analysis)\b/, /\b(machine learning|ml(?:\s*\/\s*data)?)\b/],
+    [/\b(llm|large language model|generative ai|genai|prompt|structured output|rag|embedding)\b/, /\b(applied ai|generative ai|llm)\b/],
+    [/\b(spark|hadoop|mapreduce|hive|big data|distributed)\b/, /\bbig data\b/],
+    [/\b(python|java|sql|c\+\+|c#|javascript|typescript|scala|perl|git|ci\/cd)\b/, /\b(programming|tools?|languages?)\b/]
+  ];
+
+  for (const [topicPattern, labelPattern] of preferences) {
+    if (!topicPattern.test(topic)) continue;
+    const target = targets.find((item) => labelPattern.test(normalize(item.label)));
+    if (target) return target.value;
+  }
+
+  return (targets.find((target) => target.kind === "general") || targets[0]).value;
+}
+
+function resolveSkillSubsection(change, resumeText = getResumeForPlacementTargets()) {
+  const targets = getSkillSubsectionTargets(resumeText);
+  if (!targets.some((target) => target.kind === "named")) return "";
+  const requested = normalizeSectionLabel(change?.skillSubsection || "");
+  const selected = targets.find((target) => target.key === requested);
+  return selected?.value || inferSkillSubsection(change, targets);
+}
+
+function preserveExistingSkillSubsectionLayout(resumeText, replacementText) {
+  const source = String(replacementText || "");
+  const labels = getSkillSubsectionTargets(resumeText)
+    .filter((target) => target.kind === "named")
+    .map((target) => target.label)
+    .filter((label) => new RegExp(`${escapeRegExp(label)}\\s*:`, "i").test(source));
+
+  if (labels.length < 2) return source;
+
+  return labels
+    .sort((left, right) => right.length - left.length)
+    .reduce((text, label) => text.replace(
+      new RegExp(`([^\\n])\\s+(?:[-*•]\\s*)?(${escapeRegExp(label)}\\s*:)`, "gi"),
+      "$1\n$2"
+    ), source);
+}
+
+function addSkillsToResume(text, skills, skillSubsection = "") {
   const cleanSkills = uniqueSkills(skills);
   if (!cleanSkills.length) return text;
 
   const lines = text.split("\n");
-  const range = findSectionRange(lines, ["skills", "technical skills"]);
+  const range = findSectionRange(lines, ["skills", "technical skills", "skills & technologies", "skills and technologies"]);
 
   if (!range) {
     return `${text.trim()}\n\nSKILLS\n${formatSkillsToInsert(cleanSkills)}`;
+  }
+
+  const subsectionTargets = getSkillSubsectionTargets(text);
+  if (subsectionTargets.some((target) => target.kind === "named")) {
+    const requestedKey = normalizeSectionLabel(skillSubsection);
+    const target = subsectionTargets.find((item) => item.key === requestedKey)
+      || subsectionTargets.find((item) => item.kind === "general")
+      || subsectionTargets[0];
+    const existingSectionItems = lines.slice(range.start + 1, range.end)
+      .flatMap((line) => {
+        const subsection = parseSkillSubsectionLine(line);
+        return subsection ? subsection.skills : splitSkillItems(stripLeadingBullet(line));
+      });
+    const additions = cleanSkills.filter((skill) => !existingSectionItems.some((existing) => (
+      normalizeSkillForCompare(stripSkillLevel(existing)) === normalizeSkillForCompare(stripSkillLevel(skill))
+    )));
+    if (!additions.length) return text;
+
+    const mergedSkills = mergeSkillItems(target.skills, additions);
+    lines[target.lineIndex] = target.kind === "named"
+      ? `${target.prefix}${target.label}: ${mergedSkills.join(target.separator)}`
+      : `${target.prefix}${mergedSkills.join(target.separator)}`;
+    return lines.join("\n");
   }
 
   const existingSkillItems = lines.slice(range.start + 1, range.end)
@@ -1540,7 +1683,7 @@ function applyUserConfirmedChange(output, change) {
   let updated = output;
 
   if (placements.includes("skills")) {
-    updated = addSkillsToResume(updated, getSkillDraft(change));
+    updated = addSkillsToResume(updated, getSkillDraft(change), resolveSkillSubsection(change, updated));
   }
 
   if (placements.includes("experience")) {
@@ -1647,6 +1790,12 @@ function applyStructuredEducationRewrite(output, change) {
 
 function applyReplaceChange(output, change) {
   if (!change.originalText || change.suggestedText == null) return output;
+  if (canonicalSectionTitle(change.section) === "skills") {
+    change = {
+      ...change,
+      suggestedText: preserveExistingSkillSubsectionLayout(output, change.suggestedText)
+    };
+  }
   if (looksLikeRemovalInstructionOnly(change.suggestedText)) {
     return applyReplaceChange(output, { ...change, suggestedText: "" });
   }
@@ -1850,7 +1999,10 @@ function applySingleChange(output, change) {
   }
 
   if (change.mode === "replaceSection") {
-    return replaceResumeSection(output, change.section, change.suggestedText);
+    const replacementText = canonicalSectionTitle(change.section) === "skills"
+      ? preserveExistingSkillSubsectionLayout(output, change.suggestedText)
+      : change.suggestedText;
+    return replaceResumeSection(output, change.section, replacementText);
   }
 
   if (change.mode === "removeOrReplace" && change.originalText) {
@@ -1862,8 +2014,51 @@ function applySingleChange(output, change) {
   return output;
 }
 
+function reconcileOpenMissingExperienceChanges(resumeText, previousResumeText = "") {
+  const hasOpenMissingExperience = currentChanges.some((change) => (
+    inferChangePass(change) === PASS_MISSING_EXPERIENCE && isOpenChange(change)
+  ));
+  if (!hasOpenMissingExperience) return;
+
+  const seenTopics = new Set();
+  const reconciled = [];
+
+  for (const change of currentChanges) {
+    if (inferChangePass(change) !== PASS_MISSING_EXPERIENCE || !isOpenChange(change)) {
+      reconciled.push(change);
+      continue;
+    }
+
+    if (change.status === "partial" || change.acceptedPlacements?.length) {
+      const partialTopic = missingExperienceDedupeTopic(change) || questionDedupeKey(change);
+      if (partialTopic) seenTopics.add(partialTopic);
+      reconciled.push(change);
+      continue;
+    }
+
+    const pruned = pruneCoveredConfirmation(change, resumeText);
+    if (!pruned) {
+      const existingTopic = missingExperienceDedupeTopic(change);
+      const wasAlreadyCovered = previousResumeText
+        && existingTopic
+        && resumeCoversMissingExperienceTopic(previousResumeText, existingTopic);
+      if (wasAlreadyCovered) reconciled.push(change);
+      continue;
+    }
+
+    const topic = missingExperienceDedupeTopic(pruned) || questionDedupeKey(pruned);
+    if (topic && seenTopics.has(topic)) continue;
+    if (topic) seenTopics.add(topic);
+    reconciled.push(pruned);
+  }
+
+  currentChanges = reconciled;
+}
+
 function applyAcceptedChanges() {
+  const previousResumeText = finalResume.value.trim() || resumeInput.value.trim();
   finalResume.value = materializeAcceptedResumeText();
+  reconcileOpenMissingExperienceChanges(finalResume.value, previousResumeText);
   pageBudgetOverride = false;
   refreshAiAnalysisForCurrentResume();
 }
@@ -1895,4 +2090,3 @@ function ensureFinalResumeText() {
   finalResume.value = text;
   return text;
 }
-

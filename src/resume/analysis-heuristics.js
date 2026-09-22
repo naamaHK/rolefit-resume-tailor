@@ -35,6 +35,29 @@ function splitLines(text) {
     .filter(Boolean);
 }
 
+function isJobSiteChromeLine(line) {
+  const value = normalize(String(line || "").replace(/\s+/g, " ").trim());
+  if (!value) return true;
+  return /^(?:view profile|clear|search by (?:keyword|location|postal code)|show more options|privacy|terms(?:\s*(?:&|and)\s*)conditions|modern slavery act|gender pay gap report)$/.test(value)
+    || /^select how often\b/.test(value)
+    || /^(?:date|posted|publication date)\s*:/.test(value)
+    || /^(?:cookie|privacy)\s+(?:policy|notice)$/.test(value)
+    || /^(?:experience|what you(?:'|’)?ll do|what you will do|what you bring|technical skills|core attributes|responsibilities|qualifications|requirements)\s*:?$/.test(value)
+    || /^about(?:\s+the)?\s+(?:job|role|team|company|us|[a-z0-9&.+-]{2,30})\s*:?$/.test(value)
+    || /^(?:benefits|perks)(?:\s+(?:at|of|with)\s+.{2,50}|\s+(?:and|&)\s+(?:benefits|perks))?\s*:?$/.test(value)
+    || /^(?:(?:hybrid|remote|on-site|onsite)\s+work(?:ing)?(?:\s+(?:model|policy|arrangement))?|dog-friendly office|on-site gym(?: and pilates classes)?|fully funded supplemental health(?: insurance)?|free (?:meals?|lunch|snacks?)|employee discounts?)\s*\.?$/.test(value);
+}
+
+function sanitizeJobDescriptionForAnalysis(text) {
+  return String(text || "")
+    .replace(/\r/g, "")
+    .split("\n")
+    .map((line) => line.replace(/^\s*\d{3,}\s*[-|:]\s*/, "").replace(/\s+/g, " ").trim())
+    .filter((line) => !isJobSiteChromeLine(line))
+    .join("\n")
+    .trim();
+}
+
 function extractBulletLines(text) {
   return splitLines(text).filter((line) => /^[-*•]/.test(line));
 }

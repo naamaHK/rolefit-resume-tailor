@@ -204,6 +204,14 @@ function titleCaseKnownTerm(term) {
     genai: "GenAI",
     "generative ai": "Generative AI",
     python: "Python",
+    pytorch: "PyTorch",
+    tensorflow: "TensorFlow",
+    "scikit-learn": "Scikit-learn",
+    mlops: "MLOps",
+    "computer vision": "Computer Vision",
+    classification: "Classification",
+    "anomaly detection": "Anomaly Detection",
+    scalability: "Scalability",
     langchain: "LangChain",
     spark: "Spark",
     tableau: "Tableau",
@@ -212,6 +220,7 @@ function titleCaseKnownTerm(term) {
     dbt: "dbt",
     "llm-as-judge": "LLM-as-judge",
     "llm evaluation": "LLM evaluation",
+    "model evaluation": "Model Evaluation",
     "openai": "OpenAI"
   };
   return known[term.toLowerCase()] || term;
@@ -371,6 +380,10 @@ function extractQuestionTopicTerms(...parts) {
   const text = parts.filter(Boolean).join(" ");
   return uniqueCanonicalTerms([
     ...extractProgrammingAndToolNames(text),
+    ...(/\b(?:llms?|large language models?)\b/i.test(text) ? ["LLM"] : []),
+    ...(/\b(?:computer vision|vision)\b/i.test(text) ? ["Computer Vision"] : []),
+    ...(/\bscikit(?:-|\s*)learn\b/i.test(text) ? ["Scikit-learn"] : []),
+    ...(/\bmlops\b/i.test(text) ? ["MLOps"] : []),
     ...specificTopicLexicon.filter((term) => textContainsTopicTerm(text, term))
   ]).filter((term) => !genericQuestionTopics.has(term.toLowerCase()));
 }
@@ -410,7 +423,7 @@ function stringifyAnalysisItem(item) {
   ].filter(Boolean).join(" ");
 }
 
-function extractMissingExperienceTopics(text) {
+function extractMissingExperienceTopics(text, { allowFallback = true } = {}) {
   const value = String(text || "");
   if (isNonActionableAnalysisNote(value)) return [];
   const explicitTerms = reduceMissingExperienceTopics(extractQuestionTopicTerms(value));
@@ -421,6 +434,7 @@ function extractMissingExperienceTopics(text) {
   if (/\bpatents?\b/i.test(value)) return ["Patents"];
   if (/\b(publications?|peer-reviewed papers?|research papers?)\b/i.test(value)) return ["Publications"];
   if (/\b(ph\.?d\.?|doctorate|doctoral degree)\b/i.test(value)) return ["PhD"];
+  if (!allowFallback) return [];
 
   const topic = inferSpecificQuestionTopic(value);
   if (!topic || genericQuestionTopics.has(topic.toLowerCase()) || isOrganizationOnlyTopic(topic)) return [];
@@ -890,7 +904,7 @@ function missingExperienceDedupeTopic(change) {
     if (/\bpatents?\b/.test(normalizedTopic)) return "patents";
     if (/\b(publications?|peer reviewed papers?|research papers?)\b/.test(normalizedTopic)) return "publications";
     if (/\b(phd|ph\.d|doctorate|doctoral degree)\b/.test(normalizedTopic)) return "phd";
-    return normalizedTopic;
+    return normalizeRoleRequirementKey(normalizedTopic);
   }
   if (/\bpatents?\b/.test(topicText)) return "patents";
   if (/\b(publications?|peer reviewed papers?|research papers?)\b/.test(topicText)) return "publications";
@@ -1309,7 +1323,7 @@ function mergeLocallyDetectedMissingExperience(resumeText, jobText, cards) {
 
 async function analyzeWithAi(options = {}) {
   const resumeText = getWorkingResumeText();
-  const jobText = jobInput.value.trim();
+  const jobText = sanitizeJobDescriptionForAnalysis(jobInput.value);
   const pageBudgetMode = Boolean(options.pageBudgetMode);
 
   if (!resumeText) {

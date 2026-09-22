@@ -795,7 +795,7 @@ function getPlacementDraftValue(change, key, fallback = "") {
 
 function getDefaultSkillDraft(change) {
   if (change.skillDraftText) return change.skillDraftText;
-  const terms = extractSkillNamesFromText(change.missingTerm || "");
+  const terms = reduceMissingExperienceTopics(extractSkillNamesFromText(change.missingTerm || ""));
   if (terms.length) return terms.join(", ");
   const topic = cleanConfirmedText(change.missingTerm || "");
   if (topic && !/^(specific experience|missing skill|programming languages?|skills?|experience)$/i.test(topic) && topic.length <= 48 && !/[?,]/.test(topic)) {
@@ -806,10 +806,21 @@ function getDefaultSkillDraft(change) {
 
 function renderSkillPlacementFields(change) {
   const value = getDefaultSkillDraft(change);
+  const targetResume = getResumeForPlacementTargets();
+  const subsections = getSkillSubsectionTargets(targetResume);
+  const hasNamedSubsections = subsections.some((subsection) => subsection.kind === "named");
+  const selectedSubsection = resolveSkillSubsection(change, targetResume);
+  if (hasNamedSubsections && !change.skillSubsection) change.skillSubsection = selectedSubsection;
   return `
     <section class="placement-detail-card">
       <h4>Skills</h4>
       ${renderCardValidationError(change, "skills")}
+      ${hasNamedSubsections ? `
+        <label class="field-label" for="${escapeHtml(change.id)}-skill-subsection">Skills subsection</label>
+        <select id="${escapeHtml(change.id)}-skill-subsection" class="structured-input skill-subsection-select" data-draft-field="skillSubsection">
+          ${subsections.map((subsection) => `<option value="${escapeHtml(subsection.value)}" ${subsection.value === selectedSubsection ? "selected" : ""}>${escapeHtml(subsection.label)}</option>`).join("")}
+        </select>
+      ` : ""}
       <label class="field-label" for="${escapeHtml(change.id)}-skills">Skills to add</label>
       <input id="${escapeHtml(change.id)}-skills" class="structured-input" data-draft-field="skillDraftText" value="${escapeHtml(value)}" placeholder="Python, SQL, C++">
       <label class="field-label" for="${escapeHtml(change.id)}-skill-levels">Level (optional)</label>

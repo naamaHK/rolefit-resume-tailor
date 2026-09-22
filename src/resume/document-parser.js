@@ -40,6 +40,8 @@
         "summary",
         "skills",
         "technical skills",
+        "skills & technologies",
+        "skills and technologies",
         "experience",
         "professional experience",
         "selected projects",
@@ -69,7 +71,7 @@
       if (["statement", "summary", "professional summary", "profile"].includes(normalized)) return "summary";
       if (["experience", "professional experience"].includes(normalized)) return "experience";
       if (normalized === "education") return "education";
-      if (["skills", "technical skills"].includes(normalized)) return "skills";
+      if (["skills", "technical skills", "skills & technologies", "skills and technologies"].includes(normalized)) return "skills";
       if (normalized === "publications" || normalized === "publication") return "publications";
       if (normalized === "patents" || normalized === "patent") return "patents";
       if (normalized === "strengths") return "strengths";
@@ -150,6 +152,10 @@
 
     function preferredSectionTitle(section) {
       const canonical = canonicalSectionTitle(section.title);
+      const normalized = normalizeSectionLabel(section.title);
+      if (["skills & technologies", "skills and technologies"].includes(normalized)) {
+        return section.title;
+      }
       const preferred = {
         summary: section.title,
         experience: "Experience",

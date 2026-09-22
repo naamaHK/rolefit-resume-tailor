@@ -35,6 +35,15 @@ function normalizeSectionForOutput(section) {
     };
   }
 
+  const hasNamedGroups = normalizedLines.some((line) => /^[^:]{2,45}:\s*\S/.test(stripLeadingBullet(line)));
+  if (hasNamedGroups) {
+    return {
+      ...section,
+      title: section.title,
+      lines: unique(normalizedLines.map((line) => stripLeadingBullet(line)).filter(Boolean))
+    };
+  }
+
   const items = unique(normalizedLines.flatMap(splitSkillItems).map(cleanSkillItem).filter(Boolean));
   return {
     ...section,
@@ -959,4 +968,3 @@ function formatDesignedResumeForPrint(text) {
     ` : ""}
   `;
 }
-

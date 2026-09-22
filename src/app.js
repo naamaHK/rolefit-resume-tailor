@@ -32,6 +32,9 @@ const skillLexicon = [
   "machine learning",
   "ml",
   "data science",
+  "predictive modeling",
+  "predictive models",
+  "ai agents",
   "a/b testing",
   "experimentation",
   "recommendation",
@@ -56,10 +59,15 @@ const skillLexicon = [
   "stakeholder",
   "latency",
   "classification",
+  "anomaly detection",
   "nlp",
+  "computer vision",
   "deep learning",
   "tensorflow",
-  "pytorch"
+  "pytorch",
+  "scikit-learn",
+  "mlops",
+  "scalability"
 ];
 
 const specificTopicLexicon = [
@@ -89,7 +97,9 @@ const specificTopicLexicon = [
   "prompt engineering",
   "openai",
   "hugging face",
-  "transformers"
+  "transformers",
+  "communication",
+  "collaboration"
 ];
 
 const genericQuestionTopics = new Set([
