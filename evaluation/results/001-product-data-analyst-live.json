@@ -1,39 +1,50 @@
 {
   "fixture_id": "001-product-data-analyst-simulation",
-  "execution_date": "2026-08-03",
-  "runner": "live-rolefit-web-flow",
-  "model": "google/gemini-2.5-flash-lite",
-  "result": "PASS",
+  "runner": "live-web-flow",
+  "app_url": "http://127.0.0.1:8765/index.html",
+  "timestamp": "2026-08-06T09:30:42.557Z",
   "events": [
+    {
+      "type": "analysis_complete",
+      "status": "AI analysis complete using google/gemini-2.5-flash-lite in 6s. 6 comments ready."
+    },
     {
       "type": "question_asked",
       "requirement_id": "tableau",
-      "question": "Do you have real, resume-worthy experience with Tableau dashboards?"
+      "question": "#1Confirm Tableau\nJob Specific\nhigh risk\nUser Confirmation Needed\n\nConfirm Experience: Tableau\n\nThis information is not currently in the resume. Add it only if it is true and you can discuss it in an interview.\nQUESTION / IMPORTANCE\n\nDo you have experience building and maintaining Tableau dashboards?\n\nWHICH SECTION IS RELEVANT?\nSkills\nExperience\nProjects\nEducation\nCertifications\nOther\nDo not add\n\nChoose where this confirmed information may belong. The next questions will depend on that destination.\n\nChoose one or more relevant sections first. The next fields will appear only for the sections you choose.\nWhy this came up: The target job description specifically requires experience with Tableau dashboards, which is a key tool for reporting and data visualization in product analytics roles.\nResume evidence so far: Experience building and maintaining Tableau dashboards\n5 other open comments remain: 2 more in Missing Experience, 3 in Suggestions.\nReject"
     },
     {
       "type": "confirmed_and_added",
       "requirement_id": "tableau",
+      "answer": "Yes. At Loop Commerce, I built and maintained Tableau dashboards for weekly conversion, retention, and experiment reporting.",
       "resume_change": "- Built and maintained Tableau dashboards for weekly conversion, retention, and experiment reporting."
     },
     {
       "type": "question_asked",
       "requirement_id": "airflow",
-      "question": "Do you have real, resume-worthy experience with Apache Airflow?"
+      "question": "#1Confirm Apache Airflow\nJob Specific\nhigh risk\nUser Confirmation Needed\n\nConfirm Experience: Apache Airflow\n\nThis information is not currently in the resume. Add it only if it is true and you can discuss it in an interview.\nQUESTION / IMPORTANCE\n\nDo you have experience with Apache Airflow?\n\nWHICH SECTION IS RELEVANT?\nSkills\nExperience\nProjects\nEducation\nCertifications\nOther\nDo not add\n\nChoose where this confirmed information may belong. The next questions will depend on that destination.\n\nChoose one or more relevant sections first. The next fields will appear only for the sections you choose.\nWhy this came up: Apache Airflow is listed as a preferred qualification, indicating it is a valuable tool for data pipeline orchestration in this role.\nResume evidence so far: Experience with Apache Airflow\n4 other open comments remain: 1 more in Missing Experience, 3 in Suggestions.\nReject"
     },
     {
       "type": "declined",
-      "requirement_id": "airflow"
+      "requirement_id": "airflow",
+      "answer": "No. I have not used Apache Airflow."
     },
     {
       "type": "question_asked",
       "requirement_id": "dbt",
-      "question": "Do you have real, resume-worthy experience with dbt?"
+      "question": "#1Confirm dbt\nJob Specific\nhigh risk\nUser Confirmation Needed\n\nConfirm Experience: dbt\n\nThis information is not currently in the resume. Add it only if it is true and you can discuss it in an interview.\nQUESTION / IMPORTANCE\n\nDo you have experience with dbt?\n\nWHICH SECTION IS RELEVANT?\nSkills\nExperience\nProjects\nEducation\nCertifications\nOther\nDo not add\n\nChoose where this confirmed information may belong. The next questions will depend on that destination.\n\nChoose one or more relevant sections first. The next fields will appear only for the sections you choose.\nWhy this came up: dbt is listed as a preferred qualification, suggesting it is a valuable tool for data transformation and modeling in this role.\nResume evidence so far: Experience with dbt\n3 other open comments remain: 3 in Suggestions.\nReject"
     },
     {
       "type": "declined",
-      "requirement_id": "dbt"
+      "requirement_id": "dbt",
+      "answer": "No. I have not used dbt."
     }
   ],
+  "role_coverage": {
+    "covered": "REQUIREMENTS COVERED IN CURRENT RESUME\nSQL\nPython\nCommunication and collaboration\nproduct\n3+ years of product or business data-analysis experience",
+    "missing": "REQUIREMENTS STILL MISSING\nTableau dashboards\nApache Airflow\ndbt"
+  },
+  "resume_after": "Noa Ben-Ami\n+972 50 555 0184 | noa.benami@example.com | linkedin.com/in/noa-ben-ami\n\nPROFESSIONAL SUMMARY\nProduct data analyst with four years of experience using SQL and Python to improve customer journeys, evaluate experiments, and partner with product teams.\n\nEXPERIENCE\nProduct Data Analyst | Loop Commerce | 2023 - Present\n- Used SQL and Python to analyze conversion, retention, and acquisition funnels.\n- Designed and analyzed A/B tests for checkout and onboarding changes.\n- Partnered with product managers and engineers to define metrics and prioritize improvements.\n- Built and maintained Tableau dashboards for weekly conversion, retention, and experiment reporting.\nData Analyst | CityCart | 2021 - 2023\n- Created recurring SQL reports for marketing and operations teams.\n- Analyzed customer cohorts and presented findings to stakeholders.\n\nEDUCATION\nB.Sc. Industrial Engineering and Management | Example University | 2017 - 2021\n\nSKILLS\nA/B Testing • product analytics • cohort analysis • cross-functional collaboration • stakeholder communication • Google Analytics 4\nProgramming Languages: SQL • Python\n\nLANGUAGES\nHebrew — native | English — professional working proficiency",
   "profile_job_potential": {
     "basic": 100,
     "preferred": 0,
@@ -52,10 +63,16 @@
   },
   "grounding_safety": "PASS",
   "grounding_errors": [],
+  "repair_integrity": "PASS",
+  "repair_errors": [],
+  "structure_before": "PASS",
   "structure_preservation": "PASS",
   "structure_errors": [],
-  "notes": [
-    "The first provider response was malformed. RoleFit did not apply it and showed its safe local fallback.",
-    "After the fallback behavior was corrected, the retry used the listed model and completed the expected live flow."
-  ]
+  "coverage_recognition": "PASS",
+  "coverage_recognition_errors": [],
+  "question_coverage": "PASS",
+  "question_coverage_errors": [],
+  "question_recognition": "PASS",
+  "question_recognition_errors": [],
+  "result": "PASS"
 }

@@ -67,6 +67,50 @@ SKILLS
 Machine Learning • Python`;
 
   await page.evaluate((resumeText) => {
+    const api = window.__roleFitTest;
+    document.querySelector("#resumeInput").value = resumeText;
+    document.querySelector("#finalResume").value = "";
+    api.resetState();
+    api.setActivePass(api.passes.missingExperience);
+    api.setCurrentChanges([{
+      id: "multi-placement-first-open",
+      type: "ask_user",
+      section: "Missing Evidence",
+      missingTerm: "C++",
+      promptText: "Do you have C++ experience to add?",
+      whyItHelps: "The role requests C++.",
+      evidence: "User confirmation required.",
+      riskLevel: "high",
+      supportLevel: "user_confirmation_needed",
+      status: "pending",
+      mode: "appendUserConfirmed",
+      requiresUserWording: true,
+      placement: "undecided",
+      placements: [],
+      acceptedPlacements: [],
+      previewedPlacementKeys: {},
+      pass: api.passes.missingExperience
+    }]);
+    api.renderChanges();
+  }, baseResume);
+  const multiPlacementCard = page.locator("#changeCards [data-change-id='multi-placement-first-open']");
+  await multiPlacementCard.locator(".placement-checkbox[value='skills']").check();
+  await multiPlacementCard.locator(".placement-checkbox[value='experience']").check();
+  await multiPlacementCard.locator(".placement-checkbox[value='other']").check();
+  assert.equal(await multiPlacementCard.locator(".placement-detail-card > h4").count(), 3, "selecting Skills, Experience, and Other should open all three placement forms on the first try");
+  assert.match(await multiPlacementCard.innerText(), /Experience[\s\S]*Which job title\?/i, "the Experience form should open after it is selected");
+  await multiPlacementCard.locator("[data-draft-field='otherSectionName']").fill("Awards");
+  await multiPlacementCard.locator("[data-draft-field='otherPlacementText']").fill("Received a C++ innovation award.");
+  await clickUnique(
+    multiPlacementCard.locator("[data-accept-placement='other']"),
+    "Add Award to Other on first attempt"
+  );
+  const multiPlacementFinalText = await page.locator("#finalResume").inputValue();
+  assert.match(multiPlacementFinalText, /AWARDS\n- Received a C\+\+ innovation award\./, "Other should create an Award once on its first accepted action");
+  assert.equal(await multiPlacementCard.locator("[data-completed-placement='other']").count(), 1, "the card should show that Other was added instead of making its form disappear silently");
+  assert.equal(await multiPlacementCard.locator(".placement-detail-card > h4").filter({ hasText: "Experience" }).count(), 1, "the remaining Experience form should stay open after Other is accepted");
+
+  await page.evaluate((resumeText) => {
     document.querySelector("#resumeInput").value = resumeText;
     document.querySelector("#finalResume").value = "";
     window.__roleFitTest.resetState();

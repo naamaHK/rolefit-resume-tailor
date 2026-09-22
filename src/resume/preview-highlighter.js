@@ -347,14 +347,26 @@
       }
 
       if (!bestMatch) return { html, matched: "" };
-      const exactHighlights = highlightCandidatesInsideBlock(bestMatch.full, fragments);
+
+      // A substantial, multi-sentence rewrite is not an inline edit. The LCS
+      // can only express it as one broad fragment, which otherwise creates a
+      // misleading partial yellow span. Mark the exact selected bullet as a
+      // rewritten block instead.
+      const afterText = String(pair.after || "").trim();
+      const sentenceCount = (afterText.match(/[.!?](?:\s|$)/g) || []).length;
+      const isWholeRewrite = fragments.length === 1
+        && normalizeAnchorText(fragments[0]) === normalizeAnchorText(afterText)
+        && (sentenceCount > 1 || afterText.length > 180);
+      const exactHighlights = isWholeRewrite
+        ? highlightCandidatesInsideBlock(bestMatch.full, [afterText])
+        : highlightCandidatesInsideBlock(bestMatch.full, fragments);
       const highlightedBlock = exactHighlights.matched.length
         ? exactHighlights.html
         : addPreviewHighlightClassToBlock(bestMatch.full);
       const highlightedSection = `${sectionHtml.slice(0, bestMatch.index)}${highlightedBlock}${sectionHtml.slice(bestMatch.index + bestMatch.full.length)}`;
       return {
         html: html.replace(sectionHtml, highlightedSection),
-        matched: exactHighlights.matched.join(" ") || bestMatch.text
+        matched: isWholeRewrite ? bestMatch.text : exactHighlights.matched.join(" ") || bestMatch.text
       };
     }
 

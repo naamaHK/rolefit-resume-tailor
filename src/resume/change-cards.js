@@ -364,6 +364,7 @@ function renderConfirmExperienceCard(change) {
   const kind = getSuggestionKind(change);
   const placements = getSelectedPlacements(change);
   const detailPlacements = getPendingSelectedPlacements(change);
+  const acceptedPlacements = placements.filter((placement) => (change.acceptedPlacements || []).includes(placement));
   const showEvidenceForm = detailPlacements.length > 0 && !placements.includes("omit");
 
   return `
@@ -396,6 +397,7 @@ function renderConfirmExperienceCard(change) {
 
       ${showEvidenceForm ? `
         <div class="placement-detail-stack">
+          ${acceptedPlacements.map((placement) => renderCompletedPlacementNotice(placement)).join("")}
           ${detailPlacements.includes("skills") ? renderSkillPlacementFields(change) : ""}
           ${detailPlacements.includes("experience") ? renderExperiencePlacementFields(change) : ""}
           ${detailPlacements.includes("projects") ? renderProjectPlacementFields(change) : ""}
@@ -404,9 +406,11 @@ function renderConfirmExperienceCard(change) {
           ${detailPlacements.includes("other") ? renderOtherPlacementFields(change) : ""}
         </div>
       ` : `
-        <div class="placement-first-note">
-          Choose one or more relevant sections first. The next fields will appear only for the sections you choose.
-        </div>
+        ${acceptedPlacements.length ? `<div class="placement-detail-stack">${acceptedPlacements.map((placement) => renderCompletedPlacementNotice(placement)).join("")}</div>` : `
+          <div class="placement-first-note">
+            Choose one or more relevant sections first. The next fields will appear only for the sections you choose.
+          </div>
+        `}
       `}
 
       <div class="card-meta">
@@ -420,6 +424,15 @@ function renderConfirmExperienceCard(change) {
         <button class="reject-button" type="button" data-action="reject">Reject</button>
       </div>
     </article>
+  `;
+}
+
+function renderCompletedPlacementNotice(placement) {
+  return `
+    <section class="placement-detail-card placement-complete" data-completed-placement="${escapeHtml(placement)}">
+      <h4>${escapeHtml(getPlacementLabel(placement))}</h4>
+      <p><strong>Added to ${escapeHtml(getPlacementLabel(placement))}.</strong> This part is already included in the current resume draft.</p>
+    </section>
   `;
 }
 
@@ -1069,7 +1082,7 @@ function renderOtherPlacementFields(change) {
       ${renderCardValidationError(change, "other")}
       <label class="field-label" for="${escapeHtml(change.id)}-other-section">Section name</label>
       <input id="${escapeHtml(change.id)}-other-section" class="structured-input" data-draft-field="otherSectionName" value="${escapeHtml(change.otherSectionName || "")}" placeholder="Achievements, Awards, Volunteer Experience">
-      ${sectionName ? renderOtherSectionControls(change, sectionName, action, selectedItem) : ""}
+      ${renderOtherSectionControls(change, sectionName, action, selectedItem)}
       <label class="field-label" for="${escapeHtml(change.id)}-other-note">What should be added or asked?</label>
       <textarea id="${escapeHtml(change.id)}-other-note" class="edit-box confirmed-experience-input medium-text-window" data-draft-field="otherPlacementText" placeholder="${action === "enhance" ? "Rewrite the selected item." : "Write one concise item for this section."}">${escapeHtml(value)}</textarea>
       <p class="placement-hint">${escapeHtml(getOtherSectionHint(sectionName, action))}</p>
@@ -1314,4 +1327,3 @@ function hasMeaningfulUserConfirmedText(change) {
   if (text.includes("project/context")) return false;
   return true;
 }
-

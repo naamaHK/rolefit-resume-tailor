@@ -152,6 +152,27 @@ assert.doesNotMatch(
   "rewrite highlighting must not mutate an identical bullet in an earlier job"
 );
 
+const substantialRewriteHtml = `
+  <section class="resume-section"><h2>Experience</h2>
+    <li>Directed native advertising projects, improving ad targeting algorithms and optimizing production machine learning models. Designed and executed experiments using data science techniques to evaluate ad delivery performance, overseeing planning, implementation, and analysis.</li>
+  </section>
+`;
+const substantialRewrite = highlighter.highlightRewriteDiffInHtml(
+  substantialRewriteHtml,
+  "experience",
+  {
+    before: "Directed native advertising projects to improve ad targeting algorithms and optimize production machine learning models. Utilized data science techniques to design and execute experiments for evaluating ad delivery performance, overseeing planning, implementation, and conducting detailed analysis.",
+    after: "Directed native advertising projects, improving ad targeting algorithms and optimizing production machine learning models. Designed and executed experiments using data science techniques to evaluate ad delivery performance, overseeing planning, implementation, and analysis."
+  },
+  ["Directed native advertising projects, improving ad targeting algorithms and optimizing production machine learning models. Designed and executed experiments using data science techniques to evaluate ad delivery performance, overseeing planning, implementation, and analysis."],
+  []
+);
+assert.match(
+  substantialRewrite.html,
+  /<li><mark class="resume-preview-highlight">Directed native advertising projects, improving[\s\S]*implementation, and analysis\.<\/mark><\/li>/,
+  "a substantial multi-sentence rewrite should highlight the entire selected bullet rather than a misleading prefix"
+);
+
 const fuzzyHtml = `
   <p>Managed weekly status reports.</p>
   <li>Designed recommendation experiments and evaluated delivery performance.</li>

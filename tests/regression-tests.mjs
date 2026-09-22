@@ -1698,10 +1698,10 @@ assert.doesNotMatch(
   /Used Python scripts for SDK experiments/,
   "partial placement acceptance should not apply the unaccepted Experience change"
 );
-assert.doesNotMatch(
+assert.match(
   context.renderChangeCard(partialPlacementChange),
-  /<h4>Skills<\/h4>/,
-  "after adding one selected placement, that placement editor should disappear from the open card"
+  /data-completed-placement="skills"[\s\S]*Added to Skills\./,
+  "after adding one selected placement, the card should show that completed state instead of hiding it"
 );
 context.previewChangeOnResume(partialPlacementChange, null, "experience");
 placementApi.acceptPlacementFromCard(partialPlacementChange, "experience");

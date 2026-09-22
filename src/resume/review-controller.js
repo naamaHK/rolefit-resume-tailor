@@ -466,11 +466,21 @@ function bindChangeCard(card, change) {
   const otherSectionInput = card.querySelector("[data-draft-field='otherSectionName']");
   if (otherSectionInput) {
     otherSectionInput.addEventListener("change", () => {
-      syncCardInputs(card, change);
-      change.otherAction = "";
-      change.otherItemIndex = "";
+      const previousSection = normalizeCustomSectionTitle(change.otherSectionName || "");
+      const nextSection = normalizeCustomSectionTitle(otherSectionInput.value || "");
+      change.otherSectionName = otherSectionInput.value || "";
+      if (previousSection !== nextSection) {
+        change.otherAction = "";
+        change.otherItemIndex = "";
+      }
       change.previewedKey = "";
       change.previewedPlacementKeys = {};
+
+      // Do not replace the card while focus is moving from the section name to
+      // the note. Replacing it at that point loses the note being typed, which
+      // made a new Award appear to require two save attempts. Volunteer has a
+      // different structured form, so it intentionally refreshes once here.
+      if (!isVolunteerSectionTitle(nextSection)) return;
       const keepActivePanel = activeCommentPanel && !activeCommentPanel.hidden;
       renderChanges();
       if (keepActivePanel) renderActiveCommentPanel(change);
@@ -752,4 +762,3 @@ function advanceToNextOpenPassIfCurrentDone() {
 
   return false;
 }
-
