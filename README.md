@@ -10,7 +10,9 @@ Given a resume and a target job description, the assistant analyzes the role, ma
 
 ## Demo
 
-[![RoleFit demo showing evidence-grounded AI rephrasing](docs/demo/rolefit-demo-poster.png)](docs/demo/rolefit-demo.webm)
+[![RoleFit demo showing evidence-grounded AI rephrasing](docs/demo/rolefit-demo-poster.png)](https://raw.githubusercontent.com/naamaHK/rolefit-resume-tailor/main/docs/demo/rolefit-demo.webm)
+
+[Watch or download the demo video](https://raw.githubusercontent.com/naamaHK/rolefit-resume-tailor/main/docs/demo/rolefit-demo.webm)
 
 The 69-second walkthrough is captioned and works without sound. It uses a
 fictional Revenue Operations resume to demonstrate a supported summary rewrite,
