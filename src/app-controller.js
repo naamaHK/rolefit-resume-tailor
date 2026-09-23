@@ -94,7 +94,7 @@ function previewChangeOnResume(change, editBox, placementToPreview = "") {
   const spellingDidChangeText = previewChange.type !== "spelling_check"
     || normalizeFinalResumeText(baseText) !== text;
   const style = exportStyleSelect.value;
-  const resumeHtml = style === "designed" ? formatDesignedResumeForPrint(text) : formatResumeForPrint(text);
+  const resumeHtml = formatResumeForStyle(text, style);
   const previewTarget = buildStructuredPreviewTarget(previewChange, editBox);
   const experiencePlacementHighlight = highlightExperiencePlacementInHtml(
     resumeHtml,
@@ -130,8 +130,7 @@ function previewChangeOnResume(change, editBox, placementToPreview = "") {
     highlighted = highlightSectionInHtml(resumeHtml, previewChange.section);
   }
 
-  pdfPreview.classList.toggle("designed-template", style === "designed");
-  pdfPreview.classList.toggle("ats-template", style !== "designed");
+  setPreviewTemplateClass(style);
   pdfPreview.innerHTML = `
     <div class="preview-comment-banner ${escapeHtml(getSuggestionKind(change))}">
       ${renderPreviewPassOverview()}
@@ -214,9 +213,8 @@ function exportResumePdf() {
       setAiStatus("Page 1 is too full. Choose Keep Longer Resume or Get Shortening Suggestions before exporting.", "neutral");
       return;
     }
-    const resumeHtml = style === "designed" ? formatDesignedResumeForPrint(text) : formatResumeForPrint(text);
-    pdfPreview.classList.toggle("designed-template", style === "designed");
-    pdfPreview.classList.toggle("ats-template", style !== "designed");
+    const resumeHtml = formatResumeForStyle(text, style);
+    setPreviewTemplateClass(style);
     pdfPreview.innerHTML = resumeHtml;
     pdfPreviewPanel.hidden = false;
     pdfPreviewPanel.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -245,7 +243,7 @@ async function loadPdfJs() {
   if (pdfJsModule) return pdfJsModule;
 
   if (window.location.protocol === "file:") {
-    throw new Error("PDF upload needs the local server. Run `node server.mjs` from the RoleFit_resume folder, then open http://127.0.0.1:8765/index.html.");
+    throw new Error("PDF upload needs the local server. Run `node server.mjs` from the rolefit-resume-tailor folder, then open http://127.0.0.1:8765/index.html.");
   }
 
   pdfJsModule = await import("../vendor/pdfjs/pdf.min.mjs");
@@ -533,6 +531,7 @@ if (window.__ROLEFIT_TEST__) {
     openMissingExperienceCommentById,
     ensureFinalResumeText,
     getDesignedPageBudgetPlan,
+    formatModernBlueResumeForPrint,
     buildLocalSuggestionFallbackCards,
     buildMissingExperienceCardsFromAiAnalysis,
     buildMissingExperienceCardsFromRequirements,

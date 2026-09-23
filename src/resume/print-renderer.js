@@ -968,3 +968,137 @@ function formatDesignedResumeForPrint(text) {
     ` : ""}
   `;
 }
+
+function renderModernResumeHeader(headerLines) {
+  if (!headerLines.length) return "";
+  const contactParts = headerLines
+    .slice(1)
+    .flatMap((line) => String(line || "").split(/\s*\|\s*/))
+    .map((part) => part.trim())
+    .filter(Boolean);
+  return `
+    <header class="modern-resume-header">
+      <h1>${escapeHtml(headerLines[0])}</h1>
+      ${contactParts.length ? `
+        <p class="modern-contact-row">
+          ${contactParts.map((part) => `<span>${escapeHtml(part)}</span>`).join('<i aria-hidden="true"></i>')}
+        </p>
+      ` : ""}
+    </header>
+  `;
+}
+
+function getModernSectionTitle(title) {
+  return isSummaryLikeSection(title) ? "Professional Summary" : title;
+}
+
+function renderModernExperience(section) {
+  const entries = parseExperienceEntries(section.lines);
+  if (!entries.length) return "";
+  return `
+    <section class="resume-section modern-section modern-experience-section">
+      <h2>${escapeHtml(getModernSectionTitle(section.title))}</h2>
+      ${entries.map((entry) => `
+        <article class="modern-entry">
+          <div class="modern-entry-heading">
+            <h3>${entry.company ? `${escapeHtml(entry.company)} <span aria-hidden="true">&middot;</span> ` : ""}${escapeHtml(entry.title)}</h3>
+            ${entry.years ? `<time>${escapeHtml(entry.years)}</time>` : ""}
+          </div>
+          ${entry.bullets.length ? `<ul>${entry.bullets.map((bullet) => `<li>${escapeHtml(bullet)}</li>`).join("")}</ul>` : ""}
+        </article>
+      `).join("")}
+    </section>
+  `;
+}
+
+function renderModernEducation(section) {
+  const entries = parseEducationEntries(section.lines);
+  if (!entries.length) return "";
+  return `
+    <section class="resume-section modern-section modern-education-section">
+      <h2>${escapeHtml(getModernSectionTitle(section.title))}</h2>
+      ${entries.map((entry) => `
+        <article class="modern-entry compact-entry">
+          <div class="modern-entry-heading">
+            <h3>${escapeHtml(entry.degree)}${entry.institution ? `, <span class="modern-entry-organization">${escapeHtml(entry.institution)}</span>` : ""}</h3>
+            ${entry.years ? `<time>${escapeHtml(entry.years)}</time>` : ""}
+          </div>
+          ${entry.details.length ? `<p class="modern-entry-detail">${escapeHtml(entry.details.join(" "))}</p>` : ""}
+        </article>
+      `).join("")}
+    </section>
+  `;
+}
+
+function renderModernResearch(section) {
+  const canonical = canonicalSectionTitle(section.title);
+  const entries = canonical === "patents"
+    ? parsePatentEntries(section.lines).entries.map((entry) => ({
+      name: entry.name,
+      year: entry.year,
+      detail: [entry.authors.join(" "), entry.status].filter(Boolean).join(" - "),
+      link: ""
+    }))
+    : parsePublicationEntries(section.lines).map((entry) => ({
+      name: entry.name,
+      year: entry.year,
+      detail: entry.details.filter((line) => !/^https?:\/\//i.test(line)).join(" "),
+      link: entry.link || ""
+    }));
+  if (!entries.length) return "";
+  return `
+    <section class="resume-section modern-section modern-research-section">
+      <h2>${escapeHtml(getModernSectionTitle(section.title))}</h2>
+      <ul>
+        ${entries.map((entry) => `
+          <li class="modern-research-entry">
+            <div>
+              <strong>${escapeHtml(entry.name)}</strong>
+              ${entry.detail ? `<span>${escapeHtml(entry.detail)}</span>` : ""}
+              ${entry.link ? `<span class="modern-entry-link">${escapeHtml(entry.link)}</span>` : ""}
+            </div>
+            ${entry.year ? `<time>${escapeHtml(entry.year)}</time>` : ""}
+          </li>
+        `).join("")}
+      </ul>
+    </section>
+  `;
+}
+
+function renderModernSection(section) {
+  const canonical = canonicalSectionTitle(section.title);
+  if (canonical === "experience" || canonical === "volunteer_experience") return renderModernExperience(section);
+  if (canonical === "education") return renderModernEducation(section);
+  if (canonical === "publications" || canonical === "patents") return renderModernResearch(section);
+  return `
+    <section class="resume-section modern-section modern-generic-section">
+      <h2>${escapeHtml(getModernSectionTitle(section.title))}</h2>
+      ${renderSectionBody(section.lines, section.title)}
+    </section>
+  `;
+}
+
+function formatModernBlueResumeForPrint(text) {
+  const parsed = parseResumeText(text);
+  const sections = prepareSectionsForOutput(parsed.sections);
+  return `
+    <div class="modern-blue-resume">
+      ${renderModernResumeHeader(parsed.headerLines)}
+      <main class="modern-resume-main">
+        ${sections.map(renderModernSection).join("")}
+      </main>
+    </div>
+  `;
+}
+
+function formatResumeForStyle(text, style) {
+  if (style === "designed") return formatDesignedResumeForPrint(text);
+  if (style === "modern-blue") return formatModernBlueResumeForPrint(text);
+  return formatResumeForPrint(text);
+}
+
+function setPreviewTemplateClass(style) {
+  pdfPreview.classList.toggle("designed-template", style === "designed");
+  pdfPreview.classList.toggle("modern-blue-template", style === "modern-blue");
+  pdfPreview.classList.toggle("ats-template", style !== "designed" && style !== "modern-blue");
+}

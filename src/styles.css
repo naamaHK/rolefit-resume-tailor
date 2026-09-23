@@ -1649,6 +1649,174 @@ textarea.large-text-window {
   border-bottom-color: #b8c0c8;
 }
 
+.pdf-preview.modern-blue-template {
+  width: min(900px, 100%);
+  padding: 0;
+  overflow: visible;
+}
+
+.modern-blue-resume {
+  box-sizing: border-box;
+  min-height: 1050px;
+  background: #fff;
+  color: #243a59;
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 44px 52px 48px;
+}
+
+.modern-resume-header {
+  margin: 0 0 10px;
+  border-bottom: 3px solid #234b99;
+  padding: 0 0 8px;
+  text-align: center;
+}
+
+.modern-resume-header h1 {
+  margin: 0 0 6px;
+  color: #183553;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  line-height: 1.08;
+  text-transform: uppercase;
+}
+
+.modern-contact-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0 10px;
+  margin: 0;
+  color: #1254dc;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.modern-contact-row i {
+  display: inline-block;
+  width: 1px;
+  height: 14px;
+  background: #718096;
+}
+
+.modern-resume-main .modern-section {
+  margin: 0 0 8px;
+}
+
+.modern-section h2 {
+  margin: 0 0 5px;
+  border: 0;
+  border-left: 5px solid #2d62d1;
+  padding: 4px 9px 3px;
+  background: #eef2f7;
+  color: #24499a;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.modern-section p {
+  margin: 3px;
+  color: #253b59;
+}
+
+.modern-section ul {
+  margin: 2px 0 0 17px;
+  padding: 0;
+}
+
+.modern-section li {
+  margin: 2px 0;
+  padding-left: 2px;
+}
+
+.modern-section li::marker {
+  color: #2757bb;
+}
+
+.modern-entry {
+  margin: 0 3px 6px;
+  break-inside: avoid;
+}
+
+.modern-entry.compact-entry {
+  margin-bottom: 5px;
+}
+
+.modern-entry-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: baseline;
+}
+
+.modern-entry-heading h3 {
+  margin: 0;
+  color: #183553;
+  font-size: 15px;
+  font-weight: 750;
+  letter-spacing: 0;
+  line-height: 1.25;
+}
+
+.modern-entry-heading h3 span[aria-hidden="true"] {
+  color: #63738a;
+  font-weight: 400;
+}
+
+.modern-entry-heading time,
+.modern-research-entry time {
+  color: #61728d;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.modern-entry-organization {
+  color: #314664;
+  font-weight: 500;
+}
+
+.modern-entry-detail {
+  color: #526884 !important;
+  font-style: italic;
+}
+
+.modern-research-section ul {
+  list-style: square;
+}
+
+.modern-research-entry {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: baseline;
+}
+
+.modern-research-entry strong {
+  color: #17202b;
+}
+
+.modern-research-entry > div > span {
+  display: block;
+  color: #62738b;
+  font-size: 12px;
+}
+
+.modern-research-entry .modern-entry-link {
+  color: #1254dc;
+  overflow-wrap: anywhere;
+}
+
+.modern-generic-section p strong {
+  color: #183b8d;
+}
+
 .designed-sidebar .resume-section {
   margin-bottom: 20px;
 }
@@ -1924,11 +2092,80 @@ textarea.large-text-window {
     overflow: visible;
   }
 
+  .pdf-preview.modern-blue-template {
+    width: 210mm;
+    max-width: 210mm;
+    padding: 0;
+    overflow: visible;
+  }
+
   .designed-resume {
     box-sizing: border-box;
     width: 210mm;
     min-height: 297mm;
     grid-template-columns: minmax(0, 1fr) 52mm;
+  }
+
+  .modern-blue-resume {
+    box-sizing: border-box;
+    width: 210mm;
+    min-height: 297mm;
+    padding: 12mm 11mm 13mm;
+    font-size: 10.5pt;
+    line-height: 1.28;
+  }
+
+  .modern-resume-header {
+    margin-bottom: 2.5mm;
+    padding-bottom: 2mm;
+  }
+
+  .modern-resume-header h1 {
+    font-size: 19pt;
+  }
+
+  .modern-contact-row {
+    font-size: 9.2pt;
+  }
+
+  .modern-section {
+    margin-bottom: 2mm !important;
+  }
+
+  .modern-section h2 {
+    margin-bottom: 1.3mm;
+    padding: 1mm 2mm 0.8mm;
+    font-size: 11pt;
+  }
+
+  .modern-section p {
+    margin: 0.7mm 1mm;
+  }
+
+  .modern-section ul {
+    margin: 0.7mm 0 0 4.5mm;
+  }
+
+  .modern-section li {
+    margin: 0.55mm 0;
+  }
+
+  .modern-entry {
+    margin: 0 1mm 1.4mm;
+  }
+
+  .modern-entry-heading h3 {
+    font-size: 10.5pt;
+  }
+
+  .modern-entry-heading time,
+  .modern-research-entry time {
+    font-size: 9.5pt;
+  }
+
+  .modern-entry-detail,
+  .modern-research-entry > div > span {
+    font-size: 9.3pt;
   }
 
   .designed-main {

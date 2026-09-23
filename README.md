@@ -22,7 +22,7 @@ I chose this stack for the MVP because it runs locally with no install step and 
 ## Project Structure
 
 ```text
-RoleFit_resume/
+rolefit-resume-tailor/
   index.html
   src/
     resume/
@@ -49,13 +49,13 @@ RoleFit_resume/
 For the non-AI prototype, you can open this file in a browser:
 
 ```text
-RoleFit_resume/index.html
+rolefit-resume-tailor/index.html
 ```
 
 For PDF upload and AI analysis, run the local server from this folder:
 
 ```bash
-cd RoleFit_resume
+cd rolefit-resume-tailor
 node server.mjs
 ```
 
@@ -116,22 +116,25 @@ https://openrouter.ai/keys
 2. Start the server with the key:
 
 ```bash
-cd RoleFit_resume
+cd rolefit-resume-tailor
 OPENROUTER_API_KEY="your_key_here" node server.mjs
 ```
 
-3. Optional: choose a different model:
+By default, RoleFit tries Gemini first and Muse as its fallback:
 
 ```bash
-OPENROUTER_API_KEY="your_key_here" OPENROUTER_MODEL="google/gemini-2.5-flash-lite" node server.mjs
+OPENROUTER_API_KEY="your_key_here" OPENROUTER_MODEL="google/gemini-3.8-flash,meta/muse-spark-1.3" node server.mjs
 ```
 
-The default model is `google/gemini-2.5-flash-lite`.
+The configured order is:
 
-To try the free NVIDIA model:
+- `google/gemini-3.8-flash`
+- `meta/muse-spark-1.3`
+
+To override the model order, provide a comma-separated `OPENROUTER_MODEL` value:
 
 ```bash
-OPENROUTER_API_KEY="your_key_here" OPENROUTER_MODEL="nvidia/nemotron-3-ultra-550b-a55b:free" node server.mjs
+OPENROUTER_API_KEY="your_key_here" OPENROUTER_MODEL="meta/muse-spark-1.3,google/gemini-3.8-flash" node server.mjs
 ```
 
 ## Live Evaluation Flow

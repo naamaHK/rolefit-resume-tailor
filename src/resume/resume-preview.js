@@ -1071,6 +1071,7 @@ function renderDonePreviewCallout(style) {
           <select data-action="preview-export-style">
             <option value="ats" ${style === "ats" ? "selected" : ""}>ATS-friendly</option>
             <option value="designed" ${style === "designed" ? "selected" : ""}>Designed</option>
+            <option value="modern-blue" ${style === "modern-blue" ? "selected" : ""}>Modern Blue</option>
           </select>
         </label>
         <button class="preview-return-button done-preview-button" type="button" data-action="view-updated-preview">View Updated Preview</button>
@@ -1117,7 +1118,7 @@ function renderNumberedCommentPreview() {
   if (!text) return;
 
   const style = exportStyleSelect.value;
-  let resumeHtml = style === "designed" ? formatDesignedResumeForPrint(text) : formatResumeForPrint(text);
+  let resumeHtml = formatResumeForStyle(text, style);
   let matchedCount = 0;
   const unmatchedChanges = [];
   const displayChanges = getOpenDisplayChanges();
@@ -1127,8 +1128,7 @@ function renderNumberedCommentPreview() {
       setAiStatus("All comments are done. The resume preview is ready.", "success");
     }
     renderMissingExperienceSidePanel([]);
-    pdfPreview.classList.toggle("designed-template", style === "designed");
-    pdfPreview.classList.toggle("ats-template", style !== "designed");
+    setPreviewTemplateClass(style);
     pdfPreview.innerHTML = `
       <div class="preview-comment-banner">
         ${renderPreviewPassOverview()}
@@ -1159,8 +1159,7 @@ function renderNumberedCommentPreview() {
     }
   }
 
-  pdfPreview.classList.toggle("designed-template", style === "designed");
-  pdfPreview.classList.toggle("ats-template", style !== "designed");
+  setPreviewTemplateClass(style);
   pdfPreview.innerHTML = `
     <div class="preview-comment-banner">
       ${renderPreviewPassOverview()}

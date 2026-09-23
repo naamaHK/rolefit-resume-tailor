@@ -9,8 +9,8 @@ const rootDir = fileURLToPath(new URL(".", import.meta.url));
 const port = Number(process.env.PORT || 8765);
 const host = process.env.HOST || "0.0.0.0";
 const defaultModels = [
-  "nvidia/nemotron-3-ultra-550b-a55b:free",
-  "google/gemini-2.5-flash-lite"
+  "google/gemini-3.8-flash",
+  "meta/muse-spark-1.3"
 ];
 const models = (process.env.OPENROUTER_MODEL || defaultModels.join(","))
   .split(",")

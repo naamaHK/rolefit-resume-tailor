@@ -1,0 +1,16 @@
+Senior Revenue Operations Analyst
+
+Responsibilities
+- Analyze sales pipeline, revenue, and customer-retention data.
+- Build recurring reports and dashboards for business stakeholders.
+- Improve CRM workflows and data quality.
+- Automate recurring operational reporting.
+- Partner with sales, finance, and customer-success teams.
+
+Required qualifications
+- Advanced Excel
+- Salesforce
+- SQL
+
+Preferred qualifications
+- Tableau
