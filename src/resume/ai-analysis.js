@@ -910,6 +910,7 @@ function missingExperienceDedupeTopic(change) {
   if (/\b(publications?|peer reviewed papers?|research papers?)\b/.test(topicText)) return "publications";
   if (/\b(phd|ph\.d|doctorate|doctoral degree)\b/.test(topicText)) return "phd";
   const terms = extractQuestionTopicTerms(change.missingTerm, change.promptText, change.evidence);
+  if (terms.some((term) => normalizeRoleRequirementKey(term) === "tableau")) return "tableau";
   return terms.length === 1 ? normalize(terms[0]) : "";
 }
 

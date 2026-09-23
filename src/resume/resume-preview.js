@@ -1048,7 +1048,8 @@ function getMissingExperienceListLabel(change) {
     "research details": "Research details",
     patents: "Patents",
     publications: "Publications",
-    phd: "PhD"
+    phd: "PhD",
+    tableau: "Tableau"
   };
   if (labels[topic]) return labels[topic];
 

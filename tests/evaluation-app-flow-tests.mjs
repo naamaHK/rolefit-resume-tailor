@@ -95,8 +95,15 @@ try {
   await page.locator("#jobInput").fill(fixture.rolefit_input.job_description);
   await page.getByRole("button", { name: "Get Suggestions with AI" }).click();
 
-  const tableauCard = page.locator('[data-change-id="fixture-tableau"]');
-  await tableauCard.waitFor();
+  await page.locator("#missingExperiencePassBtn").click();
+  const tableauButtons = page.locator("#missingExperiencePanel .missing-experience-label-button", { hasText: "Tableau" });
+  assert.equal(await tableauButtons.count(), 1, "the app should show one canonical Tableau question");
+  const tableauButton = tableauButtons.first();
+  await tableauButton.waitFor();
+  await tableauButton.click();
+
+  const tableauCard = page.locator("#activeCommentPanel");
+  await tableauCard.waitFor({ state: "visible" });
   assert.match(
     await tableauCard.innerText(),
     /Have you built or maintained Tableau dashboards/i,
@@ -106,12 +113,12 @@ try {
   const experiencePlacement = tableauCard.locator('.placement-checkbox[value="experience"]');
   await experiencePlacement.check();
 
-  const updatedCard = page.locator('[data-change-id="fixture-tableau"]');
+  const updatedCard = page.locator("#activeCommentPanel");
   const experienceAction = updatedCard.locator(".experience-action-select");
   await experienceAction.waitFor();
   await experienceAction.selectOption("new");
 
-  const finalCard = page.locator('[data-change-id="fixture-tableau"]');
+  const finalCard = page.locator("#activeCommentPanel");
   const evidenceInput = finalCard.locator('[data-draft-field="experienceDraftText"]');
   await evidenceInput.waitFor();
   await evidenceInput.fill(tableauInteraction.resume_change.replace(/^-\s*/, ""));
