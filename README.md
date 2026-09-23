@@ -10,9 +10,9 @@ Given a resume and a target job description, the assistant analyzes the role, ma
 
 ## Demo
 
-[![RoleFit demo showing evidence-grounded AI rephrasing](docs/demo/rolefit-demo-poster.png)](docs/demo/rolefit-demo.webm)
+[![RoleFit demo showing evidence-grounded AI rephrasing](docs/demo/rolefit-demo-poster.png)](docs/demo/rolefit-demo.mp4)
 
-[Watch the demo video](docs/demo/rolefit-demo.webm) · [Download the original file](https://raw.githubusercontent.com/naamaHK/rolefit-resume-tailor/main/docs/demo/rolefit-demo.webm)
+[Watch the demo video](docs/demo/rolefit-demo.mp4) · [Download the original file](https://raw.githubusercontent.com/naamaHK/rolefit-resume-tailor/main/docs/demo/rolefit-demo.mp4)
 
 The 69-second walkthrough is captioned and works without sound. It uses a
 fictional Revenue Operations resume to demonstrate a supported summary rewrite,
@@ -22,11 +22,14 @@ resume.
 
 The recording uses the real RoleFit interface with a fixed, verified AI response
 so the public demo is reproducible and does not consume API credits. To regenerate
-it after a UI change:
+the WebM source after a UI change:
 
 ```bash
 node demo/record-demo.mjs
 ```
+
+Set `FFMPEG_PATH` to a full FFmpeg build when recording to regenerate the MP4
+playback copy at the same time.
 
 ## Language And Stack
 

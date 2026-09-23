@@ -9,6 +9,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const outputDir = path.join(rootDir, "docs", "demo");
 const videoPath = path.join(outputDir, "rolefit-demo.webm");
+const mp4Path = path.join(outputDir, "rolefit-demo.mp4");
 const posterPath = path.join(outputDir, "rolefit-demo-poster.png");
 
 const resume = `JORDAN LEE
@@ -231,6 +232,35 @@ async function compressVideoForGitHub(sourcePath) {
       : reject(new Error(`Could not compress the demo video. ffmpeg exited with code ${code}.`)));
   });
   await rename(compactPath, sourcePath);
+}
+
+async function createMp4ForGitHub(sourcePath) {
+  const ffmpeg = [
+    process.env.FFMPEG_PATH,
+    "/usr/local/bin/ffmpeg",
+    "/opt/homebrew/bin/ffmpeg"
+  ].find((candidate) => candidate && existsSync(candidate));
+  if (!ffmpeg) return false;
+
+  const args = [
+    "-i", sourcePath,
+    "-c:v", "libx264",
+    "-preset", "medium",
+    "-crf", "23",
+    "-pix_fmt", "yuv420p",
+    "-movflags", "+faststart",
+    "-an",
+    "-y",
+    mp4Path
+  ];
+  await new Promise((resolve, reject) => {
+    const child = spawn(ffmpeg, args, { stdio: "ignore" });
+    child.once("error", reject);
+    child.once("exit", (code) => code === 0
+      ? resolve()
+      : reject(new Error(`Could not create the MP4 demo. ffmpeg exited with code ${code}.`)));
+  });
+  return true;
 }
 
 async function installDemoOverlay(page) {
@@ -508,5 +538,9 @@ try {
 }
 
 await compressVideoForGitHub(videoPath);
+const createdMp4 = await createMp4ForGitHub(videoPath);
 console.log(`Demo video: ${videoPath}`);
+console.log(createdMp4
+  ? `GitHub playback video: ${mp4Path}`
+  : "MP4 unchanged. Set FFMPEG_PATH to a full FFmpeg build to regenerate the GitHub playback copy.");
 console.log(`Demo poster: ${posterPath}`);
