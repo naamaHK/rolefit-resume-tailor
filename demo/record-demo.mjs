@@ -1,6 +1,6 @@
 import { spawn } from "node:child_process";
 import { existsSync } from "node:fs";
-import { mkdir, rename } from "node:fs/promises";
+import { mkdir, readdir, rename } from "node:fs/promises";
 import net from "node:net";
 import { homedir } from "node:os";
 import path from "node:path";
@@ -181,6 +181,56 @@ async function stopProcess(child) {
     new Promise((resolve) => setTimeout(resolve, 2_000))
   ]);
   if (child.exitCode === null) child.kill("SIGKILL");
+}
+
+async function findPlaywrightFfmpeg() {
+  const cacheRoots = [
+    path.join(homedir(), "Library/Caches/ms-playwright"),
+    path.join(homedir(), ".cache/ms-playwright")
+  ];
+
+  for (const cacheRoot of cacheRoots) {
+    let entries = [];
+    try {
+      entries = await readdir(cacheRoot, { withFileTypes: true });
+    } catch {
+      continue;
+    }
+    for (const entry of entries.filter((item) => item.isDirectory() && item.name.startsWith("ffmpeg-")).reverse()) {
+      for (const binaryName of ["ffmpeg-mac", "ffmpeg-linux", "ffmpeg.exe"]) {
+        const candidate = path.join(cacheRoot, entry.name, binaryName);
+        if (existsSync(candidate)) return candidate;
+      }
+    }
+  }
+
+  return "";
+}
+
+async function compressVideoForGitHub(sourcePath) {
+  const ffmpeg = await findPlaywrightFfmpeg();
+  if (!ffmpeg) return;
+  const compactPath = path.join(outputDir, "rolefit-demo-compact.webm");
+  const args = [
+    "-i", sourcePath,
+    "-vf", "scale=1152:720",
+    "-c:v", "libvpx",
+    "-b:v", "480k",
+    "-deadline", "good",
+    "-cpu-used", "2",
+    "-an",
+    "-y",
+    compactPath
+  ];
+
+  await new Promise((resolve, reject) => {
+    const child = spawn(ffmpeg, args, { stdio: "ignore" });
+    child.once("error", reject);
+    child.once("exit", (code) => code === 0
+      ? resolve()
+      : reject(new Error(`Could not compress the demo video. ffmpeg exited with code ${code}.`)));
+  });
+  await rename(compactPath, sourcePath);
 }
 
 async function installDemoOverlay(page) {
@@ -457,5 +507,6 @@ try {
   await stopProcess(server);
 }
 
+await compressVideoForGitHub(videoPath);
 console.log(`Demo video: ${videoPath}`);
 console.log(`Demo poster: ${posterPath}`);
