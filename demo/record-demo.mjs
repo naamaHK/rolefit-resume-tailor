@@ -10,6 +10,7 @@ const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")
 const outputDir = path.join(rootDir, "docs", "demo");
 const videoPath = path.join(outputDir, "rolefit-demo.webm");
 const mp4Path = path.join(outputDir, "rolefit-demo.mp4");
+const gifPath = path.join(outputDir, "rolefit-demo.gif");
 const posterPath = path.join(outputDir, "rolefit-demo-poster.png");
 
 const resume = `JORDAN LEE
@@ -259,6 +260,27 @@ async function createMp4ForGitHub(sourcePath) {
     child.once("exit", (code) => code === 0
       ? resolve()
       : reject(new Error(`Could not create the MP4 demo. ffmpeg exited with code ${code}.`)));
+  });
+  return true;
+}
+
+async function createGifForGitHub(sourcePath) {
+  const ffmpeg = [
+    process.env.FFMPEG_PATH,
+    "/usr/local/bin/ffmpeg",
+    "/opt/homebrew/bin/ffmpeg"
+  ].find((candidate) => candidate && existsSync(candidate));
+  if (!ffmpeg) return false;
+
+  const filter = "fps=4,scale=800:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=96:stats_mode=diff[p];[s1][p]paletteuse=dither=bayer:bayer_scale=5:diff_mode=rectangle";
+  await new Promise((resolve, reject) => {
+    const child = spawn(ffmpeg, ["-i", sourcePath, "-filter_complex", filter, "-loop", "0", "-y", gifPath], {
+      stdio: "ignore"
+    });
+    child.once("error", reject);
+    child.once("exit", (code) => code === 0
+      ? resolve()
+      : reject(new Error(`Could not create the GIF demo. ffmpeg exited with code ${code}.`)));
   });
   return true;
 }
@@ -539,8 +561,12 @@ try {
 
 await compressVideoForGitHub(videoPath);
 const createdMp4 = await createMp4ForGitHub(videoPath);
+const createdGif = await createGifForGitHub(videoPath);
 console.log(`Demo video: ${videoPath}`);
 console.log(createdMp4
   ? `GitHub playback video: ${mp4Path}`
   : "MP4 unchanged. Set FFMPEG_PATH to a full FFmpeg build to regenerate the GitHub playback copy.");
+console.log(createdGif
+  ? `GitHub README animation: ${gifPath}`
+  : "GIF unchanged. Set FFMPEG_PATH to a full FFmpeg build to regenerate the README animation.");
 console.log(`Demo poster: ${posterPath}`);
