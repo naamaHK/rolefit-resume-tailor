@@ -49,6 +49,8 @@
         "education",
         "publication",
         "publications",
+        "selected publications & patents",
+        "selected publications and patents",
         "patent",
         "patents",
         "certifications",
@@ -72,7 +74,7 @@
       if (["experience", "professional experience"].includes(normalized)) return "experience";
       if (normalized === "education") return "education";
       if (["skills", "technical skills", "skills & technologies", "skills and technologies"].includes(normalized)) return "skills";
-      if (normalized === "publications" || normalized === "publication") return "publications";
+      if (["publications", "publication", "selected publications & patents", "selected publications and patents"].includes(normalized)) return "publications";
       if (normalized === "patents" || normalized === "patent") return "patents";
       if (normalized === "strengths") return "strengths";
       if (["achievements", "achievement", "achievments", "achievment"].includes(normalized)) return "achievements";
@@ -97,6 +99,9 @@
         const lower = line.toLowerCase();
         const isKnownSection = sectionNames.has(lower);
         const currentCanonical = currentSection ? canonicalSectionTitle(currentSection.title) : "";
+        const normalizedLine = normalizeSectionLabel(line);
+        const isNestedExperienceSubsection = currentCanonical === "experience"
+          && ["selected projects", "selected research projects"].includes(normalizedLine);
         const previousSectionLine = currentSection?.lines[currentSection.lines.length - 1] || "";
         const followsEntryTitle = currentCanonical === "experience"
           ? Boolean(
@@ -112,7 +117,8 @@
           && /^[A-Z][A-Z0-9&.' +#-]{1,45}$/.test(line)
           && followsEntryTitle
           && !isKnownSection;
-        const isSection = isKnownSection || (firstSectionSeen && looksLikeCustomSectionHeaderLine(line) && !isUppercaseEntryContent);
+        const isSection = !isNestedExperienceSubsection
+          && (isKnownSection || (firstSectionSeen && looksLikeCustomSectionHeaderLine(line) && !isUppercaseEntryContent));
 
         if (!firstSectionSeen && !isSection) {
           headerLines.push(line);
@@ -153,7 +159,7 @@
     function preferredSectionTitle(section) {
       const canonical = canonicalSectionTitle(section.title);
       const normalized = normalizeSectionLabel(section.title);
-      if (["skills & technologies", "skills and technologies"].includes(normalized)) {
+      if (["skills & technologies", "skills and technologies", "selected publications & patents", "selected publications and patents"].includes(normalized)) {
         return section.title;
       }
       const preferred = {

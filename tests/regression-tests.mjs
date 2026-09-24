@@ -74,6 +74,8 @@ async function loadApp() {
   };
   context.window.document = context.document;
   vm.createContext(context);
+  const pdfTextLayoutSource = await readFile(new URL("../src/resume/pdf-text-layout.js", import.meta.url), "utf8");
+  vm.runInContext(pdfTextLayoutSource, context, { filename: "src/resume/pdf-text-layout.js" });
   const documentParserSource = await readFile(new URL("../src/resume/document-parser.js", import.meta.url), "utf8");
   vm.runInContext(documentParserSource, context, { filename: "src/resume/document-parser.js" });
   const experienceParserSource = await readFile(new URL("../src/resume/experience-parser.js", import.meta.url), "utf8");
@@ -246,6 +248,36 @@ assert.match(
   companyInsertedResume,
   /Lead Data Analyst 2017 - 2024\nNorthstar Research\n- Built customer analytics workflows\./,
   "missing company should insert under the matching role even after date normalization"
+);
+
+const careerBreakAndInlineInstitutionResume = `ALEX MORGAN
+050-555-0198 alex.morgan@example.com
+
+EXPERIENCE
+Parental Career Break 2024-Present
+Career break to care for twins.
+
+EDUCATION
+M.Sc. in Computer Science, Technion - Israel Institute of Technology 2013-2016
+Thesis in cryptography.`;
+const careerBreakRequiredCards = context.collectMissingRequiredFieldQuestions(careerBreakAndInlineInstitutionResume);
+assert.equal(
+  careerBreakRequiredCards.some((card) => card.requiredField === "company"),
+  false,
+  "a career break should not require a fictional employer"
+);
+assert.equal(
+  careerBreakRequiredCards.some((card) => card.requiredField === "institution"),
+  false,
+  "an institution on the degree line should satisfy the Education requirement"
+);
+assert.equal(
+  context.parseEducationEntries([
+    "M.Sc. in Computer Science, Technion - Israel Institute of Technology 2013-2016",
+    "Thesis in cryptography."
+  ])[0].institution,
+  "Technion - Israel Institute of Technology",
+  "inline Education institutions should be parsed separately from the degree"
 );
 
 const flattenedCompanyResume = `ALEX MORGAN

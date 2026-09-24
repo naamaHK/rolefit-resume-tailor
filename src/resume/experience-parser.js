@@ -42,6 +42,13 @@
           company: companyParts.join(",").trim()
         };
       }
+      const trailingRole = cleaned.match(/^(.+?)\s+((?:(?:Senior|Lead|Principal|Staff|Junior)\s+)?(?:Research Engineer|Software Engineer|Machine Learning Engineer|Data Engineer|Data Scientist|Research Scientist|Product Manager))$/i);
+      if (trailingRole && looksLikeInstitutionOrCompany(trailingRole[1])) {
+        return {
+          title: cleanEntryTitle(trailingRole[2]),
+          company: trailingRole[1].trim()
+        };
+      }
       return { title: cleanEntryTitle(cleaned), company: "" };
     }
 
@@ -56,6 +63,7 @@
     function looksLikeCompanyLine(line) {
       const clean = stripLeadingBullet(String(line || ""));
       if (!clean || extractYears(clean)) return false;
+      if (/[.!?]$/.test(clean) || /^(?:promoted|led|built|developed|designed|managed|partnered|collaborated|created|implemented|delivered|owned|supported|improved|reduced|increased)\b/i.test(clean)) return false;
       if (looksLikeInstitutionOrCompany(clean)) return true;
       return clean.length <= 45 && !looksLikeSentence(clean) && /^[A-Z0-9][A-Za-z0-9\s.&+#-]+$/.test(clean);
     }

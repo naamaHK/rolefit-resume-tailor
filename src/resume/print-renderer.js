@@ -77,6 +77,68 @@ function renderResumeHeader(headerLines) {
     : "";
 }
 
+function safeResumeHref(value) {
+  const href = String(value || "").trim();
+  return /^(?:https?:\/\/|mailto:|tel:)/i.test(href) ? href : "";
+}
+
+function renderAutoLinkedText(value) {
+  const text = String(value || "");
+  const tokenPattern = /(?:https?:\/\/[^\s<>()]+|(?:www\.|linkedin\.com\/|github\.com\/)[^\s<>()]+|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,})/gi;
+  let html = "";
+  let cursor = 0;
+
+  for (const match of text.matchAll(tokenPattern)) {
+    const token = match[0];
+    const index = match.index || 0;
+    html += escapeHtml(text.slice(cursor, index));
+    const isEmail = token.includes("@") && !/^https?:/i.test(token);
+    const href = isEmail ? `mailto:${token}` : (/^https?:\/\//i.test(token) ? token : `https://${token}`);
+    html += `<a href="${escapeHtml(href)}">${escapeHtml(token)}</a>`;
+    cursor = index + token.length;
+  }
+
+  return html + escapeHtml(text.slice(cursor));
+}
+
+function renderInlineLinks(value) {
+  const text = String(value || "");
+  const markdownLinkPattern = /\[([^\]\n]+)\]\(((?:https?:\/\/|mailto:|tel:)[^\s)]+)\)/gi;
+  let html = "";
+  let cursor = 0;
+
+  for (const match of text.matchAll(markdownLinkPattern)) {
+    const index = match.index || 0;
+    html += renderAutoLinkedText(text.slice(cursor, index));
+    const href = safeResumeHref(match[2]);
+    html += href
+      ? `<a href="${escapeHtml(href)}">${escapeHtml(match[1])}</a>`
+      : escapeHtml(match[0]);
+    cursor = index + match[0].length;
+  }
+
+  return html + renderAutoLinkedText(text.slice(cursor));
+}
+
+function modernContactParts(headerLines) {
+  const contactPattern = /\[[^\]\n]+\]\((?:https?:\/\/|mailto:|tel:)[^\s)]+\)|Google Scholar|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}|(?:https?:\/\/)?(?:www\.)?(?:linkedin\.com|github\.com)\/[^\s|]+|(?:\+?\d[\d() .-]{6,}\d)/gi;
+  return headerLines.slice(1).flatMap((line) => {
+    const explicitParts = String(line || "").split(/\s*\|\s*/).map((part) => part.trim()).filter(Boolean);
+    if (explicitParts.length > 1) return explicitParts;
+    const detectedParts = String(line || "").match(contactPattern) || [];
+    return detectedParts.length > 1 ? detectedParts.map((part) => part.trim()) : explicitParts;
+  });
+}
+
+function renderModernContactPart(part) {
+  const value = String(part || "").trim();
+  if (/^\+?\d[\d() .-]{6,}\d$/.test(value)) {
+    const href = `tel:${value.replace(/[^\d+]/g, "")}`;
+    return `<a href="${escapeHtml(href)}">${escapeHtml(value)}</a>`;
+  }
+  return renderInlineLinks(value);
+}
+
 function isSummaryLikeSection(title) {
   return ["statement", "summary", "professional summary", "profile"].includes(normalizeSectionLabel(title));
 }
@@ -91,8 +153,8 @@ function renderParagraphSectionBody(lines) {
     .trim();
 
   return [
-    prose ? `<p>${escapeHtml(prose)}</p>` : "",
-    bullets.length ? `<ul>${bullets.map((line) => `<li>${escapeHtml(line.replace(/^[-*•]\s*/, ""))}</li>`).join("")}</ul>` : ""
+    prose ? `<p>${renderInlineLinks(prose)}</p>` : "",
+    bullets.length ? `<ul>${bullets.map((line) => `<li>${renderInlineLinks(line.replace(/^[-*•]\s*/, ""))}</li>`).join("")}</ul>` : ""
   ].join("");
 }
 
@@ -119,10 +181,10 @@ function renderSectionBody(lines, title = "") {
         html += "<ul>";
         openList = true;
       }
-      html += `<li>${escapeHtml(line.replace(/^[-*•]\s*/, ""))}</li>`;
+      html += `<li>${renderInlineLinks(line.replace(/^[-*•]\s*/, ""))}</li>`;
     } else {
       closeList();
-      html += `<p>${escapeHtml(line)}</p>`;
+      html += `<p>${renderInlineLinks(line)}</p>`;
     }
   }
 
@@ -171,7 +233,7 @@ function cleanEntryTitle(text) {
 }
 
 function looksLikeInstitutionOrCompany(line) {
-  return /\b(University|Institute|Research|Media|Inc|Ltd|LLC|Company|School|College)\b/i.test(line);
+  return /\b(University|Institute|Technion|Research|Media|Inc|Ltd|LLC|Company|School|College|Academy)\b/i.test(line);
 }
 
 function stripLeadingBullet(line) {
@@ -252,7 +314,7 @@ function parsePublicationEntries(lines) {
       continue;
     }
 
-    const startsNew = !current || (year && !looksLikeVenueLine) || (!year && current.link);
+    const startsNew = !current || (year && (current.year || !looksLikeVenueLine)) || (!year && current.link);
 
     if (startsNew) {
       pushCurrent();
@@ -448,6 +510,23 @@ function looksLikeEducationDetail(line) {
   return /\b(advised by|advisor|thesis|honors?|speciali[sz]ation|gpa|coursework|details?)\b/i.test(line);
 }
 
+function splitEducationDegreeAndInstitution(line) {
+  const clean = removeYears(line);
+  const separators = [",", "|"];
+
+  for (const separator of separators) {
+    const index = clean.lastIndexOf(separator);
+    if (index === -1) continue;
+    const degree = clean.slice(0, index).trim();
+    const institution = clean.slice(index + separator.length).trim();
+    if (degree && institution && looksLikeInstitutionOrCompany(institution)) {
+      return { degree, institution };
+    }
+  }
+
+  return { degree: clean, institution: "" };
+}
+
 function parseEducationEntries(lines) {
   const entries = [];
   let current = null;
@@ -462,9 +541,10 @@ function parseEducationEntries(lines) {
 
     if (startsEntry) {
       pushCurrent();
+      const split = splitEducationDegreeAndInstitution(clean);
       current = {
-        degree: removeYears(clean),
-        institution: "",
+        degree: split.degree,
+        institution: split.institution,
         years: extractYears(clean),
         rawLine: clean,
         details: []
@@ -971,20 +1051,67 @@ function formatDesignedResumeForPrint(text) {
 
 function renderModernResumeHeader(headerLines) {
   if (!headerLines.length) return "";
-  const contactParts = headerLines
-    .slice(1)
-    .flatMap((line) => String(line || "").split(/\s*\|\s*/))
-    .map((part) => part.trim())
-    .filter(Boolean);
+  const contactParts = modernContactParts(headerLines);
   return `
     <header class="modern-resume-header">
       <h1>${escapeHtml(headerLines[0])}</h1>
       ${contactParts.length ? `
         <p class="modern-contact-row">
-          ${contactParts.map((part) => `<span>${escapeHtml(part)}</span>`).join('<i aria-hidden="true"></i>')}
+          ${contactParts.map((part) => `<span>${renderModernContactPart(part)}</span>`).join('<span class="modern-contact-separator" aria-hidden="true">|</span>')}
         </p>
       ` : ""}
     </header>
+  `;
+}
+
+function splitModernExperienceSubsections(lines) {
+  const selectedProjectsIndex = lines.findIndex((line) => /^selected (?:research )?projects\s*:?$/i.test(line));
+  if (selectedProjectsIndex === -1) {
+    return { mainLines: lines, projectLines: [], earlierLines: [] };
+  }
+  const earlierIndex = lines.findIndex((line, index) => index > selectedProjectsIndex && /^earlier technical experience\s*:?$/i.test(line));
+  return {
+    mainLines: lines.slice(0, selectedProjectsIndex),
+    projectLines: lines.slice(selectedProjectsIndex + 1, earlierIndex === -1 ? lines.length : earlierIndex),
+    earlierLines: earlierIndex === -1 ? [] : lines.slice(earlierIndex + 1)
+  };
+}
+
+function groupModernSubsectionItems(lines) {
+  const items = [];
+  for (const line of lines) {
+    const clean = stripLeadingBullet(line);
+    const startsNamedItem = /^[^:]{2,90}:\s*\S/.test(clean);
+    if (!items.length || startsNamedItem) {
+      items.push(clean);
+    } else {
+      items[items.length - 1] = `${items[items.length - 1]} ${clean}`.replace(/\s+/g, " ").trim();
+    }
+  }
+  return items.filter(Boolean);
+}
+
+function renderModernProjectItem(item) {
+  const match = String(item || "").match(/^([^:]{2,90}:)(.*)$/);
+  if (!match) return renderInlineLinks(item);
+  return `<strong>${renderInlineLinks(match[1])}</strong>${renderInlineLinks(match[2])}`;
+}
+
+function renderModernExperienceSubsections(projectLines, earlierLines) {
+  const projectItems = groupModernSubsectionItems(projectLines);
+  return `
+    ${projectItems.length ? `
+      <div class="modern-experience-subsection modern-project-subsection">
+        <h4>Selected Research Projects</h4>
+        <ul>${projectItems.map((item) => `<li>${renderModernProjectItem(item)}</li>`).join("")}</ul>
+      </div>
+    ` : ""}
+    ${earlierLines.length ? `
+      <div class="modern-experience-subsection modern-earlier-experience">
+        <h4>Earlier Technical Experience</h4>
+        ${earlierLines.map((line) => `<p>${renderInlineLinks(stripLeadingBullet(line))}</p>`).join("")}
+      </div>
+    ` : ""}
   `;
 }
 
@@ -993,20 +1120,40 @@ function getModernSectionTitle(title) {
 }
 
 function renderModernExperience(section) {
-  const entries = parseExperienceEntries(section.lines);
+  const { mainLines, projectLines, earlierLines } = splitModernExperienceSubsections(section.lines);
+  const entries = parseExperienceEntries(mainLines);
   if (!entries.length) return "";
   return `
     <section class="resume-section modern-section modern-experience-section">
       <h2>${escapeHtml(getModernSectionTitle(section.title))}</h2>
-      ${entries.map((entry) => `
+      ${entries.map((entry, index) => `
         <article class="modern-entry">
           <div class="modern-entry-heading">
             <h3>${entry.company ? `${escapeHtml(entry.company)} <span aria-hidden="true">&middot;</span> ` : ""}${escapeHtml(entry.title)}</h3>
             ${entry.years ? `<time>${escapeHtml(entry.years)}</time>` : ""}
           </div>
-          ${entry.bullets.length ? `<ul>${entry.bullets.map((bullet) => `<li>${escapeHtml(bullet)}</li>`).join("")}</ul>` : ""}
+          ${entry.bullets.length ? `<ul>${entry.bullets.map((bullet) => `<li>${renderInlineLinks(bullet)}</li>`).join("")}</ul>` : ""}
+          ${index === entries.length - 1 ? renderModernExperienceSubsections(projectLines, []) : ""}
         </article>
       `).join("")}
+      ${renderModernExperienceSubsections([], earlierLines)}
+    </section>
+  `;
+}
+
+function renderModernSkills(section) {
+  const rows = section.lines.map((line) => {
+    const clean = stripLeadingBullet(line);
+    const match = clean.match(/^([^:]{2,45}):\s*(.+)$/);
+    return match
+      ? `<li><strong>${renderInlineLinks(match[1])}:</strong> <span>${renderInlineLinks(match[2])}</span></li>`
+      : `<li><span>${renderInlineLinks(clean)}</span></li>`;
+  }).join("");
+  if (!rows) return "";
+  return `
+    <section class="resume-section modern-section modern-skills-section">
+      <h2>${escapeHtml(getModernSectionTitle(section.title))}</h2>
+      <ul class="modern-skill-groups">${rows}</ul>
     </section>
   `;
 }
@@ -1023,7 +1170,7 @@ function renderModernEducation(section) {
             <h3>${escapeHtml(entry.degree)}${entry.institution ? `, <span class="modern-entry-organization">${escapeHtml(entry.institution)}</span>` : ""}</h3>
             ${entry.years ? `<time>${escapeHtml(entry.years)}</time>` : ""}
           </div>
-          ${entry.details.length ? `<p class="modern-entry-detail">${escapeHtml(entry.details.join(" "))}</p>` : ""}
+          ${entry.details.length ? `<p class="modern-entry-detail">${renderInlineLinks(entry.details.join(" "))}</p>` : ""}
         </article>
       `).join("")}
     </section>
@@ -1032,35 +1179,42 @@ function renderModernEducation(section) {
 
 function renderModernResearch(section) {
   const canonical = canonicalSectionTitle(section.title);
+  const patentSummaryLines = canonical === "publications"
+    ? section.lines.filter((line) => /^[-*•]?\s*Patents?\s*:/i.test(line))
+    : [];
+  const researchLines = patentSummaryLines.length
+    ? section.lines.filter((line) => !patentSummaryLines.includes(line))
+    : section.lines;
   const entries = canonical === "patents"
-    ? parsePatentEntries(section.lines).entries.map((entry) => ({
+    ? parsePatentEntries(researchLines).entries.map((entry) => ({
       name: entry.name,
       year: entry.year,
       detail: [entry.authors.join(" "), entry.status].filter(Boolean).join(" - "),
       link: ""
     }))
-    : parsePublicationEntries(section.lines).map((entry) => ({
+    : parsePublicationEntries(researchLines).map((entry) => ({
       name: entry.name,
       year: entry.year,
       detail: entry.details.filter((line) => !/^https?:\/\//i.test(line)).join(" "),
       link: entry.link || ""
     }));
-  if (!entries.length) return "";
+  if (!entries.length && !patentSummaryLines.length) return "";
   return `
     <section class="resume-section modern-section modern-research-section">
       <h2>${escapeHtml(getModernSectionTitle(section.title))}</h2>
-      <ul>
+      ${entries.length ? `<ul>
         ${entries.map((entry) => `
           <li class="modern-research-entry">
             <div>
-              <strong>${escapeHtml(entry.name)}</strong>
-              ${entry.detail ? `<span>${escapeHtml(entry.detail)}</span>` : ""}
-              ${entry.link ? `<span class="modern-entry-link">${escapeHtml(entry.link)}</span>` : ""}
+              <strong>${renderInlineLinks(entry.name)}</strong>
+              ${entry.detail ? `<span>${renderInlineLinks(entry.detail)}</span>` : ""}
+              ${entry.link ? `<span class="modern-entry-link">${renderInlineLinks(entry.link)}</span>` : ""}
             </div>
             ${entry.year ? `<time>${escapeHtml(entry.year)}</time>` : ""}
           </li>
         `).join("")}
-      </ul>
+      </ul>` : ""}
+      ${patentSummaryLines.map((line) => `<p class="modern-patent-summary">${renderInlineLinks(stripLeadingBullet(line))}</p>`).join("")}
     </section>
   `;
 }
@@ -1070,6 +1224,7 @@ function renderModernSection(section) {
   if (canonical === "experience" || canonical === "volunteer_experience") return renderModernExperience(section);
   if (canonical === "education") return renderModernEducation(section);
   if (canonical === "publications" || canonical === "patents") return renderModernResearch(section);
+  if (canonical === "skills") return renderModernSkills(section);
   return `
     <section class="resume-section modern-section modern-generic-section">
       <h2>${escapeHtml(getModernSectionTitle(section.title))}</h2>
@@ -1081,8 +1236,10 @@ function renderModernSection(section) {
 function formatModernBlueResumeForPrint(text) {
   const parsed = parseResumeText(text);
   const sections = prepareSectionsForOutput(parsed.sections);
+  const contentWeight = sections.reduce((sum, section) => sum + estimateSectionPrintWeight(section), 0);
+  const densityClass = contentWeight > 160 ? " modern-blue-dense" : contentWeight > 105 ? " modern-blue-compact" : "";
   return `
-    <div class="modern-blue-resume">
+    <div class="modern-blue-resume${densityClass}" data-content-weight="${contentWeight}">
       ${renderModernResumeHeader(parsed.headerLines)}
       <main class="modern-resume-main">
         ${sections.map(renderModernSection).join("")}

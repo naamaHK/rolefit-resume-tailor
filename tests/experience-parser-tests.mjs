@@ -156,6 +156,28 @@ assert.deepEqual(
   "C++ roles and companies should remain selectable Experience entries"
 );
 
+const companyFirstRole = parser.parseExperienceEntries([
+  "Yahoo Research Senior Research Engineer 2017 - 2024",
+  "Promoted to Senior Research Engineer within two years.",
+  "Led production machine learning systems."
+]);
+assert.deepEqual(
+  JSON.parse(JSON.stringify(companyFirstRole)),
+  [
+    {
+      title: "Senior Research Engineer",
+      company: "Yahoo Research",
+      years: "2017 - 2024",
+      rawLine: "Yahoo Research Senior Research Engineer 2017 - 2024",
+      bullets: [
+        "Promoted to Senior Research Engineer within two years.",
+        "Led production machine learning systems."
+      ]
+    }
+  ],
+  "a company-first PDF row must split into company and title without turning a sentence into the company"
+);
+
 assert.throws(
   () => context.window.RoleFitExperienceParser.create({}),
   /requires cleanEntryTitle/,

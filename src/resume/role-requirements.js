@@ -42,6 +42,7 @@
       if (/^(?:llms?|large language models?(?:\s*\(\s*llms?\s*\))?)$/.test(value)) return "llm";
       if (/^(?:(?:developing|building|development of)\s+)?(?:ai|artificial intelligence)\s+agents?$/.test(value)) return "ai agents";
       if (/^(?:predictive\s+(?:models?|modeling)|prediction\s+models?)$/.test(value)) return "predictive modeling";
+      if (/^data science(?:\s+(?:stack|skills?|experience))?$/.test(value)) return "data science";
       if (/\bcommunication\b/.test(value) && /\bcollaboration\b/.test(value)) return "communication-and-collaboration";
       if (/^communication(?:\s+skills?)?$/.test(value)) return "communication";
       if (/^collaboration(?:\s+skills?)?$/.test(value)) return "collaboration";
@@ -56,17 +57,26 @@
       return value;
     }
 
+    function isLocationOnly(value) {
+      return /^[a-z][a-z .'-]{1,45},\s*(?:israel|united states|usa|u\.s\.|united kingdom|uk|u\.k\.|canada|australia|germany|france|spain|italy|netherlands|ireland|india|singapore)(?:\s*\([^)]*\))?$/.test(value);
+    }
+
     function isAbstract(term) {
       const key = normalizeKey(term);
       return ignoredTopics.has(key)
+        || isLocationOnly(key)
         || /^(?:required|preferred|minimum|basic)?\s*qualifications?$/.test(key)
         || /^(?:strong|excellent|good|effective)$/.test(key)
         || /^(?:dashboard(?:s)?|reporting|decision(?:s)?|customer data)$/.test(key)
         || /^(?:related|relevant)\s+(?:(?:field\s+)?research|field|background)(?:\s+(?:experience|work))?$/.test(key)
         || /\bjob\s+description\b/.test(key)
         || /^(?:description|details?|requirements?)$/.test(key)
+        || /^(?:data science|optimization)$/.test(key)
+        || /^translating\s+.{2,50}\s+into\s+(?:business|impact|products?|results?)$/.test(key)
         || /^(?:experience|what you(?:'|’)?ll do|what you will do|what you bring|technical skills|core attributes|responsibilities)\s*:?$/.test(key)
         || /^about(?:\s+the)?\s+(?:job|role|team|company|us|[a-z0-9&.+-]{2,30})\s*:?$/.test(key)
+        || /^our\s+(?:team|values|culture|mission|story)\s*:?$/.test(key)
+        || /^more than just a job\s*[.!]?$/.test(key)
         || /^(?:benefits|perks)(?:\s+(?:at|of|with)\s+.{2,50}|\s+(?:and|&)\s+(?:benefits|perks))?\s*:?$/.test(key)
         || /^(?:(?:hybrid|remote|on-site|onsite)\s+work(?:ing)?(?:\s+(?:model|policy|arrangement))?|dog-friendly office|on-site gym(?: and pilates classes)?|fully funded supplemental health(?: insurance)?|free (?:meals?|lunch|snacks?)|employee discounts?)\s*\.?$/.test(key)
         || /^(?:view profile|clear|search by (?:keyword|location|postal code)|show more options|privacy|terms(?:\s*(?:&|and)\s*)conditions|modern slavery act|gender pay gap report)$/.test(key)
@@ -93,6 +103,7 @@
         "computer vision": "Computer Vision",
         "ai agents": "AI Agents",
         "predictive modeling": "Predictive Modeling",
+        "data science": "Data Science",
         llm: "LLM",
         rag: "RAG",
         sql: "SQL",

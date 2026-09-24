@@ -141,6 +141,63 @@ assert.deepEqual(
   "a dated C++ role and company should remain together in Experience"
 );
 
+const combinedResearchHeading = parser.parseResumeText(`ALEX
+
+EDUCATION
+B.Sc. in Computer Science 2009 - 2013
+SELECTED PUBLICATIONS & PATENTS
+ACM RecSys: Ranking Systems 2024`);
+assert.deepEqual(
+  JSON.parse(JSON.stringify(combinedResearchHeading.sections.map((section) => section.title))),
+  ["Education", "Selected Publications & Patents"],
+  "a combined Publications and Patents heading after a degree must start a new section"
+);
+assert.equal(
+  parser.canonicalSectionTitle("Selected Publications & Patents"),
+  "publications"
+);
+
+const nestedProjects = parser.parseResumeText(`ALEX
+
+EXPERIENCE
+Yahoo Research Senior Research Engineer 2017 - 2024
+- Built production models.
+SELECTED RESEARCH PROJECTS
+Audience Prospecting: Delivered measurable revenue impact.
+Earlier Technical Experience
+Teaching Assistant, Technion 2013 - 2016
+
+EDUCATION
+M.Sc. in Computer Science 2013 - 2016
+Technion`);
+assert.deepEqual(
+  JSON.parse(JSON.stringify(nestedProjects.sections.map((section) => section.title))),
+  ["Experience", "Education"],
+  "a Projects heading before Education must remain an Experience subsection"
+);
+assert.ok(
+  nestedProjects.sections[0].lines.includes("SELECTED RESEARCH PROJECTS"),
+  "the nested Projects label must remain in the Experience content"
+);
+
+const standaloneProjects = parser.parseResumeText(`ALEX
+
+EXPERIENCE
+Engineer 2020 - 2024
+Example Company
+
+EDUCATION
+B.Sc. 2016 - 2020
+Example University
+
+SELECTED RESEARCH PROJECTS
+Portfolio Project: Built a public demo.`);
+assert.deepEqual(
+  JSON.parse(JSON.stringify(standaloneProjects.sections.map((section) => section.title))),
+  ["Experience", "Education", "Selected Research Projects"],
+  "the same Projects heading after Education must remain a standalone section"
+);
+
 const merged = parser.mergeDuplicateSections([
   { title: "Skills", lines: ["Python", "SQL"] },
   { title: "Technical Skills", lines: ["SQL", "C++"] },

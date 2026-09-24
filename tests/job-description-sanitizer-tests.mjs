@@ -181,6 +181,37 @@ Machine Learning & Statistics: Statistical Analysis, Predictive Modeling`;
   );
   assert.deepEqual(semanticSkillVariants.covered, ["Predictive Modeling"]);
   assert.deepEqual(semanticSkillVariants.missing, ["AI Agents"]);
+
+  const brandedResearchPage = await page.evaluate(() => {
+    const requirements = [
+      "Data Science Stack",
+      "Translating Research into Business",
+      "Optimization",
+      "Tel Aviv, Israel",
+      "Data science",
+      "PhD",
+      "Our Team",
+      "Our Values",
+      "More than just a job"
+    ];
+    const jobText = ["Senior Data Scientist", ...requirements].join("\n");
+    const cleaned = window.__roleFitTest.sanitizeJobDescriptionForAnalysis(jobText);
+    const cards = window.__roleFitTest.buildMissingExperienceCardsFromRequirements({
+      job_analysis: { required_skills: requirements }
+    }, "", cleaned);
+    return { cleaned, labels: cards.map((card) => card.missingTerm) };
+  });
+
+  assert.doesNotMatch(
+    brandedResearchPage.cleaned,
+    /Tel Aviv, Israel|Our Team|Our Values|More than just a job/i,
+    "locations and employer-brand page headings must be removed before analysis"
+  );
+  assert.deepEqual(
+    brandedResearchPage.labels,
+    ["PhD"],
+    "broad disciplines, marketing copy, locations, and page headings must not become Missing Experience cards"
+  );
   console.log("Job description sanitizer tests passed");
 } finally {
   await browser.close();

@@ -270,61 +270,6 @@ function normalizeExtractedPdfText(text) {
     .trim();
 }
 
-function isDecorativePdfText(text) {
-  return !/[A-Za-z0-9]/.test(text);
-}
-
-function getPdfItemBounds(item) {
-  const [, , , , x, y] = item.transform;
-  return {
-    text: item.str.trim(),
-    x,
-    y,
-    width: item.width || 0
-  };
-}
-
-function groupPdfItemsIntoLines(items) {
-  const sorted = [...items].sort((a, b) => {
-    if (Math.abs(b.y - a.y) > 3) return b.y - a.y;
-    return a.x - b.x;
-  });
-  const lines = [];
-
-  for (const item of sorted) {
-    let line = lines.find((candidate) => Math.abs(candidate.y - item.y) <= 3);
-
-    if (!line) {
-      line = { y: item.y, items: [] };
-      lines.push(line);
-    }
-
-    line.items.push(item);
-    line.y = (line.y * (line.items.length - 1) + item.y) / line.items.length;
-  }
-
-  return lines
-    .sort((a, b) => b.y - a.y)
-    .map((line) => {
-      const ordered = line.items.sort((a, b) => a.x - b.x);
-      return ordered.map((item) => item.text).join(" ").replace(/\s+/g, " ").trim();
-    })
-    .filter(Boolean);
-}
-
-function splitPdfItemsByColumn(items, pageWidth) {
-  const rightColumnThreshold = pageWidth * 0.62;
-  const rightItems = items.filter((item) => item.x >= rightColumnThreshold);
-  const leftItems = items.filter((item) => item.x < rightColumnThreshold);
-  const hasUsefulRightColumn = rightItems.length >= 8;
-
-  if (!hasUsefulRightColumn) {
-    return [items];
-  }
-
-  return [leftItems, rightItems].filter((column) => column.length);
-}
-
 function addResumeSectionBreaks(text) {
   const sectionPattern = /\b(STATEMENT|SUMMARY|PROFILE|EXPERIENCE|EDUCATION|PUBLICATIONS|PATENTS|STRENGTHS|ACHIEVEMENTS|SKILLS|LANGUAGES|CERTIFICATIONS|PROJECTS)\b/g;
   return text
@@ -335,6 +280,34 @@ function addResumeSectionBreaks(text) {
     })
     .join("\n")
     .replace(/\n{3,}/g, "\n\n");
+}
+
+function replaceUnlinkedLabelOnce(text, label, url) {
+  let searchFrom = 0;
+  while (searchFrom < text.length) {
+    const index = text.indexOf(label, searchFrom);
+    if (index === -1) return text;
+    const alreadyLinked = text[index - 1] === "[" && text.slice(index + label.length, index + label.length + 2) === "](";
+    if (!alreadyLinked) {
+      return `${text.slice(0, index)}[${label}](${url})${text.slice(index + label.length)}`;
+    }
+    searchFrom = index + label.length;
+  }
+  return text;
+}
+
+function preservePdfAnnotationLinks(text, annotations = []) {
+  let linkedText = String(text || "");
+  for (const annotation of annotations) {
+    const url = String(annotation?.url || annotation?.unsafeUrl || "").trim();
+    if (!/^https?:\/\//i.test(url)) continue;
+    if (/scholar\.google\./i.test(url)) {
+      linkedText = replaceUnlinkedLabelOnce(linkedText, "Google Scholar", url);
+    } else if (/github\.com/i.test(url)) {
+      linkedText = replaceUnlinkedLabelOnce(linkedText, "GitHub", url);
+    }
+  }
+  return linkedText;
 }
 
 async function extractPdfText(file) {
@@ -348,13 +321,9 @@ async function extractPdfText(file) {
     const page = await pdf.getPage(pageNumber);
     const viewport = page.getViewport({ scale: 1 });
     const textContent = await page.getTextContent();
-    const items = textContent.items
-      .map(getPdfItemBounds)
-      .filter((item) => item.text && !isDecorativePdfText(item.text));
-    const columnTexts = splitPdfItemsByColumn(items, viewport.width)
-      .map((columnItems) => groupPdfItemsIntoLines(columnItems).join("\n"))
-      .filter(Boolean);
-    pageTexts.push(columnTexts.join("\n\n"));
+    const annotations = await page.getAnnotations({ intent: "display" });
+    const pageText = pdfTextLayout.extractPageText(textContent.items, viewport.width);
+    pageTexts.push(preservePdfAnnotationLinks(pageText, annotations));
   }
 
   return normalizeExtractedPdfText(addResumeSectionBreaks(pageTexts.join("\n\n")));
@@ -532,6 +501,7 @@ if (window.__ROLEFIT_TEST__) {
     ensureFinalResumeText,
     getDesignedPageBudgetPlan,
     formatModernBlueResumeForPrint,
+    preservePdfAnnotationLinks,
     buildLocalSuggestionFallbackCards,
     buildMissingExperienceCardsFromAiAnalysis,
     buildMissingExperienceCardsFromRequirements,

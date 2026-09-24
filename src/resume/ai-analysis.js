@@ -690,6 +690,12 @@ function collectMissingRequiredFieldQuestions(resumeText) {
     cards.push(buildRequiredFieldCard(sectionTitle, field, entryLabel || "entry", originalText || entryLabel || "", cards.length + 1));
   }
 
+  function isNonEmployerExperience(entry) {
+    return /\b(career break|parental leave|family leave|caregiving|sabbatical|medical leave)\b/i.test(
+      [entry.title, entry.rawLine].filter(Boolean).join(" ")
+    );
+  }
+
   for (const section of parsed.sections) {
     const canonical = canonicalSectionTitle(section.title);
 
@@ -697,7 +703,7 @@ function collectMissingRequiredFieldQuestions(resumeText) {
       for (const entry of parseExperienceEntries(section.lines)) {
         const label = entry.title || entry.company || entry.rawLine || "experience entry";
         if (!entry.title) add(section.title, "job_title", label, entry.rawLine);
-        if (!entry.company) add(section.title, "company", label, entry.rawLine);
+        if (!entry.company && !isNonEmployerExperience(entry)) add(section.title, "company", label, entry.rawLine);
       }
     }
 

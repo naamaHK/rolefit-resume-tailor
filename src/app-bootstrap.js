@@ -7,6 +7,8 @@ function titleCase(text) {
     .join(" ");
 }
 
+const pdfTextLayout = window.RoleFitPdfTextLayout.create();
+
 const previewTargetBuilder = window.RoleFitPreviewTarget.create({
   unique,
   stripHtmlTags

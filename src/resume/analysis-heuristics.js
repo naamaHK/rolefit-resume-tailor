@@ -35,15 +35,22 @@ function splitLines(text) {
     .filter(Boolean);
 }
 
+function isLocationOnlyLine(value) {
+  return /^[a-z][a-z .'-]{1,45},\s*(?:israel|united states|usa|u\.s\.|united kingdom|uk|u\.k\.|canada|australia|germany|france|spain|italy|netherlands|ireland|india|singapore)(?:\s*\([^)]*\))?$/.test(value);
+}
+
 function isJobSiteChromeLine(line) {
   const value = normalize(String(line || "").replace(/\s+/g, " ").trim());
   if (!value) return true;
-  return /^(?:view profile|clear|search by (?:keyword|location|postal code)|show more options|privacy|terms(?:\s*(?:&|and)\s*)conditions|modern slavery act|gender pay gap report)$/.test(value)
+  return isLocationOnlyLine(value)
+    || /^(?:view profile|clear|search by (?:keyword|location|postal code)|show more options|privacy|terms(?:\s*(?:&|and)\s*)conditions|modern slavery act|gender pay gap report)$/.test(value)
     || /^select how often\b/.test(value)
     || /^(?:date|posted|publication date)\s*:/.test(value)
     || /^(?:cookie|privacy)\s+(?:policy|notice)$/.test(value)
     || /^(?:experience|what you(?:'|’)?ll do|what you will do|what you bring|technical skills|core attributes|responsibilities|qualifications|requirements)\s*:?$/.test(value)
     || /^about(?:\s+the)?\s+(?:job|role|team|company|us|[a-z0-9&.+-]{2,30})\s*:?$/.test(value)
+    || /^our\s+(?:team|values|culture|mission|story)\s*:?$/.test(value)
+    || /^more than just a job\s*[.!]?$/.test(value)
     || /^(?:benefits|perks)(?:\s+(?:at|of|with)\s+.{2,50}|\s+(?:and|&)\s+(?:benefits|perks))?\s*:?$/.test(value)
     || /^(?:(?:hybrid|remote|on-site|onsite)\s+work(?:ing)?(?:\s+(?:model|policy|arrangement))?|dog-friendly office|on-site gym(?: and pilates classes)?|fully funded supplemental health(?: insurance)?|free (?:meals?|lunch|snacks?)|employee discounts?)\s*\.?$/.test(value);
 }

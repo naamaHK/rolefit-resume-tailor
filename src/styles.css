@@ -1693,11 +1693,16 @@ textarea.large-text-window {
   line-height: 1.45;
 }
 
-.modern-contact-row i {
-  display: inline-block;
-  width: 1px;
-  height: 14px;
-  background: #718096;
+.modern-contact-row a,
+.modern-entry-link a,
+.modern-section a {
+  color: #1254dc;
+  text-decoration: none;
+}
+
+.modern-contact-separator {
+  color: #718096;
+  font-weight: 400;
 }
 
 .modern-resume-main .modern-section {
@@ -1785,6 +1790,43 @@ textarea.large-text-window {
 .modern-entry-detail {
   color: #526884 !important;
   font-style: italic;
+}
+
+.modern-experience-subsection {
+  margin: 5px 0 0;
+}
+
+.modern-experience-subsection h4 {
+  margin: 0 0 2px;
+  color: #24499a;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.modern-experience-subsection ul {
+  margin-top: 2px;
+}
+
+.modern-project-subsection li strong {
+  color: #183b8d;
+}
+
+.modern-earlier-experience p {
+  margin: 1px 0;
+}
+
+.modern-skill-groups {
+  list-style: square;
+}
+
+.modern-skill-groups li::marker {
+  color: #2757bb;
+}
+
+.modern-skill-groups strong {
+  color: #183b8d;
 }
 
 .modern-research-section ul {
@@ -2109,10 +2151,127 @@ textarea.large-text-window {
   .modern-blue-resume {
     box-sizing: border-box;
     width: 210mm;
-    min-height: 297mm;
+    min-height: 296.5mm;
     padding: 12mm 11mm 13mm;
     font-size: 10.5pt;
     line-height: 1.28;
+  }
+
+  .modern-blue-resume.modern-blue-compact {
+    padding: 10mm 10mm 10mm;
+    font-size: 9.8pt;
+    line-height: 1.22;
+  }
+
+  .modern-blue-compact .modern-resume-header {
+    margin-bottom: 2mm;
+    padding-bottom: 1.6mm;
+  }
+
+  .modern-blue-compact .modern-section {
+    margin-bottom: 1.5mm !important;
+  }
+
+  .modern-blue-compact .modern-section h2 {
+    margin-bottom: 0.9mm;
+    padding: 0.8mm 1.8mm 0.65mm;
+    font-size: 10.5pt;
+  }
+
+  .modern-blue-compact .modern-section p,
+  .modern-blue-compact .modern-section li {
+    margin-top: 0.4mm;
+    margin-bottom: 0.4mm;
+  }
+
+  .modern-blue-compact .modern-entry {
+    margin-bottom: 1mm;
+  }
+
+  .modern-blue-compact .modern-experience-subsection {
+    margin-top: 0.65mm;
+  }
+
+  .modern-blue-compact .modern-experience-subsection h4 {
+    margin-bottom: 0.3mm;
+    font-size: 9.8pt;
+  }
+
+  .modern-blue-compact .modern-entry-heading h3 {
+    font-size: 10pt;
+  }
+
+  .modern-blue-compact .modern-entry-heading time,
+  .modern-blue-compact .modern-research-entry time,
+  .modern-blue-compact .modern-entry-detail,
+  .modern-blue-compact .modern-research-entry > div > span {
+    font-size: 9pt;
+  }
+
+  .modern-blue-resume.modern-blue-dense {
+    padding: 7mm 9mm 7mm;
+    font-size: 8.5pt;
+    line-height: 1.12;
+  }
+
+  .modern-blue-dense .modern-resume-header {
+    margin-bottom: 1.35mm;
+    padding-bottom: 1mm;
+  }
+
+  .modern-blue-dense .modern-resume-header h1 {
+    margin-bottom: 1mm;
+    font-size: 17pt;
+  }
+
+  .modern-blue-dense .modern-contact-row {
+    font-size: 8pt;
+    line-height: 1.2;
+  }
+
+  .modern-blue-dense .modern-section {
+    margin-bottom: 0.8mm !important;
+    break-inside: auto;
+  }
+
+  .modern-blue-dense .modern-section h2 {
+    margin-bottom: 0.45mm;
+    padding: 0.55mm 1.4mm 0.4mm;
+    font-size: 9.2pt;
+  }
+
+  .modern-blue-dense .modern-section p,
+  .modern-blue-dense .modern-section li {
+    margin-top: 0.18mm;
+    margin-bottom: 0.18mm;
+  }
+
+  .modern-blue-dense .modern-section ul {
+    margin-top: 0.35mm;
+  }
+
+  .modern-blue-dense .modern-entry {
+    margin-bottom: 0.45mm;
+  }
+
+  .modern-blue-dense .modern-experience-subsection {
+    margin-top: 0.4mm;
+  }
+
+  .modern-blue-dense .modern-experience-subsection h4 {
+    margin-bottom: 0.2mm;
+    font-size: 8.7pt;
+  }
+
+  .modern-blue-dense .modern-entry-heading h3 {
+    font-size: 8.8pt;
+  }
+
+  .modern-blue-dense .modern-entry-heading time,
+  .modern-blue-dense .modern-research-entry time,
+  .modern-blue-dense .modern-entry-detail,
+  .modern-blue-dense .modern-research-entry > div > span {
+    font-size: 7.9pt;
   }
 
   .modern-resume-header {
