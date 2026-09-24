@@ -8,6 +8,14 @@ The product promise is simple:
 
 Given a resume and a target job description, the assistant analyzes the role, maps the resume evidence to the job requirements, proposes targeted changes, and requires the user to accept, edit, or reject every change before creating the final tailored resume.
 
+## Live Demo
+
+[![RoleFit live walkthrough](docs/demo/rolefit-demo.gif)](https://raw.githubusercontent.com/naamaHK/rolefit-resume-tailor/main/docs/demo/rolefit-demo.webm)
+
+[Watch the full live walkthrough](https://raw.githubusercontent.com/naamaHK/rolefit-resume-tailor/main/docs/demo/rolefit-demo.webm).
+
+The captioned recording uses a fictional Revenue Operations candidate and the real RoleFit interface with live Gemini 3.8 Flash analysis and AI rephrasing. It demonstrates a supported summary rewrite, a candidate-confirmed Salesforce experience bullet, placement of SQL in an existing Skills subsection, rejection of unsupported Tableau experience, and the final Modern Blue resume.
+
 ## Language And Stack
 
 This first version uses:

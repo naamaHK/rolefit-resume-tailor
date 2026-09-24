@@ -121,8 +121,8 @@ Fully funded supplemental health`;
   );
   assert.deepEqual(
     noisyCompanyPage.labels,
-    ["PyTorch", "Computer Vision", "NLP", "Scikit-learn", "MLOps", "Scalability", "Communication", "Machine Learning"],
-    "Missing Experience should contain only specific candidate requirements from a noisy job page"
+    ["PyTorch", "Computer Vision", "NLP", "Scikit-learn", "MLOps", "Scalability", "Communication"],
+    "Missing Experience should contain only concrete requirements, not a role family inferred solely from the job title"
   );
 
   const duplicateVariants = await page.evaluate(() => {

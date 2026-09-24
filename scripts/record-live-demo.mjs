@@ -69,6 +69,15 @@ async function installCaptionOverlay(page) {
         outline: 4px solid rgba(21,128,116,.46) !important;
         outline-offset: 4px !important;
       }
+      body.rolefit-demo-review-mode .analysis-layout,
+      body.rolefit-demo-review-mode .final-panel {
+        display: none !important;
+      }
+      body.rolefit-demo-review-mode #activeCommentPanel:not([hidden]) {
+        max-height: calc(100vh - 84px);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+      }
     `;
     document.head.append(style);
     const caption = document.createElement("div");
@@ -103,6 +112,13 @@ async function focus(page, locator, duration = 550) {
 async function clickWithFocus(page, locator, pause = 650) {
   await focus(page, locator, 400);
   await locator.click();
+  await page.waitForTimeout(pause);
+}
+
+async function clickWithFocusAndRestore(page, locator, restoreLocator, pause = 650) {
+  await focus(page, locator, 400);
+  await locator.click();
+  await restoreLocator.evaluate((element) => element.scrollIntoView({ behavior: "auto", block: "start" }));
   await page.waitForTimeout(pause);
 }
 
@@ -214,6 +230,7 @@ try {
   );
 
   await hideCaption(page);
+  await page.evaluate(() => document.body.classList.add("rolefit-demo-review-mode"));
   const preview = page.locator("#pdfPreviewPanel");
   await preview.scrollIntoViewIfNeeded();
   await page.locator("#pdfPreview [data-preview-pass='suggestions']").click();
@@ -270,9 +287,9 @@ try {
   await clickWithFocus(page, confirmationPanel.locator("[data-preview-placement='experience']"), 600);
   await caption(page, "Preview the new bullet", "The exact experience addition is highlighted under the selected job.", 1600);
   await hideCaption(page);
-  await clickWithFocus(page, confirmationPanel.locator("[data-accept-placement='experience']"), 650);
+  await clickWithFocusAndRestore(page, confirmationPanel.locator("[data-accept-placement='experience']"), preview, 650);
   await clickWithFocus(page, confirmationPanel.locator("[data-preview-placement='skills']"), 550);
-  await clickWithFocus(page, confirmationPanel.locator("[data-accept-placement='skills']"), 650);
+  await clickWithFocusAndRestore(page, confirmationPanel.locator("[data-accept-placement='skills']"), preview, 650);
 
   await page.locator("#missingExperiencePanel .missing-experience-label-button", { hasText: "SQL" }).click();
   await confirmationPanel.waitFor({ state: "visible" });
@@ -280,7 +297,7 @@ try {
   await chooseOptionContaining(confirmationPanel.locator(".skill-subsection-select"), "Analytics & Reporting");
   await confirmationPanel.locator("[data-draft-field='skillDraftText']").fill("SQL");
   await clickWithFocus(page, confirmationPanel.locator("[data-preview-placement='skills']"), 500);
-  await clickWithFocus(page, confirmationPanel.locator("[data-accept-placement='skills']"), 650);
+  await clickWithFocusAndRestore(page, confirmationPanel.locator("[data-accept-placement='skills']"), preview, 650);
   await caption(page, "Preserve the resume structure", "SQL is placed inside the existing Analytics & Reporting subsection.", 1700);
 
   await hideCaption(page);
@@ -289,12 +306,13 @@ try {
   await selectPlacement(page, confirmationPanel, "omit");
   await caption(page, "Reject unsupported requirements", "Tableau remains absent because the candidate did not confirm that experience.", 1700);
   await hideCaption(page);
-  await clickWithFocus(page, confirmationPanel.locator("[data-action='accept']"), 700);
+  await clickWithFocusAndRestore(page, confirmationPanel.locator("[data-action='accept']"), preview, 700);
 
   const doneCallout = page.locator("#pdfPreview .done-preview-callout");
   await doneCallout.waitFor({ state: "visible", timeout: 15_000 });
   await doneCallout.locator("[data-action='preview-export-style']").selectOption("modern-blue");
   await doneCallout.locator("[data-action='view-updated-preview']").click();
+  await page.evaluate(() => document.body.classList.remove("rolefit-demo-review-mode"));
   await page.waitForTimeout(700);
   await focus(page, page.locator("#pdfPreview .modern-blue-resume"), 850);
   await caption(
