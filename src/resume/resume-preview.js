@@ -1054,9 +1054,14 @@ function getMissingExperienceListLabel(change) {
   if (labels[topic]) return labels[topic];
 
   const direct = cleanConfirmedText(change?.missingTerm || "");
-  if (direct && direct.length <= 34) return direct;
+  if (direct && direct.length <= 34) {
+    const display = displayRoleRequirement(direct);
+    return display ? display.charAt(0).toUpperCase() + display.slice(1) : direct;
+  }
   const words = direct.split(/\s+/).filter(Boolean).slice(0, 4).join(" ");
-  return words || "Missing experience";
+  if (!words) return "Missing experience";
+  const display = displayRoleRequirement(words);
+  return display.charAt(0).toUpperCase() + display.slice(1);
 }
 
 function renderDonePreviewCallout(style) {

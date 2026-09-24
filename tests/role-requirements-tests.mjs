@@ -99,6 +99,33 @@ assert.deepEqual(
   "model keywords are context, not requirements eligible for confirmation questions"
 );
 
+const titleOnlyJob = `Senior Revenue Operations Analyst
+
+Responsibilities
+- Analyze sales pipeline and customer-retention data.
+
+Required Qualifications
+- Advanced Excel.`;
+
+assert.deepEqual(
+  JSON.parse(JSON.stringify(requirements.collect({
+    job_analysis: { required_skills: ["Revenue Operations"], preferred_skills: [] }
+  }, titleOnlyJob))),
+  [],
+  "a role family inferred only from the job title must not become a missing-experience question"
+);
+
+const explicitRevenueOperationsJob = `${titleOnlyJob}
+- Three years of Revenue Operations experience.`;
+
+assert.deepEqual(
+  JSON.parse(JSON.stringify(requirements.collect({
+    job_analysis: { required_skills: ["Revenue Operations"], preferred_skills: [] }
+  }, explicitRevenueOperationsJob))),
+  [{ key: "revenue operations", display: "Revenue Operations" }],
+  "a role-family requirement repeated in the job body should remain eligible for confirmation"
+);
+
 const relatedDegreeJob = `Backend Platform Engineer
 
 Basic Qualifications

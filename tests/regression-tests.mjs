@@ -4108,13 +4108,34 @@ const missingPythonComment = {
   status: "pending",
   pass: testApi.passes.missingExperience
 };
-testApi.setCurrentChanges([missingPythonComment]);
+const lowercaseDeepLearningComment = {
+  ...missingPythonComment,
+  id: "missing-deep-learning-table",
+  missingTerm: "deep learning",
+  promptText: "Do you have real, resume-worthy experience with deep learning?"
+};
+const lowercasePytorchComment = {
+  ...missingPythonComment,
+  id: "missing-pytorch-table",
+  missingTerm: "pytorch",
+  promptText: "Do you have real, resume-worthy experience with pytorch?"
+};
+const lowercaseSqlComment = {
+  ...missingPythonComment,
+  id: "missing-sql-table",
+  missingTerm: "sql",
+  promptText: "Do you have real, resume-worthy experience with sql?"
+};
+testApi.setCurrentChanges([missingPythonComment, lowercaseDeepLearningComment, lowercasePytorchComment, lowercaseSqlComment]);
 testApi.setActivePass(testApi.passes.missingExperience);
 testApi.renderChanges();
 assert.doesNotMatch(pdfPreview.innerHTML, /missing-experience-review-list/, "Missing Experience list should not be embedded above the resume");
 assert.equal(missingExperiencePanel.hidden, false, "Missing Experience side panel should appear next to the resume");
 assert.match(missingExperiencePanel.innerHTML, /missing-experience-review-list/, "Missing Experience comments should render as a compact side-panel list");
 assert.match(missingExperiencePanel.innerHTML, /missing-experience-label-button[\s\S]*Python/, "Missing Experience list should show the skill/topic label");
+assert.match(missingExperiencePanel.innerHTML, />Deep learning<\//, "lowercase phrases should start with an uppercase letter");
+assert.match(missingExperiencePanel.innerHTML, />PyTorch<\//, "technology names should preserve their canonical capitalization");
+assert.match(missingExperiencePanel.innerHTML, />SQL<\//, "acronyms should remain fully uppercase");
 assert.match(missingExperiencePanel.innerHTML, /missing-experience-row" data-missing-experience-id="missing-python-table"/, "Missing Experience row should carry the same id as the label button");
 assert.match(missingExperiencePanel.innerHTML, /data-comment-id="missing-python-table"/, "Missing Experience number button should also be clickable by id");
 assert.doesNotMatch(pdfPreview.innerHTML, /resume-comment-anchor/, "Missing Experience comments should not be anchored inside the resume before placement is chosen");

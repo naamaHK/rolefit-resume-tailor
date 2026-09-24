@@ -80,6 +80,8 @@
       const key = normalizeKey(value);
       const preferred = {
         "c/c++": "C/C++",
+        "c++": "C++",
+        "c#": "C#",
         "communication-and-collaboration": "Communication and collaboration",
         communication: "Communication",
         collaboration: "Collaboration",
@@ -92,6 +94,12 @@
         "ai agents": "AI Agents",
         "predictive modeling": "Predictive Modeling",
         llm: "LLM",
+        rag: "RAG",
+        sql: "SQL",
+        javascript: "JavaScript",
+        typescript: "TypeScript",
+        genai: "GenAI",
+        "generative ai": "Generative AI",
         "model evaluation": "Model Evaluation",
         classification: "Classification",
         "anomaly detection": "Anomaly Detection",
@@ -101,6 +109,9 @@
         mlops: "MLOps",
         scalability: "Scalability",
         nlp: "NLP",
+        spark: "Spark",
+        langchain: "LangChain",
+        openai: "OpenAI",
         tableau: "Tableau",
         "apache-airflow": "Apache Airflow",
         dbt: "dbt",
@@ -210,6 +221,23 @@
     function isGroundedInJob(term, grouped, jobText = "") {
       const job = String(jobText || "");
       if (!job.trim()) return true;
+      const jobLines = splitLines(job);
+      const title = normalize(jobLines[0] || "").replace(/\s+/g, " ").trim();
+      const body = normalize(jobLines.slice(1).join("\n")).replace(/\s+/g, " ").trim();
+      const titleWordCount = title.split(/\s+/).filter(Boolean).length;
+      const looksLikeJobTitle = title.length <= 80
+        && titleWordCount >= 2
+        && titleWordCount <= 8
+        && !/[.,;:]$/.test(title)
+        && !/^(?:knowledge|experience|proficiency|ability|responsib|require|qualif|build|develop|manage|partner|analy[sz]e)\b/.test(title);
+      const titleOnlyCandidates = [term, grouped.display]
+        .map((value) => normalize(String(value || "")).replace(/\s+/g, " ").trim())
+        .filter((value) => value.length >= 3);
+      if (
+        looksLikeJobTitle
+        && titleOnlyCandidates.some((candidate) => title.includes(candidate))
+        && !titleOnlyCandidates.some((candidate) => body.includes(candidate))
+      ) return false;
       if (grouped.key.startsWith("experience-years-")) return true;
       if (["advanced-degree", "relevant-research-background", "patents-or-publications", "communication-and-collaboration"].includes(grouped.key)) {
         return true;

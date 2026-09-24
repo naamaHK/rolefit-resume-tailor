@@ -8,7 +8,8 @@ EXPERIENCE
 Operations Analyst 2021 - Present
 BrightCart
 - Prepared weekly sales and customer reports.
-- Maintained CRM workflows and account records.
+- Built recurring Excel dashboards for sales pipeline and revenue reporting.
+- Maintained CRM workflows, account records, and data quality.
 - Redesigned the customer onboarding process, reducing setup time by 18%.
 - Coordinated reporting requirements across sales, finance, and customer success.
 

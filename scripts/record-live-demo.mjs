@@ -6,9 +6,11 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const baseUrl = process.env.ROLEFIT_DEMO_URL || "http://127.0.0.1:8765";
-const outputDir = path.join(rootDir, "tmp", "live-demo");
+const validationOnly = process.env.ROLEFIT_DEMO_VALIDATE_ONLY === "1";
+const outputDir = path.join(rootDir, "tmp", validationOnly ? "live-demo-validation" : "live-demo");
 const videoPath = path.join(outputDir, "rolefit-live-demo.webm");
 const posterPath = path.join(outputDir, "rolefit-live-demo-poster.png");
+const finalScreenshotPath = path.join(outputDir, "rolefit-final-resume.png");
 const metadataPath = path.join(outputDir, "recording-metadata.json");
 
 const [resume, jobDescription] = await Promise.all([
@@ -178,7 +180,7 @@ try {
   context = await browser.newContext({
     viewport: { width: 1440, height: 900 },
     deviceScaleFactor: 1,
-    recordVideo: { dir: outputDir, size: { width: 1440, height: 900 } }
+    ...(!validationOnly ? { recordVideo: { dir: outputDir, size: { width: 1440, height: 900 } } } : {})
   });
   page = await context.newPage();
   await page.addInitScript(() => {
@@ -230,6 +232,12 @@ try {
   await page.locator("#pdfPreview [data-preview-pass='missing_experience']").click();
   const missingPanel = page.locator("#missingExperiencePanel");
   await missingPanel.waitFor({ state: "visible" });
+  const missingLabels = await missingPanel.locator(".missing-experience-label-button").allTextContents();
+  const normalizedMissingLabels = missingLabels.map((label) => label.trim().toLowerCase()).sort();
+  const expectedMissingLabels = ["salesforce", "sql", "tableau"].sort();
+  if (JSON.stringify(normalizedMissingLabels) !== JSON.stringify(expectedMissingLabels)) {
+    throw new Error(`Unexpected missing-experience items: ${missingLabels.join(", ")}`);
+  }
   await focus(page, missingPanel, 700);
   await caption(page, "Missing experience stays a question", "Salesforce, SQL, and Tableau are not added unless the candidate confirms them.", 2100);
 
@@ -296,6 +304,7 @@ try {
     2600
   );
   await hideCaption(page);
+  await page.screenshot({ path: finalScreenshotPath, fullPage: true });
 
   const finalText = await page.locator("#finalResume").inputValue();
   for (const expected of ["Salesforce", "SQL", "30%", "Tools & Systems", "Analytics & Reporting"]) {
@@ -303,14 +312,32 @@ try {
   }
   if (/\bTableau\b/i.test(finalText)) throw new Error("The live demo added rejected Tableau experience.");
 
-  video = page.video();
+  video = validationOnly ? null : page.video();
   await writeFile(metadataPath, JSON.stringify({
     recordedAt: new Date().toISOString(),
     baseUrl,
     models: [...usedModels],
+    validationOnly,
     liveAnalyzeCall: true,
-    liveRephraseCall: true
+    liveRephraseCall: true,
+    missingExperience: missingLabels,
+    assertionsPassed: true
   }, null, 2));
+} catch (error) {
+  if (page && !page.isClosed()) {
+    await page.screenshot({ path: path.join(outputDir, "failed-run.png"), fullPage: true }).catch(() => {});
+    const failureState = await page.evaluate(() => ({
+      status: document.querySelector("#aiStatus")?.textContent || "",
+      openReviewSummary: document.querySelector("#changeCards")?.innerText || "",
+      missingExperience: Array.from(document.querySelectorAll("#missingExperiencePanel .missing-experience-label-button"))
+        .map((element) => element.textContent?.trim() || "")
+    })).catch(() => ({}));
+    await writeFile(
+      path.join(outputDir, "failed-run.json"),
+      JSON.stringify({ message: error.message, ...failureState }, null, 2)
+    ).catch(() => {});
+  }
+  throw error;
 } finally {
   if (video && page && context) {
     await page.close();
@@ -323,6 +350,7 @@ try {
   if (browser) await browser.close();
 }
 
-console.log(`Live demo video: ${videoPath}`);
+if (!validationOnly) console.log(`Live demo video: ${videoPath}`);
+console.log(`${validationOnly ? "Validation" : "Live demo"} final resume: ${finalScreenshotPath}`);
 console.log(`Live demo poster: ${posterPath}`);
 console.log(`Recording metadata: ${metadataPath}`);
