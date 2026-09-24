@@ -164,12 +164,13 @@ async function resolveAllRemainingSuggestions(page) {
   }
 }
 
-async function waitForAiResponse(page, endpoint, action) {
+async function waitForAiResponse(page, endpoint, action, whileWaiting = null) {
   const responsePromise = page.waitForResponse(
     (response) => response.url().includes(endpoint) && response.request().method() === "POST",
     { timeout: 180_000 }
   );
   await action();
+  if (whileWaiting) await whileWaiting();
   const response = await responsePromise;
   const payload = await response.json();
   if (!response.ok()) throw new Error(payload.error || `${endpoint} failed with ${response.status()}.`);
@@ -214,9 +215,30 @@ try {
   await caption(page, "Resume and target role", "This fictional candidate is applying for a Senior Revenue Operations Analyst position.", 1800);
 
   await hideCaption(page);
-  const analysisPayload = await waitForAiResponse(page, "/api/analyze", async () => {
-    await clickWithFocus(page, page.locator("#analyzeAiBtn"), 350);
-  });
+  const preview = page.locator("#pdfPreviewPanel");
+  const analysisPayload = await waitForAiResponse(
+    page,
+    "/api/analyze",
+    async () => {
+      await clickWithFocus(page, page.locator("#analyzeAiBtn"), 350);
+    },
+    async () => {
+      await preview.scrollIntoViewIfNeeded();
+      await focus(page, preview, 650);
+      await caption(
+        page,
+        "Review the original resume while AI works",
+        "RoleFit keeps the source resume visible and makes no automatic changes.",
+        2400
+      );
+      await caption(
+        page,
+        "Three distinct review passes",
+        "Resume Check flags mandatory issues, Suggestions use existing evidence, and Missing Experience always asks the candidate first.",
+        3200
+      );
+    }
+  );
   usedModels.add(analysisPayload.model || "unknown");
   await page.waitForFunction(() => document.querySelector("#aiStatus")?.textContent.includes("AI analysis complete"));
 
@@ -231,7 +253,6 @@ try {
 
   await hideCaption(page);
   await page.evaluate(() => document.body.classList.add("rolefit-demo-review-mode"));
-  const preview = page.locator("#pdfPreviewPanel");
   await preview.scrollIntoViewIfNeeded();
   await page.locator("#pdfPreview [data-preview-pass='suggestions']").click();
   await page.waitForTimeout(500);
@@ -325,7 +346,15 @@ try {
   await page.screenshot({ path: finalScreenshotPath, fullPage: true });
 
   const finalText = await page.locator("#finalResume").inputValue();
-  for (const expected of ["Salesforce", "SQL", "30%", "Tools & Systems", "Analytics & Reporting"]) {
+  for (const expected of [
+    "Salesforce",
+    "SQL",
+    "30%",
+    "Tools & Systems",
+    "Analytics & Reporting",
+    "CERTIFICATIONS",
+    "LANGUAGES"
+  ]) {
     if (!finalText.includes(expected)) throw new Error(`The live demo final resume is missing: ${expected}`);
   }
   if (/\bTableau\b/i.test(finalText)) throw new Error("The live demo added rejected Tableau experience.");

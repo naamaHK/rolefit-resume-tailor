@@ -1065,7 +1065,7 @@ function getMissingExperienceListLabel(change) {
 }
 
 function renderDonePreviewCallout(style) {
-  if (countAllOpenChanges() > 0) return "";
+  if (countAllOpenChanges() > 0 || loadingPasses.size > 0) return "";
   return `
     <span class="done-preview-callout">
       <strong>The updated resume preview is ready.</strong>
@@ -1084,6 +1084,26 @@ function renderDonePreviewCallout(style) {
         <button class="secondary-button done-preview-button" type="button" data-action="return-review">Return to Review</button>
       </span>
     </span>
+  `;
+}
+
+function renderEmptyPassSummary() {
+  const activeLabel = escapeHtml(getPassLabel(activePass));
+  if (loadingPasses.size > 0) {
+    return `
+      <strong>${activeLabel} has no open comments.</strong>
+      Other review passes are still thinking. The resume is not marked ready until they finish.
+    `;
+  }
+  if (countAllOpenChanges() > 0) {
+    return `
+      <strong>${activeLabel} is complete.</strong>
+      Continue with the open comments in the other review passes.
+    `;
+  }
+  return `
+    <strong>All comments are done.</strong>
+    No open comments remain in ${activeLabel}.
   `;
 }
 
@@ -1137,8 +1157,7 @@ function renderNumberedCommentPreview() {
     pdfPreview.innerHTML = `
       <div class="preview-comment-banner">
         ${renderPreviewPassOverview()}
-        <strong>All comments are done.</strong>
-        No open comments remain in ${escapeHtml(getPassLabel(activePass))}.
+        ${renderEmptyPassSummary()}
         ${renderDonePreviewCallout(style)}
         ${renderOtherPassOpenNotice()}
         ${getDesignedPageBudgetNotice(text, style)}

@@ -4037,6 +4037,9 @@ assert.doesNotMatch(elements.get("#suggestionsPassBtn").textContent, /\(0\)/, "t
 assert.match(pdfPreview.innerHTML, /Suggestions - thinking/, "preview pass pill should show Suggestions thinking without needing a click");
 assert.match(pdfPreview.innerHTML, /Missing Experience - thinking/, "preview pass pill should show Missing Experience thinking without needing a click");
 assert.doesNotMatch(pdfPreview.innerHTML, /thinking\.\.\./, "thinking labels should not use three dots");
+assert.match(pdfPreview.innerHTML, /Other review passes are still thinking/, "preview should explain that the overall review is still running");
+assert.doesNotMatch(pdfPreview.innerHTML, /All comments are done/, "preview should not claim all comments are done while review passes are still thinking");
+assert.doesNotMatch(pdfPreview.innerHTML, /updated resume preview is ready/i, "preview should not claim the resume is ready while review passes are still thinking");
 context.clearPassesLoading([testApi.passes.suggestions, testApi.passes.missingExperience]);
 testApi.setPassChanges(testApi.passes.suggestions, [], { activate: false });
 testApi.setPassChanges(testApi.passes.missingExperience, [], { activate: false });
