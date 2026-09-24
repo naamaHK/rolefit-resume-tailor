@@ -14,7 +14,7 @@ Given a resume and a target job description, the assistant analyzes the role, ma
 
 [Watch the full live walkthrough](https://raw.githubusercontent.com/naamaHK/rolefit-resume-tailor/main/docs/demo/rolefit-demo.webm).
 
-See RoleFit tailor a fictional resume with live Gemini analysis, candidate-approved changes, and a polished final design.
+The captioned demo uses a fictional Revenue Operations resume and the real RoleFit interface with live Gemini 3.8 Flash analysis, AI rephrasing, and candidate-approved changes.
 
 ## Language And Stack
 
