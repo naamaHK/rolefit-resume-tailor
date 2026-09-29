@@ -212,6 +212,50 @@ Machine Learning & Statistics: Statistical Analysis, Predictive Modeling`;
     ["PhD"],
     "broad disciplines, marketing copy, locations, and page headings must not become Missing Experience cards"
   );
+
+  const bringgPostingRegression = await page.evaluate(() => {
+    const requirements = [
+      "Scikit-learn",
+      "TensorFlow",
+      "PyTorch",
+      "Routing and navigation algorithms",
+      "In this role, you will:",
+      "What you Bringg",
+      "MLOps",
+      "Generative AI",
+      "Good to have:",
+      "Why Brinng"
+    ];
+    const jobText = [
+      "Machine Learning Engineer",
+      "In this role, you will:",
+      "Build routing and navigation algorithms.",
+      "What you Bringg",
+      "Scikit-learn",
+      "TensorFlow",
+      "PyTorch",
+      "Good to have:",
+      "MLOps",
+      "Generative AI",
+      "Why Brinng"
+    ].join("\n");
+    const cleaned = window.__roleFitTest.sanitizeJobDescriptionForAnalysis(jobText);
+    const cards = window.__roleFitTest.buildMissingExperienceCardsFromRequirements({
+      job_analysis: { required_skills: requirements }
+    }, "", cleaned);
+    return { cleaned, labels: cards.map((card) => card.missingTerm) };
+  });
+
+  assert.doesNotMatch(
+    bringgPostingRegression.cleaned,
+    /In this role, you will|What you Bringg|Good to have|Why Brinng/i,
+    "job-section heading variants and brand headings must be normalized before analysis"
+  );
+  assert.deepEqual(
+    bringgPostingRegression.labels,
+    ["Scikit-learn", "TensorFlow", "PyTorch", "Routing and navigation algorithms", "MLOps", "Generative AI"],
+    "the screenshot heading fragments must be rejected while its concrete technical requirements remain"
+  );
   console.log("Job description sanitizer tests passed");
 } finally {
   await browser.close();

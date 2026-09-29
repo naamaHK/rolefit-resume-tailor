@@ -61,10 +61,23 @@
       return /^[a-z][a-z .'-]{1,45},\s*(?:israel|united states|usa|u\.s\.|united kingdom|uk|u\.k\.|canada|australia|germany|france|spain|italy|netherlands|ireland|india|singapore)(?:\s*\([^)]*\))?$/.test(value);
     }
 
+    function isHeadingLike(term) {
+      const value = normalize(String(term || ""))
+        .replace(/\s+/g, " ")
+        .replace(/[.!]+$/, "")
+        .trim();
+      return /^(?:in (?:this|the) role,?\s*)?you(?:'|’)?ll\s*:?$/.test(value)
+        || /^(?:in (?:this|the) role,?\s*)?you will\s*:?$/.test(value)
+        || /^(?:what|why)\s+you\s+brin(?:g+|ng+)\s*:?$/.test(value)
+        || /^(?:good|nice)[-\s]+to[-\s]+have\s*:?$/.test(value)
+        || /^why\s+[a-z0-9&.+-]+(?:\s+[a-z0-9&.+-]+){0,2}\s*:?$/.test(value);
+    }
+
     function isAbstract(term) {
       const key = normalizeKey(term);
       return ignoredTopics.has(key)
         || isLocationOnly(key)
+        || isHeadingLike(term)
         || /^(?:required|preferred|minimum|basic)?\s*qualifications?$/.test(key)
         || /^(?:strong|excellent|good|effective)$/.test(key)
         || /^(?:dashboard(?:s)?|reporting|decision(?:s)?|customer data)$/.test(key)
@@ -307,7 +320,7 @@
 
     function qualificationLines(jobText = "") {
       const lines = splitLines(jobText);
-      const qualificationHeader = /^(?:(?:basic|minimum|required|preferred|nice[-\s]+to[-\s]+have)\s+)?(?:qualifications?|requirements?)\s*:?$/i;
+      const qualificationHeader = /^(?:(?:basic|minimum|required|preferred)\s+)?(?:qualifications?|requirements?)\s*:?$|^(?:good|nice)[-\s]+to[-\s]+have\s*:?$/i;
       const nextSectionHeader = /^(?:about(?:\s+the)?(?:\s+(?:role|team|company))?|responsibilities|what you(?:'|’)ll do|what you will do|benefits|compensation|equal opportunity|how to apply|application process|location|work arrangement)\s*:?$/i;
       let inQualifications = false;
       let foundQualificationSection = false;

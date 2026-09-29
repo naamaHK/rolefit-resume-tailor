@@ -39,6 +39,36 @@ function isLocationOnlyLine(value) {
   return /^[a-z][a-z .'-]{1,45},\s*(?:israel|united states|usa|u\.s\.|united kingdom|uk|u\.k\.|canada|australia|germany|france|spain|italy|netherlands|ireland|india|singapore)(?:\s*\([^)]*\))?$/.test(value);
 }
 
+function canonicalJobSectionHeading(line) {
+  const compact = String(line || "").replace(/\s+/g, " ").trim();
+  const value = normalize(compact).replace(/[.!]+$/, "").trim();
+
+  if (/^(?:in (?:this|the) role,?\s*)?you(?:'|’)?ll\s*:?$/.test(value)
+    || /^(?:in (?:this|the) role,?\s*)?you will\s*:?$/.test(value)) {
+    return "Responsibilities";
+  }
+  if (/^(?:what|why)\s+you\s+brin(?:g+|ng+)\s*:?$/.test(value)) {
+    return "Required Qualifications";
+  }
+  if (/^(?:good|nice)[-\s]+to[-\s]+have\s*:?$/.test(value)) {
+    return "Preferred Qualifications";
+  }
+  if (/^(?:technical skills|core attributes)\s*:?$/.test(value)) {
+    return "Required Qualifications";
+  }
+  if (/^(?:(?:basic|minimum|required)\s+)?(?:qualifications?|requirements?)\s*:?$/.test(value)) {
+    return "Required Qualifications";
+  }
+  if (/^(?:preferred\s+)(?:qualifications?|requirements?)\s*:?$/.test(value)) {
+    return "Preferred Qualifications";
+  }
+  if (/^why\s+[a-z0-9&.+-]+(?:\s+[a-z0-9&.+-]+){0,2}\s*:?$/.test(value)) {
+    return "Benefits";
+  }
+
+  return compact;
+}
+
 function isJobSiteChromeLine(line) {
   const value = normalize(String(line || "").replace(/\s+/g, " ").trim());
   if (!value) return true;
@@ -47,7 +77,7 @@ function isJobSiteChromeLine(line) {
     || /^select how often\b/.test(value)
     || /^(?:date|posted|publication date)\s*:/.test(value)
     || /^(?:cookie|privacy)\s+(?:policy|notice)$/.test(value)
-    || /^(?:experience|what you(?:'|’)?ll do|what you will do|what you bring|technical skills|core attributes|responsibilities|qualifications|requirements)\s*:?$/.test(value)
+    || /^(?:experience|what you(?:'|’)?ll do|what you will do|what you bring)\s*:?$/.test(value)
     || /^about(?:\s+the)?\s+(?:job|role|team|company|us|[a-z0-9&.+-]{2,30})\s*:?$/.test(value)
     || /^our\s+(?:team|values|culture|mission|story)\s*:?$/.test(value)
     || /^more than just a job\s*[.!]?$/.test(value)
@@ -59,7 +89,9 @@ function sanitizeJobDescriptionForAnalysis(text) {
   return String(text || "")
     .replace(/\r/g, "")
     .split("\n")
-    .map((line) => line.replace(/^\s*\d{3,}\s*[-|:]\s*/, "").replace(/\s+/g, " ").trim())
+    .map((line) => canonicalJobSectionHeading(
+      line.replace(/^\s*\d{3,}\s*[-|:]\s*/, "").replace(/\s+/g, " ").trim()
+    ))
     .filter((line) => !isJobSiteChromeLine(line))
     .join("\n")
     .trim();
