@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import {
+  buildModelRunRecord,
   interactionMatchTerms,
   coverageRecognitionErrors,
   profileEvidenceForQuestion,
@@ -13,6 +14,36 @@ const fixture = JSON.parse(await readFile(
   new URL("../evaluation/fixtures/001-product-data-analyst-simulation.json", import.meta.url),
   "utf8"
 ));
+
+const isolatedModelRun = buildModelRunRecord({
+  model: "google/gemini-3.8-flash",
+  evaluation_metadata: {
+    evaluation_mode: true,
+    configured_models: ["google/gemini-3.8-flash"],
+    requested_model: "google/gemini-3.8-flash",
+    provider: "Google",
+    temperature: 0,
+    latency_ms: 1200,
+    usage: { total_tokens: 900, cost: 0.002 },
+    attempts: [{ requested_model: "google/gemini-3.8-flash", status: "success", latency_ms: 1200 }]
+  }
+}, "google/gemini-3.8-flash");
+assert.equal(isolatedModelRun.response_model, "google/gemini-3.8-flash");
+assert.equal(isolatedModelRun.temperature, 0);
+assert.equal(isolatedModelRun.usage.cost, 0.002);
+assert.throws(
+  () => buildModelRunRecord({
+    model: "meta/muse-spark-1.3",
+    evaluation_metadata: {
+      evaluation_mode: false,
+      configured_models: ["google/gemini-3.8-flash", "meta/muse-spark-1.3"],
+      requested_model: "meta/muse-spark-1.3",
+      attempts: [{ requested_model: "google/gemini-3.8-flash", status: "error" }, { requested_model: "meta/muse-spark-1.3", status: "success" }]
+    }
+  }, "google/gemini-3.8-flash"),
+  /not running with ROLEFIT_EVALUATION_MODE=1/,
+  "a comparison run must reject ordinary fallback configuration"
+);
 
 assert.deepEqual(
   interactionMatchTerms(fixture, fixture.oracle.interactions[0]),

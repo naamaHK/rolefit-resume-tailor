@@ -37,6 +37,39 @@ function normalized(value) {
   return String(value || "").toLowerCase().replace(/[^a-z0-9+#]+/g, " ").trim();
 }
 
+export function buildModelRunRecord(analysisResponse, expectedModel = "") {
+  const metadata = analysisResponse?.evaluation_metadata || {};
+  const configuredModels = Array.isArray(metadata.configured_models) ? metadata.configured_models : [];
+  const attempts = Array.isArray(metadata.attempts) ? metadata.attempts : [];
+
+  if (expectedModel) {
+    if (metadata.evaluation_mode !== true) {
+      throw new Error("The RoleFit server is not running with ROLEFIT_EVALUATION_MODE=1.");
+    }
+    if (configuredModels.length !== 1 || configuredModels[0] !== expectedModel) {
+      throw new Error(`Expected only ${expectedModel}, but the server configured: ${configuredModels.join(", ") || "unknown"}.`);
+    }
+    if (metadata.requested_model !== expectedModel) {
+      throw new Error(`Expected a ${expectedModel} request, but the server reported ${metadata.requested_model || "unknown"}.`);
+    }
+    if (attempts.some((attempt) => attempt.requested_model !== expectedModel)) {
+      throw new Error(`The evaluation used a fallback model instead of isolating ${expectedModel}.`);
+    }
+  }
+
+  return {
+    expected_model: expectedModel || null,
+    requested_model: metadata.requested_model || null,
+    response_model: analysisResponse?.model || metadata.response_model || null,
+    provider: metadata.provider || null,
+    temperature: metadata.temperature ?? null,
+    latency_ms: metadata.latency_ms ?? null,
+    usage: metadata.usage || {},
+    attempts,
+    evaluation_mode: metadata.evaluation_mode === true
+  };
+}
+
 function matchTerms(...values) {
   return [...new Set(values.flatMap((value) => Array.isArray(value) ? value : [value])
     .map(normalized)
@@ -538,9 +571,26 @@ export async function runLiveFixture(fixturePath, options = {}) {
     await page.goto(appUrl, { waitUntil: "domcontentloaded" });
     await page.locator("#resumeInput").fill(fixture.rolefit_input.resume_before);
     await page.locator("#jobInput").fill(fixture.rolefit_input.job_description);
+    const analysisResponsePromise = options.mockAiResponse
+      ? null
+      : page.waitForResponse(
+        (response) => response.request().method() === "POST" && new URL(response.url()).pathname === "/api/analyze",
+        { timeout: timeoutMs }
+      );
     await page.locator("#analyzeAiBtn").click();
+    let analysisResponse = options.mockAiResponse || null;
+    if (analysisResponsePromise) {
+      const response = await analysisResponsePromise;
+      const responseText = await response.text();
+      try {
+        analysisResponse = JSON.parse(responseText);
+      } catch {
+        throw new Error(`RoleFit returned a non-JSON analysis response: ${responseText.slice(0, 200)}`);
+      }
+    }
     const analysisStatus = await waitForAnalysis(page, timeoutMs);
     events.push({ type: "analysis_complete", status: analysisStatus });
+    const modelRun = buildModelRunRecord(analysisResponse, options.expectedModel || "");
     const role_coverage = await readRoleCoverage(page);
     const coverageRecognitionErrors = await recordExpectedCoverage(page, fixture, events);
 
@@ -616,6 +666,8 @@ export async function runLiveFixture(fixturePath, options = {}) {
       runner: "live-web-flow",
       app_url: appUrl,
       timestamp: new Date().toISOString(),
+      model_run: modelRun,
+      analysis_response: analysisResponse,
       events,
       role_coverage,
       resume_after: resumeAfter,
@@ -651,19 +703,22 @@ function parseArguments(argv) {
   const [fixturePath, ...flags] = argv;
   if (!fixturePath) throw new Error("Usage: node evaluation/live-flow-runner.mjs <fixture.json> [--output result.json] [--headed]");
   const outputIndex = flags.indexOf("--output");
+  const expectedModelIndex = flags.indexOf("--expected-model");
   return {
     fixturePath,
     outputPath: outputIndex >= 0 ? flags[outputIndex + 1] : "",
+    expectedModel: expectedModelIndex >= 0 ? flags[expectedModelIndex + 1] : "",
     headless: !flags.includes("--headed")
   };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  const { fixturePath, outputPath, headless } = parseArguments(process.argv.slice(2));
-  const result = await runLiveFixture(fixturePath, { outputPath, headless });
+  const { fixturePath, outputPath, expectedModel, headless } = parseArguments(process.argv.slice(2));
+  const result = await runLiveFixture(fixturePath, { outputPath, expectedModel, headless });
   console.log(JSON.stringify({
     fixture_id: result.fixture_id,
     result: result.result,
+    model_run: result.model_run,
     before: result.resume_representation_before.combined,
     after: result.resume_representation_after.combined,
     delta: result.resume_representation_after.delta,

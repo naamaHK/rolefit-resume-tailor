@@ -387,6 +387,13 @@ Phase 1 should use the current economical model with deterministic settings:
 - requirement-level evidence quotes;
 - one run per development and held-out example.
 
+Run each candidate model in isolation. Start the server with
+`ROLEFIT_EVALUATION_MODE=1` and exactly one `OPENROUTER_MODEL`; do not count a
+fallback response as evidence for the primary model. The live result must save
+the complete pre-UI analysis response, requested and returned model, provider,
+latency, attempted models, and any token or cost metadata returned by
+OpenRouter.
+
 Measure agreement with the oracle and parsing reliability first. Then run a
 stronger model only on the held-out cases and on disagreements. This creates a
 useful quality/cost comparison without paying for a stronger model on every

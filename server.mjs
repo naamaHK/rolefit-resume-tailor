@@ -17,7 +17,16 @@ const models = (process.env.OPENROUTER_MODEL || defaultModels.join(","))
   .map((item) => item.trim())
   .filter(Boolean);
 const model = models[0] || defaultModels[0];
+const evaluationMode = process.env.ROLEFIT_EVALUATION_MODE === "1";
+const configuredAnalysisTemperature = Number(process.env.ROLEFIT_ANALYSIS_TEMPERATURE ?? 0.2);
+const analysisTemperature = evaluationMode
+  ? 0
+  : Number.isFinite(configuredAnalysisTemperature) ? configuredAnalysisTemperature : 0.2;
 const openRouterModelTimeoutMs = Number(process.env.OPENROUTER_MODEL_TIMEOUT_MS || 90_000);
+
+if (evaluationMode && models.length !== 1) {
+  throw new Error("ROLEFIT_EVALUATION_MODE requires exactly one OPENROUTER_MODEL so fallback cannot hide which model produced a result.");
+}
 
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
@@ -142,17 +151,37 @@ async function callOpenRouter(resume, jobDescription, options = {}) {
 
   const prompt = await buildPrompt(resume, jobDescription, options);
   const errors = [];
+  const attempts = [];
 
   for (const modelName of models) {
+    const startedAt = Date.now();
     try {
-      const content = await callOpenRouterTextWithModel(prompt, 0.2, modelName);
-      const parsed = await parseOrRepairJson(content, modelName);
+      const response = await callOpenRouterTextWithModel(prompt, analysisTemperature, modelName);
+      const parsed = await parseOrRepairJson(response.content, modelName);
+      attempts.push({
+        requested_model: modelName,
+        status: "success",
+        latency_ms: response.metadata.latency_ms
+      });
       return {
         ...parsed,
-        model: modelName
+        model: response.metadata.response_model,
+        evaluation_metadata: {
+          evaluation_mode: evaluationMode,
+          configured_models: [...models],
+          temperature: analysisTemperature,
+          ...response.metadata,
+          attempts
+        }
       };
     } catch (error) {
       errors.push(`${modelName}: ${error.message}`);
+      attempts.push({
+        requested_model: modelName,
+        status: "error",
+        latency_ms: Date.now() - startedAt,
+        error: error.message
+      });
     }
   }
 
@@ -185,8 +214,12 @@ async function callOpenRouterText(prompt, temperature = 0.2) {
 
   for (const modelName of models) {
     try {
-      const content = await callOpenRouterTextWithModel(prompt, temperature, modelName);
-      return { content, model: modelName };
+      const response = await callOpenRouterTextWithModel(prompt, temperature, modelName);
+      return {
+        content: response.content,
+        model: response.metadata.response_model,
+        metadata: response.metadata
+      };
     } catch (error) {
       errors.push(`${modelName}: ${error.message}`);
     }
@@ -227,6 +260,7 @@ function supportsJsonResponseFormat(modelName) {
 }
 
 async function callOpenRouterTextWithModel(prompt, temperature, modelName) {
+  const startedAt = Date.now();
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), openRouterModelTimeoutMs);
   const body = {
@@ -288,7 +322,21 @@ async function callOpenRouterTextWithModel(prompt, temperature, modelName) {
     throw new Error(`OpenRouter returned no message content.${finishReason}${messageKeys}`);
   }
 
-  return content;
+  const usage = payload.usage && typeof payload.usage === "object"
+    ? Object.fromEntries(Object.entries(payload.usage).filter(([, value]) => value != null))
+    : {};
+  return {
+    content,
+    metadata: {
+      requested_model: modelName,
+      response_model: payload.model || modelName,
+      provider: payload.provider || "",
+      generation_id: payload.id || "",
+      finish_reason: firstChoice?.finish_reason || "",
+      latency_ms: Date.now() - startedAt,
+      usage
+    }
+  };
 }
 
 async function repairJsonResponse(badJson, parseError, preferredModelName) {
@@ -316,8 +364,12 @@ ${badJson}`;
 
   for (const modelName of repairModels) {
     try {
-      const content = await callOpenRouterTextWithModel(repairPrompt, 0, modelName);
-      return { content, model: modelName };
+      const response = await callOpenRouterTextWithModel(repairPrompt, 0, modelName);
+      return {
+        content: response.content,
+        model: response.metadata.response_model,
+        metadata: response.metadata
+      };
     } catch (error) {
       errors.push(`${modelName}: ${error.message}`);
     }
@@ -440,6 +492,7 @@ if (process.env.ROLEFIT_NO_SERVER !== "1") {
       console.log(`On a phone on the same Wi-Fi, try: ${networkUrls.map((url) => `${url}index.html`).join(" or ")}`);
     }
     console.log(`OpenRouter model${models.length > 1 ? "s" : ""}: ${models.join(", ")}`);
+    console.log(`Analysis temperature: ${analysisTemperature}${evaluationMode ? " (evaluation mode; fallback disabled)" : ""}`);
     console.log(`OpenRouter per-model timeout: ${Math.round(openRouterModelTimeoutMs / 1000)}s`);
   });
 }

@@ -153,23 +153,37 @@ ordinary job description; the hidden profile is used only after RoleFit asks a
 question. The runner records the final resume and then applies the independent
 oracle scorer.
 
+For a model comparison, start RoleFit in evaluation mode with exactly one
+model. Evaluation mode fixes the analysis temperature at `0` and refuses a
+multi-model fallback configuration:
+
+```bash
+OPENROUTER_API_KEY="your_key_here" ROLEFIT_EVALUATION_MODE=1 OPENROUTER_MODEL="google/gemini-3.8-flash" node server.mjs
+```
+
 With the OpenRouter-backed server already running, run one fixture:
 
 ```bash
-node evaluation/live-flow-runner.mjs evaluation/fixtures/001-product-data-analyst-simulation.json --output tmp/001-live-result.json
+node evaluation/live-flow-runner.mjs evaluation/fixtures/001-product-data-analyst-simulation.json --expected-model google/gemini-3.8-flash --output tmp/001-live-result.json
 ```
 
 Run every fixture sequentially (the intended command once the corpus grows to
 50–100 cases):
 
 ```bash
-node evaluation/run-live-suite.mjs evaluation/fixtures tmp/live-evaluation-summary.json
+ROLEFIT_EVALUATION_EXPECTED_MODEL="google/gemini-3.8-flash" node evaluation/run-live-suite.mjs evaluation/fixtures/benchmark tmp/gemini-benchmark-summary.json
 ```
 
 These are real model calls. They are intentionally sequential so every run has
 a clear model output, simulated-user decision, final resume, and oracle result.
 The fast deterministic fixture tests remain separate and do not call a model.
 Completed live-run records are available in `evaluation/results/`.
+
+Stop and restart the server with `OPENROUTER_MODEL="meta/muse-spark-1.3"`, then
+run the same fixtures with `ROLEFIT_EVALUATION_EXPECTED_MODEL` set to Muse for
+a separate comparison. Every result records the complete analysis response,
+requested and returned model, provider, latency, model attempts, and any token
+or cost fields returned by OpenRouter.
 
 ## MVP Flow
 

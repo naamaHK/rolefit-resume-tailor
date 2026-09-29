@@ -3,18 +3,19 @@ import path from "node:path";
 import { runLiveFixture } from "./live-flow-runner.mjs";
 
 const [fixtureDirectory = "evaluation/fixtures", outputPath = ""] = process.argv.slice(2);
+const expectedModel = process.env.ROLEFIT_EVALUATION_EXPECTED_MODEL || "";
 const fixturePaths = (await readdir(fixtureDirectory))
-  .filter((name) => name.endsWith(".json"))
+  .filter((name) => /^\d{3}-.*\.json$/i.test(name))
   .sort()
   .map((name) => path.join(fixtureDirectory, name));
 
-if (!fixturePaths.length) throw new Error(`No JSON fixtures found in ${fixtureDirectory}.`);
+if (!fixturePaths.length) throw new Error(`No numbered JSON fixtures found in ${fixtureDirectory}.`);
 
 const results = [];
 for (const fixturePath of fixturePaths) {
   console.log(`Running ${fixturePath} through the live RoleFit web flow...`);
   try {
-    results.push(await runLiveFixture(fixturePath));
+    results.push(await runLiveFixture(fixturePath, { expectedModel }));
   } catch (error) {
     results.push({ fixture_path: fixturePath, result: "ERROR", error: error.message });
   }
@@ -23,6 +24,7 @@ for (const fixturePath of fixturePaths) {
 const summary = {
   runner: "live-web-suite",
   timestamp: new Date().toISOString(),
+  expected_model: expectedModel || null,
   total: results.length,
   passed: results.filter((item) => item.result === "PASS").length,
   rejected: results.filter((item) => item.result === "REJECT").length,

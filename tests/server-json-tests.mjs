@@ -110,11 +110,21 @@ globalThis.fetch = async (_url, options) => {
     ok: true,
     status: 200,
     async text() {
-      return JSON.stringify({
-        choices: [
-          {
-            message: {
-              content: JSON.stringify({
+        return JSON.stringify({
+          id: "generation-good",
+          model: "google/test-good-json",
+          provider: "Test Provider",
+          usage: {
+            prompt_tokens: 120,
+            completion_tokens: 30,
+            total_tokens: 150,
+            cost: 0.0015
+          },
+          choices: [
+            {
+              finish_reason: "stop",
+              message: {
+                content: JSON.stringify({
                 summary: "ok",
                 change_cards: [],
                 user_questions: []
@@ -131,6 +141,16 @@ try {
   const result = await server.callOpenRouter("ALEX\n050-555-0198\nEXPERIENCE\nEngineer 2022\nCompany", "");
   assert.equal(result.model, "google/test-good-json", "callOpenRouter should fall back after invalid JSON and failed repair");
   assert.equal(result.summary, "ok");
+  assert.equal(result.evaluation_metadata.requested_model, "google/test-good-json");
+  assert.equal(result.evaluation_metadata.response_model, "google/test-good-json");
+  assert.equal(result.evaluation_metadata.provider, "Test Provider");
+  assert.equal(result.evaluation_metadata.usage.total_tokens, 150);
+  assert.equal(result.evaluation_metadata.usage.cost, 0.0015);
+  assert.deepEqual(
+    result.evaluation_metadata.attempts.map((attempt) => [attempt.requested_model, attempt.status]),
+    [["nvidia/test-bad-json:free", "error"], ["google/test-good-json", "success"]],
+    "analysis metadata should expose fallback attempts instead of hiding them"
+  );
   assert.equal(calls.some((call) => call.model.includes("nvidia") && !call.isRepair), true, "first model should be tried");
   assert.equal(calls.some((call) => call.isRepair), true, "malformed JSON should trigger a repair attempt");
   assert.equal(calls.some((call) => call.model === "google/test-good-json" && !call.isRepair), true, "second model should be tried after repair failure");
