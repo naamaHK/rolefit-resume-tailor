@@ -1132,13 +1132,35 @@ function renderModernExperience(section) {
             <h3>${entry.company ? `${escapeHtml(entry.company)} <span aria-hidden="true">&middot;</span> ` : ""}${escapeHtml(entry.title)}</h3>
             ${entry.years ? `<time>${escapeHtml(entry.years)}</time>` : ""}
           </div>
-          ${entry.bullets.length ? `<ul>${entry.bullets.map((bullet) => `<li>${renderInlineLinks(bullet)}</li>`).join("")}</ul>` : ""}
+          ${renderModernExperienceDetails(entry)}
           ${index === entries.length - 1 ? renderModernExperienceSubsections(projectLines, []) : ""}
         </article>
       `).join("")}
       ${renderModernExperienceSubsections([], earlierLines)}
     </section>
   `;
+}
+
+function renderModernExperienceDetails(entry) {
+  if (!entry.bullets.length) return "";
+  const proseIndexes = new Set(entry.proseBulletIndexes || []);
+  const blocks = [];
+  let bulletRun = [];
+  const flushBullets = () => {
+    if (!bulletRun.length) return;
+    blocks.push(`<ul>${bulletRun.map((bullet) => `<li>${renderInlineLinks(bullet)}</li>`).join("")}</ul>`);
+    bulletRun = [];
+  };
+  entry.bullets.forEach((bullet, index) => {
+    if (proseIndexes.has(index)) {
+      flushBullets();
+      blocks.push(`<p class="experience-prose">${renderInlineLinks(bullet)}</p>`);
+    } else {
+      bulletRun.push(bullet);
+    }
+  });
+  flushBullets();
+  return blocks.join("");
 }
 
 function renderModernSkills(section) {

@@ -32,6 +32,8 @@ manual Resume Check and baseline flow retain their existing behavior.
 - No repeat questions for denied, skipped, covered, or proposed qualifications.
 - One revision attempt after an edit fails verification.
 - At most 80 action attempts and 40 model calls, including verification.
+- One fresh JSON generation is retried if a model response is malformed; the
+  retry counts toward the 40-call budget. Provider failures are not retried.
 - Repeated actions without new answers are rejected; two rounds with no valid
   actions stop the workflow. **Finish with current evidence** lets the user stop
   early. Unresolved qualifications are shown as **Not clarified**.
@@ -105,3 +107,16 @@ the harness only. Record representation change, grounding, structure,
 unnecessary questions, question count, call count, latency, and cost separately.
 The existing baseline runner is not yet a guided-workflow benchmark runner;
 downloaded guided sessions provide the trace for initial manual comparisons.
+
+For a first real-model smoke run with the synthetic Noa fixture, start the
+server with your OpenRouter key, then run:
+
+```bash
+node evaluation/guided-live-smoke.mjs
+```
+
+This drives Chrome against the actual web page and answers only from the
+fixture's hidden profile. Its result is saved under `evaluation/results/`.
+The smoke run currently checks question flow and proposals, not an after
+score: a proposed edit is not an applied resume until the user reviews and
+accepts it in the UI. This is not yet the 50-case guided benchmark runner.

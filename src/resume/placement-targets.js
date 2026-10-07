@@ -71,14 +71,28 @@
         const line = String(rawLine || "").trim();
         if (!line) continue;
         if (/^\s*[-*•]\s+/.test(line)) {
+          const clean = stripLeadingBullet(line);
+          const colon = clean.indexOf(":");
+          const name = colon > 0 ? clean.slice(0, colon).trim() : "";
+          const detail = colon > 0 ? clean.slice(colon + 1).trim() : "";
+          if (name && detail && name.length <= 100) {
+            pushCurrent();
+            current = { name: removeYears(name).trim() || name, year: extractYears(name), label: "", bullets: [detail], rawLine: line };
+            continue;
+          }
           if (!current) current = { name: "Project", year: "", label: "", bullets: [], rawLine: "" };
-          current.bullets.push(stripLeadingBullet(line));
+          current.bullets.push(clean);
           continue;
         }
 
         if (/^(?:Context|Type|Source)\s*:\s*/i.test(line)) {
           if (!current) current = { name: "Project", year: "", label: "", bullets: [], rawLine: "" };
           current.label = line.replace(/^(?:Context|Type|Source)\s*:\s*/i, "").trim();
+          continue;
+        }
+
+        if (current?.bullets.length && (!/[.!?]$/.test(current.bullets.at(-1)) || /^[a-z0-9]/.test(line))) {
+          current.bullets[current.bullets.length - 1] = `${current.bullets.at(-1)} ${line}`.replace(/\s+/g, " ").trim();
           continue;
         }
 
@@ -102,7 +116,7 @@
     }
 
     function getProjectTargets(resumeText) {
-      return parseProjectEntries(getSectionLines(resumeText, ["selected projects", "projects"])).map((entry, index) => ({
+      return parseProjectEntries(getSectionLines(resumeText, ["selected research projects", "selected projects", "projects"])).map((entry, index) => ({
         key: `project-${index}`,
         index,
         name: entry.name || "Untitled project",

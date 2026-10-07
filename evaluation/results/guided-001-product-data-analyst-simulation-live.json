@@ -1,0 +1,64 @@
+{
+  "fixture_id": "001-product-data-analyst-simulation",
+  "url": "http://127.0.0.1:8765/index.html",
+  "run_at": "2026-10-07T19:38:47.923Z",
+  "status": "complete",
+  "outcome": "ERROR",
+  "error": "Unterminated string in JSON at position 733 (line 26 column 31)",
+  "stop_reason": "Workflow stopped: Unterminated string in JSON at position 733 (line 26 column 31)",
+  "model_calls": 2,
+  "questions": [],
+  "requirements": [
+    {
+      "text": "3+ years of product or business data-analysis experience",
+      "category": "basic",
+      "status": "not_clarified",
+      "reason": "Workflow stopped: Unterminated string in JSON at position 733 (line 26 column 31)"
+    },
+    {
+      "text": "Advanced SQL",
+      "category": "basic",
+      "status": "not_clarified",
+      "reason": "Workflow stopped: Unterminated string in JSON at position 733 (line 26 column 31)"
+    },
+    {
+      "text": "Working knowledge of Python for analysis",
+      "category": "basic",
+      "status": "not_clarified",
+      "reason": "Workflow stopped: Unterminated string in JSON at position 733 (line 26 column 31)"
+    },
+    {
+      "text": "Experience designing and analyzing A/B tests",
+      "category": "basic",
+      "status": "not_clarified",
+      "reason": "Workflow stopped: Unterminated string in JSON at position 733 (line 26 column 31)"
+    },
+    {
+      "text": "Experience building and maintaining Tableau dashboards",
+      "category": "basic",
+      "status": "not_clarified",
+      "reason": "Workflow stopped: Unterminated string in JSON at position 733 (line 26 column 31)"
+    },
+    {
+      "text": "Clear communication and collaboration with product and engineering teams",
+      "category": "basic",
+      "status": "not_clarified",
+      "reason": "Workflow stopped: Unterminated string in JSON at position 733 (line 26 column 31)"
+    },
+    {
+      "text": "Experience with Apache Airflow",
+      "category": "preferred",
+      "status": "not_clarified",
+      "reason": "Workflow stopped: Unterminated string in JSON at position 733 (line 26 column 31)"
+    },
+    {
+      "text": "Experience with dbt",
+      "category": "preferred",
+      "status": "not_clarified",
+      "reason": "Workflow stopped: Unterminated string in JSON at position 733 (line 26 column 31)"
+    }
+  ],
+  "proposals": [],
+  "page_errors": [],
+  "note": "A proposal is not an applied resume edit. Before/after scoring requires review and approval in the web UI."
+}

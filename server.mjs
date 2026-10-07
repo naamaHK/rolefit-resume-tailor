@@ -1,11 +1,12 @@
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import { createReadStream, existsSync } from "node:fs";
-import { extname, join, normalize } from "node:path";
+import { extname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { networkInterfaces } from "node:os";
 import { createWorkflowModel } from "./server/model-client.mjs";
 import { createWorkflowRoutes } from "./server/workflow-routes.mjs";
+import { publicAssetPath } from "./server/static-assets.mjs";
 
 const rootDir = fileURLToPath(new URL(".", import.meta.url));
 const port = Number(process.env.PORT || 8765);
@@ -428,11 +429,9 @@ async function rephraseExperience(input) {
 
 function serveStatic(request, response) {
   const url = new URL(request.url, `http://${request.headers.host}`);
-  const requestPath = url.pathname === "/" ? "/index.html" : decodeURIComponent(url.pathname);
-  const safePath = normalize(requestPath).replace(/^(\.\.[/\\])+/, "");
-  const filePath = join(rootDir, safePath);
+  const filePath = publicAssetPath(rootDir, url.pathname);
 
-  if (!filePath.startsWith(rootDir) || !existsSync(filePath)) {
+  if (!filePath || !existsSync(filePath)) {
     response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
     response.end("Not found");
     return;

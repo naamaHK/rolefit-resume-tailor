@@ -32,25 +32,25 @@ I chose this stack for the MVP because it runs locally with no install step and 
 ```text
 rolefit-resume-tailor/
   index.html
+  server.mjs
+  server/
+    workflow/
   src/
     resume/
-      document-parser.js
-      experience-parser.js
-      preview-highlighter.js
-      text-editor.js
-    app.js
-    styles.css
+  evaluation/
+    fixtures/
+    results/
+  tests/
   docs/
-    architecture.md
-    product_design.md
-    resume_tailoring_rubric.md
   prompts/
-    master_prompt.md
-    prompt_pipeline.md
-  data/
-    sample_resume.txt
-    sample_job_description.txt
 ```
+
+This is the only active RoleFit project folder. The former standalone
+`RoleFit_resume` checkout is preserved locally at `.legacy/RoleFit_resume`,
+including its Git history, and is ignored by the public repository. Do not run
+the server from that archived checkout. The local web server serves only the
+HTML, JavaScript, CSS, and PDF.js files needed by the app; it does not expose
+evaluation profiles, prompts, archives, or Git files as static assets.
 
 ## Run Locally
 
@@ -98,6 +98,10 @@ node tests/role-requirements-tests.mjs
 node tests/regression-tests.mjs
 node tests/placement-flow-tests.mjs
 node tests/server-json-tests.mjs
+node tests/static-assets-tests.mjs
+node tests/workflow-model-retry-tests.mjs
+node tests/workflow-tests.mjs
+node tests/workflow-browser-tests.mjs
 ```
 
 Run the mobile layout smoke test:

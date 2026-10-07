@@ -29,10 +29,16 @@
     function splitTitleAndCompany(line) {
       const cleaned = removeYears(String(line || "").replace(/^[-*•]\s*/, ""));
       if (cleaned.includes("|")) {
-        const [title, ...companyParts] = cleaned.split("|");
+        const [first, ...companyParts] = cleaned.split("|");
+        const second = companyParts.join("|").trim();
+        const firstHasRole = /\b(Engineer|Scientist|Assistant|Intern|Developer|Programmer|Researcher|Analyst|Manager|Lead|Director|Student)\b/i.test(first);
+        const secondHasRole = /\b(Engineer|Scientist|Assistant|Intern|Developer|Programmer|Researcher|Analyst|Manager|Lead|Director|Student)\b/i.test(second);
+        if (!firstHasRole && secondHasRole) {
+          return { title: cleanEntryTitle(second), company: first.trim() };
+        }
         return {
-          title: cleanEntryTitle(title),
-          company: companyParts.join("|").trim()
+          title: cleanEntryTitle(first),
+          company: second
         };
       }
       if (cleaned.includes(",")) {
@@ -125,6 +131,9 @@
             rawLine: cleanLine,
             bullets: []
           };
+          // Keep prose/lead notes available to renderers without changing the
+          // public parser's serialized entry shape used by placement logic.
+          Object.defineProperty(current, "proseBulletIndexes", { value: [], enumerable: false });
           continue;
         }
 
@@ -138,7 +147,11 @@
           continue;
         }
 
+        const bulletIndex = current.bullets.length;
         addEntryBullet(current, cleanLine);
+        if (!/^\s*[-*•]\s+/.test(line) && current.bullets.length > bulletIndex) {
+          current.proseBulletIndexes.push(bulletIndex);
+        }
       }
 
       pushCurrent();

@@ -660,6 +660,7 @@ function collectMissingDateQuestions(resumeText) {
     if (canonical === "patents") entries = parsePatentEntries(section.lines).entries;
 
     for (const entry of entries) {
+      if (isAggregatePatentSummary(entry)) continue;
       if (entry.year || entry.years) continue;
       const label = entry.title || entry.degree || entry.name || entry.company || "entry";
       const originalText = entry.rawLine || label;
@@ -680,6 +681,13 @@ function getPublicationAuthors(entry) {
     && !/^https?:\/\//i.test(line)
     && !/\b(ACM|IEEE|Conference|Journal|Innovations|RecSys|CIKM|Big Data)\b/i.test(line)
   );
+}
+
+function isAggregatePatentSummary(entry) {
+  const text = [entry?.name, ...(entry?.details || []), entry?.status]
+    .filter(Boolean).join(" ").trim();
+  return /^patents?\s*:/i.test(text)
+    && /\b(?:co-?inventor|inventor|\d+\s+patents?|patent applications?)\b/i.test(text);
 }
 
 function collectMissingRequiredFieldQuestions(resumeText) {
@@ -717,6 +725,7 @@ function collectMissingRequiredFieldQuestions(resumeText) {
 
     if (canonical === "publications") {
       for (const entry of parsePublicationEntries(section.lines)) {
+        if (isAggregatePatentSummary(entry)) continue;
         const label = entry.name || entry.rawLine || "publication entry";
         if (!entry.name) add(section.title, "paper_title", label, entry.rawLine);
         if (!getPublicationAuthors(entry).length) add(section.title, "authors", label, entry.rawLine);
@@ -725,6 +734,7 @@ function collectMissingRequiredFieldQuestions(resumeText) {
 
     if (canonical === "patents") {
       for (const entry of parsePatentEntries(section.lines).entries) {
+        if (isAggregatePatentSummary(entry)) continue;
         const label = entry.name || entry.rawLine || "patent entry";
         if (!entry.name) add(section.title, "patent_name", label, entry.rawLine);
         if (!entry.authors.length) add(section.title, "authors", label, entry.rawLine);

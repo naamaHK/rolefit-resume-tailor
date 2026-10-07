@@ -44,7 +44,9 @@
         "skills and technologies",
         "experience",
         "professional experience",
+        "earlier technical experience",
         "selected projects",
+        "selected research projects",
         "projects",
         "education",
         "publication",
@@ -71,7 +73,7 @@
     function canonicalSectionTitle(title) {
       const normalized = normalizeSectionLabel(title);
       if (["statement", "summary", "professional summary", "profile"].includes(normalized)) return "summary";
-      if (["experience", "professional experience"].includes(normalized)) return "experience";
+      if (["experience", "professional experience", "earlier technical experience"].includes(normalized)) return "experience";
       if (normalized === "education") return "education";
       if (["skills", "technical skills", "skills & technologies", "skills and technologies"].includes(normalized)) return "skills";
       if (["publications", "publication", "selected publications & patents", "selected publications and patents"].includes(normalized)) return "publications";
@@ -79,7 +81,7 @@
       if (normalized === "strengths") return "strengths";
       if (["achievements", "achievement", "achievments", "achievment"].includes(normalized)) return "achievements";
       if (normalized === "languages" || normalized === "language") return "languages";
-      if (normalized === "projects" || normalized === "selected projects") return "projects";
+      if (["projects", "selected projects", "selected research projects"].includes(normalized)) return "projects";
       if (normalized === "certifications" || normalized === "certification") return "certifications";
       if (["volunteer experience", "volunteer work", "volunteering"].includes(normalized)) return "volunteer_experience";
       if (normalized.includes("google scholar") || normalized.includes("portfolio") || normalized.includes("links")) return "links";
@@ -101,7 +103,7 @@
         const currentCanonical = currentSection ? canonicalSectionTitle(currentSection.title) : "";
         const normalizedLine = normalizeSectionLabel(line);
         const isNestedExperienceSubsection = currentCanonical === "experience"
-          && ["selected projects", "selected research projects"].includes(normalizedLine);
+          && ["selected projects", "selected research projects", "earlier technical experience"].includes(normalizedLine);
         const previousSectionLine = currentSection?.lines[currentSection.lines.length - 1] || "";
         const followsEntryTitle = currentCanonical === "experience"
           ? Boolean(
@@ -200,6 +202,13 @@
         }
 
         const existingLines = new Set(existing.lines.map((line) => normalize(line)));
+        if (canonical === "experience" && normalizeSectionLabel(section.title) === "earlier technical experience") {
+          const heading = `${titleCase(section.title)}:`;
+          if (!existing.lines.some((line) => normalize(line) === normalize(heading))) {
+            existing.lines.push(heading);
+            existingLines.add(normalize(heading));
+          }
+        }
         for (const line of section.lines) {
           if (existingLines.has(normalize(line))) continue;
           existing.lines.push(line);

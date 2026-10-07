@@ -107,6 +107,18 @@ assert.equal(
 );
 
 const educationTargets = targets.getEducationTargets(resume);
+
+const namedResearchProjects = targets.getProjectTargets(`SELECTED RESEARCH PROJECTS
+- Audience Prospecting (Dynamic Product Ads): Developed a scalable targeting system and achieved
+a measurable revenue lift in production.
+- CTR Prediction & Accidental Clicks: Built models for click-quality prediction.
+
+EDUCATION
+B.Sc. 2017 - 2021`);
+assert.equal(namedResearchProjects.length, 2);
+assert.equal(namedResearchProjects[0].name, "Audience Prospecting (Dynamic Product Ads)");
+assert.equal(namedResearchProjects[0].bullets[0], "Developed a scalable targeting system and achieved a measurable revenue lift in production.");
+assert.equal(namedResearchProjects[1].name, "CTR Prediction & Accidental Clicks");
 const masters = targets.findBySnapshot(educationTargets, {
   degree: "M.Sc. in Data Science",
   institution: "Northbridge Institute",

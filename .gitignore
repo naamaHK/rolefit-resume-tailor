@@ -9,3 +9,4 @@ build/
 exports/
 tmp/
 coverage/
+.legacy/

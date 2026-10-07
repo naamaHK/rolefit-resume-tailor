@@ -213,6 +213,16 @@ assert.deepEqual(
   "section aliases should merge without duplicating lines"
 );
 
+const mergedEarlierExperience = parser.mergeDuplicateSections([
+  { title: "Experience", lines: ["Software Engineer 2020 - 2024"] },
+  { title: "Earlier Technical Experience", lines: ["Research Intern 2018 - 2019"] }
+]);
+assert.deepEqual(
+  JSON.parse(JSON.stringify(mergedEarlierExperience)),
+  [{ title: "Experience", lines: ["Software Engineer 2020 - 2024", "Earlier Technical Experience:", "Research Intern 2018 - 2019"] }],
+  "an earlier-experience block must merge under Experience without losing its label"
+);
+
 const ordered = parser.orderSectionsForStructure([
   { title: "Awards", lines: ["Best Paper"] },
   { title: "Education", lines: ["M.Sc."] },

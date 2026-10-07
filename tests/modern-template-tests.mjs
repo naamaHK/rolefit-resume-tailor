@@ -136,6 +136,32 @@ Machine Learning: Ranking, Evaluation, A/B Testing`;
     "PDF annotation targets must survive extraction as self-contained resume links"
   );
 
+  const companyFirstResume = `ALEX MORGAN
+050-555-0198 alex.morgan@example.com
+
+STATEMENT
+Research engineer.
+
+EXPERIENCE
+Acme Inc | Software Engineer 2020 - 2024
+Worked on production analytics systems.
+- Built data pipelines.
+
+EDUCATION
+B.Sc. Computer Science 2016 - 2020
+Example University
+
+SKILLS
+Python, SQL`;
+  await page.evaluate((text) => {
+    document.querySelector("#resumeInput").value = text;
+    document.querySelector("#finalResume").value = text;
+    window.__roleFitTest.renderNumberedCommentPreview();
+  }, companyFirstResume);
+  assert.match(await page.locator(".modern-experience-section h3").first().innerText(), /Acme Inc.*Software Engineer/s);
+  assert.equal(await page.locator(".modern-experience-section .experience-prose").innerText(), "Worked on production analytics systems.");
+  assert.equal(await page.locator(".modern-experience-section li").count(), 1, "unbulleted experience text must not be rendered as a bullet");
+
   console.log("Modern Blue template tests passed");
 } finally {
   await browser.close();
