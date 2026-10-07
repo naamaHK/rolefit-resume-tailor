@@ -4,6 +4,8 @@ import { createReadStream, existsSync } from "node:fs";
 import { extname, join, normalize } from "node:path";
 import { fileURLToPath } from "node:url";
 import { networkInterfaces } from "node:os";
+import { createWorkflowModel } from "./server/model-client.mjs";
+import { createWorkflowRoutes } from "./server/workflow-routes.mjs";
 
 const rootDir = fileURLToPath(new URL(".", import.meta.url));
 const port = Number(process.env.PORT || 8765);
@@ -445,8 +447,13 @@ function serveStatic(request, response) {
   createReadStream(filePath).pipe(response);
 }
 
+const handleWorkflow = createWorkflowRoutes({
+  model: createWorkflowModel(callOpenRouterText), readJsonRequest, sendJson
+});
+
 const server = createServer(async (request, response) => {
   try {
+    if (await handleWorkflow(request, response)) return;
     if (request.method === "POST" && request.url === "/api/analyze") {
       const { resume, jobDescription, pageBudgetMode } = await readJsonRequest(request);
 

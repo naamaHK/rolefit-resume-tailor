@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>RoleFit Resume Tailor</title>
   <link rel="stylesheet" href="src/styles.css?v=20260924-3">
+  <link rel="stylesheet" href="src/workflow.css?v=20261007-1">
   </head>
   <body>
     <main class="app-shell">
@@ -17,6 +18,7 @@
           <button id="loadSampleBtn" class="secondary-button" type="button">Load Sample</button>
           <button id="analyzeBtn" class="primary-button" type="button">Check Resume</button>
           <button id="analyzeAiBtn" class="primary-button" type="button">Get Suggestions with AI</button>
+          <button id="startWorkflowBtn" class="primary-button" type="button">Guided tailoring</button>
         </div>
       </header>
       <p id="aiStatus" class="ai-status" aria-live="polite"></p>
@@ -47,6 +49,8 @@
           <textarea id="jobInput" spellcheck="true" placeholder="Optional: paste a target job description for role-specific tailoring. Leave empty for a general resume review."></textarea>
         </section>
       </section>
+
+      <section id="workflowPanel" class="workflow-panel" aria-label="Guided tailoring" hidden></section>
 
       <section id="pdfPreviewPanel" class="pdf-preview-panel" aria-labelledby="pdfPreviewLabel" hidden>
         <div class="panel-heading">
@@ -135,5 +139,8 @@
   <script src="src/resume/print-renderer.js?v=20260924-6"></script>
   <script src="src/app-bootstrap.js?v=20260924-1"></script>
   <script src="src/app-controller.js?v=20260924-2"></script>
+  <script src="src/resume/workflow-review.js?v=20261007-1"></script>
+  <script src="src/resume/workflow-view.js?v=20261007-1"></script>
+  <script src="src/resume/workflow-client.js?v=20261007-1"></script>
   </body>
 </html>

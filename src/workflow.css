@@ -1,0 +1,12 @@
+.workflow-panel { margin: 1rem 0; padding: 1.25rem; border: 1px solid #bccadd; border-radius: 12px; background: #f8fbff; }
+.workflow-panel[hidden] { display: none; }
+.workflow-panel fieldset, .workflow-proposals article { margin: 1rem 0; padding: 1rem; border: 1px solid #cbd5e1; border-radius: 8px; min-width: 0; background: white; }
+.workflow-panel legend { font-weight: 650; overflow-wrap: anywhere; }
+.workflow-panel label { display: block; margin-top: .65rem; }
+.workflow-panel textarea { width: 100%; min-height: 85px; margin-top: .4rem; }
+.workflow-panel select { max-width: 100%; padding: .5rem; }
+.workflow-panel blockquote { margin: .5rem 0; padding-left: .75rem; border-left: 3px solid #9bb8d8; white-space: pre-wrap; }
+.workflow-panel li, .workflow-proposals p { overflow-wrap: anywhere; white-space: pre-wrap; }
+.workflow-panel details { margin: 1rem 0; }
+.workflow-note { font-size: .85rem; color: #526174; }
+.workflow-error { color: #991b1b; }

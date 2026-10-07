@@ -145,6 +145,18 @@ To override the model order, provide a comma-separated `OPENROUTER_MODEL` value:
 OPENROUTER_API_KEY="your_key_here" OPENROUTER_MODEL="meta/muse-spark-1.3,google/gemini-3.8-flash" node server.mjs
 ```
 
+## Guided Tailoring
+
+Click **Guided tailoring** with a resume and target job to try the bounded
+agentic workflow. It checks evidence, can calculate overlapping experience,
+asks up to 10 questions including follow-ups, and verifies proposed wording
+before sending it to the existing approval interface. Basic and preferred
+qualifications are both considered; unresolved gaps remain visible.
+
+Restart the Node server after updating. See [the guided workflow guide](docs/guided-workflow.md)
+for module boundaries, limits, session downloads, and test commands. The original
+AI suggestion flow remains available for comparison.
+
 ## Live Evaluation Flow
 
 The evaluation runner drives the actual RoleFit web page and its configured
