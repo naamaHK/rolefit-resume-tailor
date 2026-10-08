@@ -3,10 +3,11 @@ import { requireEvidence, sources } from "./state.mjs";
 
 export async function verify(state, model, requirement, kind, payload, evidence) {
   const checked = requireEvidence(state, evidence);
+  const verificationSources = kind === "coverage" ? [{ id: "resume", text: state.resume }] : sources(state);
   const result = await askModel(state, model, "verification", {
     kind, requirement: { text: requirement.text, jobQuote: requirement.jobQuote },
-    payload, evidence: checked, sources: sources(state),
-    answers: state.questions.filter(q => q.requirementId === requirement.id),
+    payload, evidence: checked, sources: verificationSources,
+    answers: kind === "coverage" ? [] : state.questions.filter(q => q.requirementId === requirement.id),
     calculation: requirement.calculation || null
   });
   if (typeof result.supported !== "boolean" || !Array.isArray(result.issues) || result.issues.some(issue => typeof issue !== "string")) {

@@ -53,6 +53,9 @@ export async function executeAction(state, action, model) {
       return;
     }
     case "record_evidence": {
+      if (!Array.isArray(action.evidence) || action.evidence.some(item => item?.sourceId !== "resume")) {
+        throw new Error("Covered means the qualification is evidenced in the original resume. If a user answer establishes a missing qualification, propose a reviewable resume edit instead.");
+      }
       const minimumYears = requirement.jobQuote.match(/\b(\d+)\+?\s*(?:years?|yrs?)\b/i)?.[1];
       if (minimumYears && requirement.calculation && requirement.calculation.totalMonths < Number(minimumYears) * 12) {
         requirement.status = "uncertain";

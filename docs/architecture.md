@@ -52,6 +52,27 @@ section-scoped matching, fuzzy block scoring, and section highlighting.
 text, and anchors as one immutable rendering input. `resume-preview.js` then
 uses that target to render highlights without reading mutable card controls.
 
+## Guided Workflow Boundary Audit
+
+The new guided workflow has a clean separation: `server.mjs` supplies the HTTP
+and provider transport, `server/workflow-routes.mjs` owns sessions, and the
+small files under `server/workflow/` own state, decisions, tool execution,
+verification, and experience arithmetic. The browser workflow is likewise
+split into client lifecycle, view, and review adapters. This part should not
+be split further just to reduce line counts.
+
+The older browser application is only partly modular. `src/app.js` is now a
+381-line state/composition shell, but several feature files still combine
+multiple responsibilities: `placement-editor.js` is about 2,100 lines;
+`ai-analysis.js`, `change-cards.js`, `print-renderer.js`, and
+`resume-preview.js` are each over 1,000 lines. They should not be described as
+finished modular code. The next safe extraction is a cohesive slice of
+`placement-editor.js` (skill placement, section placement, or experience
+placement), with its callers and focused tests moved together. After that,
+separate card rendering from card event handling and separate resume parsing
+from style-specific rendering. Preserve behavior during each extraction and
+verify the full UI path; avoid splitting by an arbitrary line limit.
+
 ## Extraction Rules
 
 1. Extract one cohesive behavior at a time.

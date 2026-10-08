@@ -4,6 +4,7 @@ import { homedir } from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { loadEvaluationFixture } from "./fixture-loader.mjs";
+import { checkGuidedProposals } from "./guided-proposal-check.mjs";
 
 const fixturePath = path.resolve(process.argv[2] || "evaluation/fixtures/001-product-data-analyst-simulation.json");
 const fixture = await loadEvaluationFixture(fixturePath);
@@ -20,8 +21,9 @@ playwright = playwright.chromium ? playwright : playwright.default;
 
 // This first smoke simulation is deliberately a lookup table. It releases only
 // facts from the hidden profile; it never asks an LLM to judge its own output.
-function reply(requirement) {
+function reply(requirement, question) {
   const label = requirement.text.toLowerCase();
+  const asked = question.question.toLowerCase();
   const oracle = fixture.oracle.requirements.find(item => {
     const term = item.label.toLowerCase();
     return label.includes(term) || term.includes(label);
@@ -29,6 +31,12 @@ function reply(requirement) {
   if (oracle?.profile_supported === false) return { disposition: "denied", text: "" };
   const interaction = fixture.oracle.interactions.find(item => item.requirement_id === oracle?.id);
   if (interaction?.confirmed) return { disposition: "answered", text: interaction.simulated_user_answer };
+  if (/calendar months|start and end months/.test(asked)) return {
+    disposition: "answered", text: "I know the years but not the exact months: CityCart 2021–2023 and Loop Commerce 2023–Present."
+  };
+  if (/advanced sql|window functions|ctes|complex joins|query performance/.test(asked)) return {
+    disposition: "answered", text: "I use SQL for funnel analysis at Loop Commerce, but I cannot confirm those specific advanced techniques."
+  };
   if (/\b3\+? years|years of .*data.analysis/i.test(label)) return {
     disposition: "answered", text: "I worked as a Data Analyst at CityCart from 2021–2023 and as a Product Data Analyst at Loop Commerce from 2023–Present."
   };
@@ -83,7 +91,7 @@ try {
     console.log(`Answering ${pending.length} question(s), ${state.questions.length}/${state.limits.questions} used`);
     for (const question of pending) {
       const requirement = state.requirements.find(item => item.id === question.requirementId);
-      const answer = reply(requirement);
+      const answer = reply(requirement, question);
       const field = page.locator(`[data-workflow-question="${question.id}"]`);
       await field.locator("select").selectOption(answer.disposition);
       if (answer.disposition === "answered") await field.locator("textarea").fill(answer.text);
@@ -93,10 +101,13 @@ try {
     await page.getByRole("button", { name: "Send answers", exact: true }).click();
     await waitForState(revision);
   }
+  const proposalCheck = checkGuidedProposals(fixture, state);
+  const estimatedCostUsd = Number(state.modelRuns.reduce((total, run) => total + (Number(run.usage?.cost) || 0), 0).toFixed(6));
   const result = {
     fixture_id: fixture.id, url, run_at: new Date().toISOString(),
-    status: state.status, outcome: state.error ? "ERROR" : "COMPLETE", error: state.error || null,
-    stop_reason: state.stopReason, model_calls: state.modelCalls, model_runs: state.modelRuns,
+    status: state.status, outcome: state.error ? "ERROR" : proposalCheck.missing_proposals.length || proposalCheck.unsupported_proposals.length ? "INCOMPLETE" : "PROPOSAL_READY", error: state.error || null,
+    stop_reason: state.stopReason, model_calls: state.modelCalls, estimated_cost_usd: estimatedCostUsd, model_runs: state.modelRuns,
+    proposal_check: proposalCheck,
     questions: state.questions.map(q => ({ id: q.id, requirement_id: q.requirementId, question: q.question, disposition: q.disposition, answer: q.answer })),
     requirements: state.requirements.map(r => ({ text: r.text, category: r.category, status: r.status, reason: r.reason })),
     proposals: state.proposals, page_errors: pageErrors,

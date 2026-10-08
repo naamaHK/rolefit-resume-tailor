@@ -74,6 +74,42 @@ for (const disposition of ["denied", "skipped", "answered"]) {
   assert.equal(state.status, "complete"); assert.equal(state.requirements[0].status, "covered"); assert.equal(state.questions.length, 0);
 }
 
+// User-confirmed gaps cannot be marked covered without a reviewable proposal.
+{
+  const state = fresh(); state.requirements = [requirement("r1", "Tableau dashboards")];
+  await executeAction(state, ask("r1", "Have you built Tableau dashboards?", "Tableau dashboard work"), yes);
+  state.status = "waiting";
+  answer(state, "I built Tableau dashboards at Loop Commerce.");
+  await assert.rejects(
+    executeAction(state, { type: "record_evidence", requirementId: "r1", evidence: [{ sourceId: "q1", quote: "I built Tableau dashboards at Loop Commerce." }] }, yes),
+    /propose a reviewable resume edit/i
+  );
+  assert.notEqual(state.requirements[0].status, "covered", "an answer is not yet represented in the resume");
+  await executeAction(state, { type: "record_evidence", requirementId: "r1", evidence: quote("Built applications with PostgreSQL.") }, async (_instructions, input) => {
+    assert.deepEqual(input.sources.map(source => source.id), ["resume"]);
+    assert.deepEqual(input.answers, []);
+    return { data: { supported: false, issues: ["Resume quote does not show Tableau."] } };
+  });
+  assert.equal(state.requirements[0].status, "uncertain");
+}
+{
+  const state = createWorkflow({ resume: original, jobDescription: "Basic Qualifications: Tableau dashboards", now: new Date("2026-10-07") });
+  const model = scripted([
+    { requirements: [{ text: "Tableau dashboards", jobQuote: "Tableau dashboards", category: "basic" }] },
+    { actions: [ask("r1", "Have you built Tableau dashboards?", "Tableau dashboard work")] },
+    { actions: [{ type: "record_evidence", requirementId: "r1", evidence: [{ sourceId: "q1", quote: "I built Tableau dashboards at Loop Commerce." }] }] },
+    { actions: [{ type: "propose_edit", requirementId: "r1", originalText: "", suggestedText: "Built Tableau dashboards at Loop Commerce.", section: "Experience", evidence: [{ sourceId: "q1", quote: "I built Tableau dashboards at Loop Commerce." }] }] },
+    { supported: true, issues: [] }
+  ]);
+  await advanceWorkflow(state, model);
+  assert.equal(state.status, "waiting");
+  answer(state, "I built Tableau dashboards at Loop Commerce.");
+  await advanceWorkflow(state, model);
+  assert.equal(state.proposals.length, 1, "a confirmed but missing skill must become a reviewable proposal");
+  assert.equal(state.requirements[0].status, "proposed");
+  assert.equal(state.resume, original, "the user must still approve the resume edit");
+}
+
 // User evidence goes to the decision model; exaggerated edits get a bounded revision.
 {
   const state = fresh();

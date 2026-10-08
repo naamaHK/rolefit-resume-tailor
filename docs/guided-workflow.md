@@ -49,6 +49,9 @@ Every extracted qualification must cite an exact job quote. Supporting evidence
 must quote the original resume or an actual answer. The job description,
 generated suggestions, and model explanations cannot become candidate evidence.
 Requirement IDs and question IDs link answers and proposals to their sources.
+"Covered" now requires evidence in the original resume. A user answer may
+establish a missing skill, but it cannot silently mark the resume complete;
+the model must propose a verified, user-approved edit to represent that skill.
 
 Coverage, date interval relevance, and proposed edits receive a separate model
 verification call. Invalid verifier output fails closed. Ordinary code validates
@@ -89,6 +92,7 @@ is extracted in this change, avoiding a simultaneous rewrite of that transport.
 ```bash
 node tests/workflow-tests.mjs
 node tests/workflow-browser-tests.mjs
+node tests/guided-proposal-check-tests.mjs
 ```
 
 The logic suite covers question/follow-up limits, atomic answer submission,
@@ -117,6 +121,8 @@ node evaluation/guided-live-smoke.mjs
 
 This drives Chrome against the actual web page and answers only from the
 fixture's hidden profile. Its result is saved under `evaluation/results/`.
-The smoke run currently checks question flow and proposals, not an after
-score: a proposed edit is not an applied resume until the user reviews and
+The smoke run marks the flow incomplete if a profile-supported missing skill
+does not receive a proposal, or if it proposes an unsupported skill. It checks
+question flow and proposals, not an after score: a proposed edit is not an
+applied resume until the user reviews and
 accepts it in the UI. This is not yet the 50-case guided benchmark runner.
