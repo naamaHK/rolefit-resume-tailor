@@ -1,0 +1,40 @@
+{
+  "fixture_id": "001-product-data-analyst-simulation",
+  "guided_result": "evaluation/results/guided-001-product-data-analyst-simulation-live-retest.json",
+  "run_at": "2026-10-11T07:39:57.866Z",
+  "outcome": "PASS",
+  "approved_proposals": [
+    {
+      "id": "d60fd325-7ce8-4416-8c8c-c701d201d968-p1",
+      "suggested_text": "Built and maintained Tableau dashboards for weekly conversion, retention, and experiment reporting."
+    }
+  ],
+  "resume_before": "Noa Ben-Ami\n+972 50 555 0184 | noa.benami@example.com | linkedin.com/in/noa-ben-ami\n\nPROFESSIONAL SUMMARY\nProduct data analyst with four years of experience using SQL and Python to improve customer journeys, evaluate experiments, and partner with product teams.\n\nEXPERIENCE\nProduct Data Analyst | Loop Commerce | 2023–Present\n- Used SQL and Python to analyze conversion, retention, and acquisition funnels.\n- Designed and analyzed A/B tests for checkout and onboarding changes.\n- Partnered with product managers and engineers to define metrics and prioritize improvements.\n\nData Analyst | CityCart | 2021–2023\n- Created recurring SQL reports for marketing and operations teams.\n- Analyzed customer cohorts and presented findings to stakeholders.\n\nEDUCATION\nB.Sc. Industrial Engineering and Management | Example University | 2017–2021\n\nSKILLS\nSQL, Python, A/B testing, product analytics, cohort analysis, cross-functional collaboration, stakeholder communication, Google Analytics 4\n\nLANGUAGES\nHebrew — native | English — professional working proficiency",
+  "resume_after": "Noa Ben-Ami\n+972 50 555 0184 | noa.benami@example.com | linkedin.com/in/noa-ben-ami\n\nPROFESSIONAL SUMMARY\nProduct data analyst with four years of experience using SQL and Python to improve customer journeys, evaluate experiments, and partner with product teams.\n\nEXPERIENCE\nProduct Data Analyst | Loop Commerce | 2023 - Present\n- Used SQL and Python to analyze conversion, retention, and acquisition funnels.\n- Designed and analyzed A/B tests for checkout and onboarding changes.\n- Partnered with product managers and engineers to define metrics and prioritize improvements.\n- Built and maintained Tableau dashboards for weekly conversion, retention, and experiment reporting.\nData Analyst | CityCart | 2021 - 2023\n- Created recurring SQL reports for marketing and operations teams.\n- Analyzed customer cohorts and presented findings to stakeholders.\n\nEDUCATION\nB.Sc. Industrial Engineering and Management | Example University | 2017 - 2021\n\nSKILLS\nA/B Testing • product analytics • cohort analysis • cross-functional collaboration • stakeholder communication • Google Analytics 4\nProgramming Languages: SQL • Python\n\nLANGUAGES\nHebrew — native | English — professional working proficiency",
+  "score": {
+    "profile_job_potential": {
+      "basic": 100,
+      "preferred": 0,
+      "combined": 75
+    },
+    "resume_representation_before": {
+      "basic": 80,
+      "preferred": null,
+      "combined": 80
+    },
+    "resume_representation_after": {
+      "basic": 100,
+      "preferred": null,
+      "combined": 100,
+      "delta": 20
+    },
+    "grounding_safety": "PASS",
+    "grounding_errors": [],
+    "repair_integrity": "PASS",
+    "repair_errors": [],
+    "structure_before": "PASS",
+    "structure_preservation": "PASS",
+    "structure_errors": []
+  },
+  "page_errors": []
+}

@@ -1,0 +1,471 @@
+{
+  "fixture_id": "001-product-data-analyst-simulation",
+  "url": "http://127.0.0.1:8765/index.html",
+  "run_at": "2026-10-11T07:35:31.074Z",
+  "status": "complete",
+  "outcome": "PROPOSAL_READY",
+  "error": null,
+  "stop_reason": "All qualifications have been reviewed.",
+  "model_calls": 11,
+  "estimated_cost_usd": 0.073364,
+  "model_runs": [
+    {
+      "task": "extract",
+      "latency_ms": 5860,
+      "requested_model": "google/gemini-3.8-flash",
+      "response_model": "google/gemini-3.8-flash",
+      "provider": "Google",
+      "generation_id": "gen-1791704022-4wZnJzEC1c3PNDZrYzBv",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 299,
+        "completion_tokens": 692,
+        "total_tokens": 991,
+        "cost": 0.00281925,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.00281925,
+          "upstream_inference_prompt_cost": 0.00022425,
+          "upstream_inference_completions_cost": 0.002595
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 492,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      }
+    },
+    {
+      "task": "decision",
+      "latency_ms": 24565,
+      "requested_model": "google/gemini-3.8-flash",
+      "response_model": "google/gemini-3.8-flash",
+      "provider": "Google",
+      "generation_id": "gen-1791704027-MRFIxRiBRMwI3Bw7gRi9",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 1603,
+        "completion_tokens": 4220,
+        "total_tokens": 5823,
+        "cost": 0.01702725,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.01702725,
+          "upstream_inference_prompt_cost": 0.00120225,
+          "upstream_inference_completions_cost": 0.015825
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 3749,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      }
+    },
+    {
+      "task": "verification",
+      "latency_ms": 2822,
+      "requested_model": "google/gemini-3.8-flash",
+      "response_model": "google/gemini-3.8-flash",
+      "provider": "Google",
+      "generation_id": "gen-1791704052-yiUKlELo8B5eRwKh0SZj",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 699,
+        "completion_tokens": 286,
+        "total_tokens": 985,
+        "cost": 0.00159675,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.00159675,
+          "upstream_inference_prompt_cost": 0.00052425,
+          "upstream_inference_completions_cost": 0.0010725
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 270,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      }
+    },
+    {
+      "task": "verification",
+      "latency_ms": 2090,
+      "requested_model": "google/gemini-3.8-flash",
+      "response_model": "google/gemini-3.8-flash",
+      "provider": "Google",
+      "generation_id": "gen-1791704054-oViY7rtKqf4UgVz4cdSW",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 701,
+        "completion_tokens": 159,
+        "total_tokens": 860,
+        "cost": 0.001122,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.001122,
+          "upstream_inference_prompt_cost": 0.00052575,
+          "upstream_inference_completions_cost": 0.00059625
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 151,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      }
+    },
+    {
+      "task": "verification",
+      "latency_ms": 3625,
+      "requested_model": "google/gemini-3.8-flash",
+      "response_model": "google/gemini-3.8-flash",
+      "provider": "Google",
+      "generation_id": "gen-1791704057-imLba62t0xNNQgL6OFAA",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 704,
+        "completion_tokens": 432,
+        "total_tokens": 1136,
+        "cost": 0.002148,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.002148,
+          "upstream_inference_prompt_cost": 0.000528,
+          "upstream_inference_completions_cost": 0.00162
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 416,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      }
+    },
+    {
+      "task": "decision",
+      "latency_ms": 14762,
+      "requested_model": "google/gemini-3.8-flash",
+      "response_model": "google/gemini-3.8-flash",
+      "provider": "Google",
+      "generation_id": "gen-1791704060-hIB6Tyb4VllNrhrg3EOu",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 2491,
+        "completion_tokens": 2545,
+        "total_tokens": 5036,
+        "cost": 0.011412,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.011412,
+          "upstream_inference_prompt_cost": 0.00186825,
+          "upstream_inference_completions_cost": 0.00954375
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 2216,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      }
+    },
+    {
+      "task": "verification",
+      "latency_ms": 2463,
+      "requested_model": "google/gemini-3.8-flash",
+      "response_model": "google/gemini-3.8-flash",
+      "provider": "Google",
+      "generation_id": "gen-1791704075-Fh2wQy9uXi9tmIaCYhBI",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 721,
+        "completion_tokens": 246,
+        "total_tokens": 967,
+        "cost": 0.00146325,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.00146325,
+          "upstream_inference_prompt_cost": 0.00054075,
+          "upstream_inference_completions_cost": 0.0009225
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 238,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      }
+    },
+    {
+      "task": "verification",
+      "latency_ms": 3486,
+      "requested_model": "google/gemini-3.8-flash",
+      "response_model": "google/gemini-3.8-flash",
+      "provider": "Google",
+      "generation_id": "gen-1791704078-ere7ujwGnP40AAh9bdl9",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 717,
+        "completion_tokens": 368,
+        "total_tokens": 1085,
+        "cost": 0.00191775,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.00191775,
+          "upstream_inference_prompt_cost": 0.00053775,
+          "upstream_inference_completions_cost": 0.00138
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 324,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      }
+    },
+    {
+      "task": "verification",
+      "latency_ms": 2399,
+      "requested_model": "google/gemini-3.8-flash",
+      "response_model": "google/gemini-3.8-flash",
+      "provider": "Google",
+      "generation_id": "gen-1791704081-17ouLNrMnpVHZ4jeFTBR",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 877,
+        "completion_tokens": 242,
+        "total_tokens": 1119,
+        "cost": 0.00156525,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.00156525,
+          "upstream_inference_prompt_cost": 0.00065775,
+          "upstream_inference_completions_cost": 0.0009075
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 226,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      }
+    },
+    {
+      "task": "decision",
+      "latency_ms": 15295,
+      "requested_model": "google/gemini-3.8-flash",
+      "response_model": "google/gemini-3.8-flash",
+      "provider": "Google",
+      "generation_id": "gen-1791704084-pYoUVjAIs9hKAmv3b0kz",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 2974,
+        "completion_tokens": 2559,
+        "total_tokens": 5533,
+        "cost": 0.01182675,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.01182675,
+          "upstream_inference_prompt_cost": 0.0022305,
+          "upstream_inference_completions_cost": 0.00959625
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 2452,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      }
+    },
+    {
+      "task": "decision",
+      "latency_ms": 31354,
+      "requested_model": "google/gemini-3.8-flash",
+      "response_model": "google/gemini-3.8-flash",
+      "provider": "Google",
+      "generation_id": "gen-1791704099-K9wo6HKDjR4i9bOduKZV",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 2948,
+        "completion_tokens": 4868,
+        "total_tokens": 7816,
+        "cost": 0.020466,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.020466,
+          "upstream_inference_prompt_cost": 0.002211,
+          "upstream_inference_completions_cost": 0.018255
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 4798,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      }
+    }
+  ],
+  "proposal_check": {
+    "expected_additions": [
+      "Tableau dashboards"
+    ],
+    "missing_proposals": [],
+    "unsupported_proposals": []
+  },
+  "questions": [
+    {
+      "id": "q1",
+      "requirement_id": "r1",
+      "question": "Could you provide the start and end months for your Data Analyst role at CityCart and your Product Data Analyst role at Loop Commerce?",
+      "disposition": "answered",
+      "answer": "I know the years but not the exact months: CityCart 2021–2023 and Loop Commerce 2023–Present."
+    },
+    {
+      "id": "q2",
+      "requirement_id": "r5",
+      "question": "Do you have experience building and maintaining Tableau dashboards?",
+      "disposition": "answered",
+      "answer": "Yes. At Loop Commerce, I built and maintained Tableau dashboards for weekly conversion, retention, and experiment reporting."
+    },
+    {
+      "id": "q3",
+      "requirement_id": "r7",
+      "question": "Do you have professional experience using Apache Airflow?",
+      "disposition": "denied",
+      "answer": ""
+    },
+    {
+      "id": "q4",
+      "requirement_id": "r8",
+      "question": "Do you have professional experience using dbt?",
+      "disposition": "denied",
+      "answer": ""
+    },
+    {
+      "id": "q5",
+      "requirement_id": "r2",
+      "question": "Do you have experience with advanced SQL, such as window functions, CTEs, or performance optimization?",
+      "disposition": "answered",
+      "answer": "I use SQL for funnel analysis at Loop Commerce, but I cannot confirm those specific advanced techniques."
+    }
+  ],
+  "requirements": [
+    {
+      "text": "3+ years of product or business data-analysis experience",
+      "category": "basic",
+      "status": "covered"
+    },
+    {
+      "text": "Advanced SQL",
+      "category": "basic",
+      "status": "not_clarified",
+      "reason": "The candidate confirmed using SQL for funnel analysis but cannot confirm advanced SQL techniques such as window functions, CTEs, or optimization."
+    },
+    {
+      "text": "Working knowledge of Python for analysis",
+      "category": "basic",
+      "status": "covered"
+    },
+    {
+      "text": "Experience designing and analyzing A/B tests",
+      "category": "basic",
+      "status": "covered"
+    },
+    {
+      "text": "Experience building and maintaining Tableau dashboards",
+      "category": "basic",
+      "status": "proposed"
+    },
+    {
+      "text": "Clear communication and collaboration with product and engineering teams",
+      "category": "basic",
+      "status": "covered"
+    },
+    {
+      "text": "Experience with Apache Airflow",
+      "category": "preferred",
+      "status": "denied"
+    },
+    {
+      "text": "Experience with dbt",
+      "category": "preferred",
+      "status": "denied"
+    }
+  ],
+  "proposals": [
+    {
+      "id": "d60fd325-7ce8-4416-8c8c-c701d201d968-p1",
+      "requirementId": "r5",
+      "originalText": "",
+      "suggestedText": "Built and maintained Tableau dashboards for weekly conversion, retention, and experiment reporting.",
+      "section": "Experience",
+      "reason": "Adds confirmed experience building and maintaining Tableau dashboards at Loop Commerce.",
+      "evidence": [
+        {
+          "sourceId": "q2",
+          "quote": "At Loop Commerce, I built and maintained Tableau dashboards for weekly conversion, retention, and experiment reporting."
+        }
+      ],
+      "verification": "supported_by_supplied_evidence"
+    }
+  ],
+  "page_errors": [],
+  "note": "A proposal is not an applied resume edit. Before/after scoring requires review and approval in the web UI."
+}

@@ -16,3 +16,11 @@ by OpenRouter.
 
 The fixture and its hidden profile live separately under `evaluation/fixtures/`.
 The application never receives the hidden profile.
+
+The first guided-workflow smoke test has two records. The `-live-retest.json`
+record captures the real model conversation and its verified proposal, before
+any resume edit. The `-applied.json` record replays that saved proposal through
+the actual web review/preview/approval UI and scores the final resume. Run
+`node evaluation/guided-apply-proposals.mjs` to repeat the approval step
+without paying for another model conversation. This first approval runner is
+deliberately limited to fixture 001 and its single Experience proposal.
