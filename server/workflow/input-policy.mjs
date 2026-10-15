@@ -6,6 +6,7 @@ const instructionPatterns = [
   /(?:^|\n)\s*(?:system|developer)\s*(?:message|instructions?|prompt)?\s*:/i,
   /\b(?:reveal|print|show|provide|send|upload|paste|enter|disclose|expose|share|give me|tell me|what is|what's)\b.{0,80}\b(?:api[\s_-]?key|password|access[\s_-]?token|secret|credentials?|private[\s_-]?key|system prompt|developer instructions?|date of birth|home address|phone number|credit card|bank account|social security number|passport number)\b/i
 ];
+const externalReferences = text => String(text).match(/(?:https?:\/\/|www\.)[^\s<>"')\]]+|[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/gi) || [];
 
 const actionFields = {
   finish: ["type"],
@@ -24,9 +25,9 @@ export function validateActionShape(action) {
   }
 }
 
-export function assertSafeWorkflowText(value, label) {
+export function assertSafeWorkflowText(value, label, { allowSourceReferences = false } = {}) {
   if (typeof value !== "string" || instructionPatterns.some(pattern => pattern.test(value))
-    || /(?:https?:\/\/|www\.)\S+|[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/i.test(value)) {
+    || (!allowSourceReferences && externalReferences(value).length)) {
     throw new Error(`${label} contains a disallowed instruction, credential request, or external link.`);
   }
 }
@@ -44,8 +45,14 @@ export function validateQuestionText(action) {
   assertSafeWorkflowText(action.requestedFacts[0], "Requested fact");
 }
 
-export function validateEditText(action) {
-  assertSafeWorkflowText(action.suggestedText, "Suggested edit");
+export function validateEditText(action, candidateSources) {
+  assertSafeWorkflowText(action.suggestedText, "Suggested edit", { allowSourceReferences: true });
+  const suppliedText = candidateSources.map(source => source.text);
+  for (const reference of externalReferences(action.suggestedText)) {
+    if (!suppliedText.some(text => text.includes(reference))) {
+      throw new Error("A suggested link or email address must appear in the resume or a submitted answer.");
+    }
+  }
 }
 
 export function validateAgentReason(reason) {

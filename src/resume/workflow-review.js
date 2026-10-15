@@ -2,7 +2,22 @@
 // proposal creates a pending card; it never changes the resume automatically.
 window.RoleFitWorkflowReview = {
   addProposal(proposal, requirement) {
-    if (currentChanges.some(change => change.id === proposal.id)) return;
+    const existing = currentChanges.find(change => change.id === proposal.id);
+    if (existing) {
+      if (["accepted", "edited"].includes(existing.status)) {
+        setAiStatus("This proposal is already in the final resume draft.", "success");
+        return "applied";
+      }
+      if (existing.status === "rejected") {
+        setAiStatus("This proposal was rejected. Start a new guided session to reconsider it.", "neutral");
+        return "rejected";
+      }
+      setActivePass(inferChangePass(existing));
+      renderNumberedCommentPreview();
+      renderActiveCommentPanel(existing);
+      setAiStatus("Proposal reopened at the resume preview. Preview its placement before accepting it.", "success");
+      return "opened";
+    }
     const evidence = proposal.evidence.map(item => `${item.sourceId}: ${item.quote}`).join("\n");
     const change = proposal.originalText
       ? normalizeAiChangeCard({
@@ -24,6 +39,7 @@ window.RoleFitWorkflowReview = {
     setActivePass(inferChangePass(change));
     renderNumberedCommentPreview();
     renderActiveCommentPanel(change);
-    setAiStatus("Verified proposal added for review. Preview and approve its wording and placement.", "success");
+    setAiStatus("Proposal opened at the resume preview. Preview its placement before accepting it.", "success");
+    return "opened";
   }
 };

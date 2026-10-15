@@ -27,11 +27,6 @@ window.RoleFitWorkflowView = {
         }).join("")}
         ${pending.length ? `<button type="submit" class="primary-button" ${busy ? "disabled" : ""}>Send answers</button>` : ""}
       </form>
-      <div class="workflow-proposals">
-        ${state.proposals.map(p => `<article><h3>${esc(state.requirements.find(r => r.id === p.requirementId).text)}</h3>
-          <p>${esc(p.suggestedText)}</p><p class="workflow-note">Checked against supplied evidence. Your approval is still required.</p>
-          <button type="button" class="secondary-button" data-workflow-review="${esc(p.id)}" ${busy || state.status !== "complete" ? "disabled" : ""}>Review proposal</button></article>`).join("")}
-      </div>
       <details ${state.status === "complete" ? "open" : ""}><summary>All qualifications (${state.requirements.length})</summary>
         <ul>${state.requirements.map(r => `<li><strong>${esc(r.text)}</strong> (${esc(r.category)}) — ${esc(labels[r.status] || r.status)}
           ${r.reason ? `<p>${esc(r.reason)}</p>` : ""}
@@ -41,7 +36,14 @@ window.RoleFitWorkflowView = {
       <details><summary>Previous answers</summary><ul>${state.questions.filter(q => q.disposition !== "pending").map(q => `<li>${esc(q.question)}<p>${esc(q.answer || q.disposition)}</p></li>`).join("")}</ul></details>
       <button type="button" class="secondary-button" data-workflow-download>Download session results</button>
       ${state.status === "waiting" ? `<button type="button" class="secondary-button" data-workflow-stop ${busy ? "disabled" : ""}>Finish with current evidence</button>` : ""}
-      <p class="workflow-note">Sessions are kept in this server's memory for one hour and disappear when it restarts. User-edited wording is not automatically re-verified.</p>`;
+      <p class="workflow-note">Sessions are kept in this server's memory for one hour and disappear when it restarts. User-edited wording is not automatically re-verified.</p>
+      ${state.proposals.length ? `<section class="workflow-proposals" aria-label="Resume proposals">
+        <h3>Proposals for your resume preview</h3>
+        <p class="workflow-note">Open a proposal in the resume preview below. It will not change your resume until you accept it there.</p>
+        ${state.proposals.map(p => `<article><h4>${esc(state.requirements.find(r => r.id === p.requirementId).text)}</h4>
+          <p>${esc(p.suggestedText)}</p><p class="workflow-note">Checked against supplied evidence. Your approval is still required.</p>
+          <button type="button" class="secondary-button" data-workflow-review="${esc(p.id)}" ${busy || state.status !== "complete" ? "disabled" : ""}>Open in resume preview</button></article>`).join("")}
+      </section>` : ""}`;
     panel.querySelectorAll("[data-workflow-question]").forEach(field => {
       const select = field.querySelector("select"), text = field.querySelector("textarea");
       text.required = !busy;

@@ -35,8 +35,15 @@
       onReview: id => {
         if (jobInput.value.trim() !== snapshot.job) { setAiStatus("The target job changed. Start a new guided session.", "error"); return; }
         const proposal = state.proposals.find(p => p.id === id);
-        if (proposal.originalText && !getWorkingResumeText().includes(proposal.originalText)) { setAiStatus("The original passage has changed. Start a new guided session to update this proposal.", "error"); return; }
-        window.RoleFitWorkflowReview.addProposal(proposal, state.requirements.find(r => r.id === proposal.requirementId));
+        const existing = currentChanges.find(change => change.id === id);
+        const alreadyApplied = existing && ["accepted", "edited"].includes(existing.status);
+        if (proposal.originalText && !alreadyApplied && !getWorkingResumeText().includes(proposal.originalText)) { setAiStatus("The original passage has changed. Start a new guided session to update this proposal.", "error"); return; }
+        const result = window.RoleFitWorkflowReview.addProposal(proposal, state.requirements.find(r => r.id === proposal.requirementId));
+        if (result === "rejected") return;
+        const target = result === "applied" ? finalResume : activeCommentPanel;
+        if (target === activeCommentPanel) target.tabIndex = -1;
+        target.focus({ preventScroll: true });
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
       },
       onDownload: () => {
         const url = URL.createObjectURL(new Blob([JSON.stringify(state, null, 2)], { type: "application/json" }));

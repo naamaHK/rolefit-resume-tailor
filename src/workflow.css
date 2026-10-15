@@ -1,6 +1,8 @@
 .workflow-panel { margin: 1rem 0; padding: 1.25rem; border: 1px solid #bccadd; border-radius: 12px; background: #f8fbff; }
 .workflow-panel[hidden] { display: none; }
 .workflow-panel fieldset, .workflow-proposals article { margin: 1rem 0; padding: 1rem; border: 1px solid #cbd5e1; border-radius: 8px; min-width: 0; background: white; }
+.workflow-proposals { margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid #cbd5e1; }
+.workflow-proposals h3 { margin: 0; }
 .workflow-panel legend { font-weight: 650; overflow-wrap: anywhere; }
 .workflow-panel label { display: block; margin-top: .65rem; }
 .workflow-panel textarea { width: 100%; min-height: 85px; margin-top: .4rem; }

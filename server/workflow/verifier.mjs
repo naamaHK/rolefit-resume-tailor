@@ -21,7 +21,7 @@ export function validateEdit(state, action) {
   if (typeof action.originalText !== "string" || typeof action.suggestedText !== "string" || !action.suggestedText.trim() || action.suggestedText.length > 2500) {
     throw new Error("An edit needs originalText and concise suggestedText.");
   }
-  validateEditText(action);
+  validateEditText(action, sources(state));
   if (!["Skills", "Experience", "Education", "Selected Projects", "Statement"].includes(action.section)) throw new Error("Choose an existing supported section type.");
   if (action.originalText && state.resume.split(action.originalText).length !== 2) {
     throw new Error("A replacement must match exactly one passage in the original resume.");

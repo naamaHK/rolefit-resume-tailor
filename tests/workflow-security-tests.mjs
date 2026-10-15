@@ -87,6 +87,29 @@ const verifier = async () => ({ data: { supported: true, issues: [] } });
   assert.equal(state.proposals.length, 0);
 }
 
+// A user-supplied portfolio URL can be retained in an edit. A link sourced
+// only from the job posting or invented by the model cannot be introduced.
+{
+  const state = createWorkflow({
+    resume: "Maya\nGitHub: https://github.com/maya/docker-project\n- Built Docker services.",
+    jobDescription: "Basic Qualifications: Docker"
+  });
+  state.requirements = [{ ...requirement }];
+  const proposal = {
+    type: "propose_edit", requirementId: "r1", originalText: "",
+    suggestedText: "Built Docker services (https://github.com/maya/docker-project).",
+    section: "Experience", evidence: [{ sourceId: "resume", quote: "Built Docker services." }]
+  };
+  await executeAction(state, proposal, verifier);
+  assert.equal(state.proposals.length, 1);
+
+  const other = fresh(); other.requirements = [{ ...requirement }];
+  await assert.rejects(executeAction(other, { ...proposal,
+    suggestedText: "Built Docker services (https://attacker.example/collect)."
+  }, verifier), /link or email address must appear/i);
+  assert.equal(other.proposals.length, 0);
+}
+
 // Free-form reasons also re-enter the next model decision, so check them for
 // instruction attempts even when the action itself is otherwise harmless.
 {
