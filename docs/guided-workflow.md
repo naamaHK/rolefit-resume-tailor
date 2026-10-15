@@ -65,16 +65,34 @@ world. A model verifier can still err. Manually edited wording is not covered by
 the prior verification. Coverage recognition, unsupported claims, unnecessary
 questions, and structure preservation must still be measured independently.
 
+## Prompt-injection boundary
+
+The guided workflow sends its fixed instructions in a system message and the
+resume, job description, answers, and prior model output in a separate user
+message marked as untrusted data. It does not copy user text into the system
+message. Before acting on model output, the server rejects extracted
+qualifications, questions, requested facts, reasons, and proposed edits that
+contain common instruction-spoofing patterns, credential requests, or external
+links. Existing schema, quote, numeric-fact, and action-budget checks still
+apply. A rejected action does not become a question or proposal; an unsafe
+qualification extraction stops the session.
+
+These are defense layers, not a guarantee that every prompt injection can be
+detected. The model verifier is not a security authority, and user approval
+remains necessary before a resume edit is applied. The model has no general
+browser, filesystem, email, or external tool access through this workflow.
+
 ## Module boundaries
 
 | Module | Responsibility |
 | --- | --- |
-| `server/model-client.mjs` | Structured model adapter; injected existing provider transport |
+| `server/model-client.mjs` | Role-separated workflow messages and structured model adapter |
 | `server/workflow-routes.mjs` | Start/resume/read sessions; busy and stale-request protection |
 | `server/workflow/state.mjs` | Immutable source snapshot, answers, limits, and event records |
 | `server/workflow/controller.mjs` | Coordinate decisions, tool execution, pauses, and stopping |
 | `server/workflow/decision.mjs` | Load prompts, build model context, record per-call usage |
 | `server/workflow/tools.mjs` | Validate and dispatch the small set of allowed actions |
+| `server/workflow/input-policy.mjs` | Reject unsafe agent-generated questions, requirements, edits, and reasons |
 | `server/workflow/experience-duration.mjs` | Pure calendar interval calculation |
 | `server/workflow/verifier.mjs` | Evidence/claim checks and proposal validation |
 | `src/resume/workflow-client.js` | Browser requests and session lifecycle |
@@ -91,6 +109,7 @@ is extracted in this change, avoiding a simultaneous rewrite of that transport.
 
 ```bash
 node tests/workflow-tests.mjs
+node tests/workflow-security-tests.mjs
 node tests/workflow-browser-tests.mjs
 node tests/guided-proposal-check-tests.mjs
 ```

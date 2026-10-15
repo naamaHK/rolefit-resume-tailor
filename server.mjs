@@ -262,18 +262,15 @@ function supportsJsonResponseFormat(modelName) {
   return /^(openai|google|qwen|anthropic)\//i.test(modelName);
 }
 
-async function callOpenRouterTextWithModel(prompt, temperature, modelName) {
+async function callOpenRouterTextWithModel(promptOrMessages, temperature, modelName) {
   const startedAt = Date.now();
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), openRouterModelTimeoutMs);
   const body = {
     model: modelName,
-    messages: [
-      {
-        role: "user",
-        content: prompt
-      }
-    ],
+    messages: Array.isArray(promptOrMessages)
+      ? promptOrMessages
+      : [{ role: "user", content: promptOrMessages }],
     temperature,
     max_tokens: 5000
   };

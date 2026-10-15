@@ -1,4 +1,5 @@
 import { calculateExperience } from "./experience-duration.mjs";
+import { validateActionShape, validateAgentReason, validateQuestionText } from "./input-policy.mjs";
 import { CLOSED_REQUIREMENTS, record, requireEvidence } from "./state.mjs";
 import { validateEdit, verify } from "./verifier.mjs";
 
@@ -6,6 +7,8 @@ const key = value => value.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim()
 
 export async function executeAction(state, action, model) {
   if (!action || typeof action.type !== "string") throw new Error("An action type is required.");
+  validateActionShape(action);
+  validateAgentReason(action.reason);
   if (action.type === "finish") return "finish";
   const requirement = state.requirements.find(r => r.id === action.requirementId);
   if (!requirement) throw new Error("Unknown requirement ID.");
@@ -21,6 +24,7 @@ export async function executeAction(state, action, model) {
       if (typeof action.question !== "string" || action.question.length < 8 || action.question.length > 600 || (action.question.match(/\?/g) || []).length > 1 || !Array.isArray(action.requestedFacts) || action.requestedFacts.length !== 1 || typeof action.requestedFacts[0] !== "string" || !action.requestedFacts[0].trim()) {
         throw new Error("Ask one focused question requesting exactly one fact.");
       }
+      validateQuestionText(action);
       if (state.questions.some(q => key(q.question) === key(action.question)) || previous.some(q => key(q.requestedFact) === key(action.requestedFacts[0]))) {
         throw new Error("This question or fact has already been asked.");
       }

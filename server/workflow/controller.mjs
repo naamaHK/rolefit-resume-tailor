@@ -1,4 +1,6 @@
+import { createHash } from "node:crypto";
 import { askModel, decisionInput } from "./decision.mjs";
+import { validateExtractedRequirement } from "./input-policy.mjs";
 import { CLOSED_REQUIREMENTS, closeWorkflow, record } from "./state.mjs";
 import { executeAction } from "./tools.mjs";
 
@@ -10,6 +12,7 @@ async function initialize(state, model) {
     if (typeof r.text !== "string" || !r.text.trim() || !["basic", "preferred"].includes(r.category) || typeof r.jobQuote !== "string" || !r.jobQuote.trim() || !state.jobDescription.includes(r.jobQuote)) {
       throw new Error("Every qualification must have a verbatim job quote and a category.");
     }
+    validateExtractedRequirement(r);
     const key = r.text.trim().toLowerCase();
     if (seen.has(key)) throw new Error("Duplicate qualification in extraction.");
     seen.add(key);
@@ -39,7 +42,9 @@ export async function advanceWorkflow(state, model) {
       for (const action of decision.actions) {
         if (state.actions >= state.limits.actions) break;
         state.actions += 1;
-        const signature = JSON.stringify(action);
+        // Keep raw rejected model text out of future decision context and
+        // downloadable session events. A digest still detects exact repeats.
+        const signature = createHash("sha256").update(JSON.stringify(action)).digest("hex");
         const answerCount = state.questions.filter(q => q.disposition !== "pending").length;
         try {
           if (state.events.some(event => event.type === "action_attempt" && event.signature === signature && event.answerCount === answerCount)) throw new Error("Repeated action without new information. Choose another action or finish.");
